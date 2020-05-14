@@ -20,7 +20,7 @@
     "@angular/cdk": "^8.2.3",
     "@angular/common": "^8.2.14",
     "@angular/compiler": "^8.2.14",
-    "@angular/core": "^8.2.14",
+    "@angular/core": "^7.2.16",
     "@angular/fire": "^5.3.0",
     "@angular/forms": "^8.2.14",
     "@angular/platform-browser": "^8.2.14",
@@ -49,7 +49,7 @@
     "express": "^4.15.2",
     "firebase": "^7.14.1",
     "firebase-admin": "^8.9.0",
-    "firebase-functions": "^3.3.0",
+    "firebase-functions": "^3.6.1",
     "firebase-tools": "^7.11.0",
     "https": "^1.0.0",
     "https-proxy-agent": "^3.0.1",
@@ -65,7 +65,7 @@
     "set-value": "^3.0.1",
     "shelljs": "^0.8.3",
     "tslib": "^1.9.0",
-    "zone.js": "^0.10.2"
+    "zone.js": "^0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.803.23",

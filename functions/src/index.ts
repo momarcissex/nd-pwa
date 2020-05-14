@@ -1182,10 +1182,12 @@ exports.lowestAskNotification = functions.https.onRequest((req, res) => {
 
         await notifySellers()
 
-        return res.status(200).send()
+        res.status(200).send();
+
+        return;
 
         function notifyBuyers() {
-            admin.firestore().collection(`products`).doc(`${req.body.product_id}`).collection(`offers`).where('condition', '==', `${req.body.condition}`).where('size', '==', `${req.body.size}`).get()
+            return admin.firestore().collection(`products`).doc(`${req.body.product_id}`).collection(`offers`).where('condition', '==', `${req.body.condition}`).where('size', '==', `${req.body.size}`).get()
                 .then(bids => {
                     console.log('getting bids...')
                     bids.docs.forEach(bid => {
@@ -1231,7 +1233,7 @@ exports.lowestAskNotification = functions.https.onRequest((req, res) => {
         }
 
         function notifySellers() {
-            admin.firestore().collection(`products`).doc(`${req.body.product_id}`).collection(`listings`).where('size', '==', `${req.body.size}`).where('condition', '==', `${req.body.condition}`).get()
+            return admin.firestore().collection(`products`).doc(`${req.body.product_id}`).collection(`listings`).where('size', '==', `${req.body.size}`).where('condition', '==', `${req.body.condition}`).get()
                 .then(asks => {
                     console.log('getting asks...')
                     asks.docs.forEach(ask => {
@@ -1297,7 +1299,7 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
         return res.status(200).send()
 
         function notifySellers() {
-            prodRef.collection(`listings`).where('size', '==', `${req.body.size}`).where('condition', '==', `${req.body.condition}`).get()
+            return prodRef.collection(`listings`).where('size', '==', `${req.body.size}`).where('condition', '==', `${req.body.condition}`).get()
                 .then(asks => {
                     //console.log('getting asks...')
 
@@ -1347,7 +1349,7 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
 
 
         function notifyBuyers() {
-            prodRef.collection(`offers`).where(`size`, `==`, `${req.body.size}`).where(`condition`, `==`, `${req.body.condition}`).get()
+            return prodRef.collection(`offers`).where(`size`, `==`, `${req.body.size}`).where(`condition`, `==`, `${req.body.condition}`).get()
                 .then(bids => {
                     //console.log(`getting bids...`)
 
