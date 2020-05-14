@@ -85,7 +85,7 @@ export class OfferService {
 
           console.log(`size highest_bid: ${size_highest_bid} and price: ${price}`)
 
-          if (!isNullOrUndefined(size_highest_bid) && price > size_highest_bid) {
+          if (isNullOrUndefined(size_highest_bid) || price > size_highest_bid) {
             this.http.put(`${environment.cloud.url}highestBidNotification`, {
               product_id: pair.productID,
               buyer_id: UID,

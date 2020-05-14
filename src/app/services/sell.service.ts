@@ -78,7 +78,7 @@ export class SellService {
 
           console.log(`size_lowest: ${size_lowest_ask} and price: ${price}`)
 
-          if (!isNullOrUndefined(size_lowest_ask) && price < size_lowest_ask) {
+          if (isNullOrUndefined(size_lowest_ask) || price < size_lowest_ask) {
             this.http.put(`${environment.cloud.url}lowestAskNotification`, {
               product_id: pair.productID,
               seller_id: UID,
