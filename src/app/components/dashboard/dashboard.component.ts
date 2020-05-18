@@ -4,6 +4,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { isNullOrUndefined } from 'util';
 import { User } from 'src/app/models/user';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { MetaService } from 'src/app/services/meta.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,10 +27,13 @@ export class DashboardComponent implements OnInit {
     private dashboardService: DashboardService,
     private auth: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private title: Title,
+    private seo: MetaService
   ) { }
 
   ngOnInit() {
+    this.title.setTitle('Dashboard | NXTDROP')
     this.auth.isConnected().then(res => {
       if (!isNullOrUndefined(res)) {
         this.UID = res.uid;

@@ -63,18 +63,19 @@ export class ProductComponent implements OnInit {
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.productID = this.route.snapshot.params.id;
-
-    this.getSizeSuffix();
 
     this.auth.isConnected().then(res => {
       if (!isNullOrUndefined(res)) {
         this.UID = res.uid;
+        this.countView();
       }
     });
 
-    this.getItemInformation();
+    await this.getItemInformation()
+
+    this.getSizeSuffix();
   }
 
   /*addToCart(listing) {
@@ -87,20 +88,18 @@ export class ProductComponent implements OnInit {
     });
   }*/
 
-  async getItemInformation() {
-    await this.productService.getProductInfo(this.productID).subscribe(data => {
-      if (!data.exists) {
+  getItemInformation() {
+    this.productService.getProductInfo(this.productID).subscribe(data => {
+      if (isNullOrUndefined(data)) {
         this.router.navigate([`page-not-found`]);
       } else {
-        this.seo.addTags('Product', data.data() as Product);
-        this.productInfo = data.data() as Product;
+        this.productInfo = data as Product;
         this.title.setTitle(`${this.productInfo.model} - ${this.productInfo.brand} | NXTDROP`);
+        this.seo.addTags('Product', this.productInfo);
 
         this.getOffers();
       }
     });
-
-    this.countView();
   }
 
   getSizeSuffix() {

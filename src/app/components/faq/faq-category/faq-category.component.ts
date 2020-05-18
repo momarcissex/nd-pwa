@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Title } from '@angular/platform-browser';
+import { MetaService } from 'src/app/services/meta.service';
 
 @Component({
   selector: 'app-faq-category',
@@ -16,11 +18,16 @@ export class FaqCategoryComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private title: Title,
+    private seo: MetaService
   ) { }
 
   ngOnInit() {
     this.category = this.route.snapshot.params.category;
+    this.title.setTitle(`${this.category.toUpperCase()} - FAQ | NXTDROP`)
+    this.seo.addTags(`${this.category.toUpperCase()} - FAQ`)
+
 
     this.afs.collection(`faq`).ref.where(`categories.${this.category}`, '==', true).orderBy('Q', 'asc').limit(10).get().then(res => {
       res.docs.forEach(ele => {
