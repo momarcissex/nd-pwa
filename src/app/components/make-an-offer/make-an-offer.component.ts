@@ -11,6 +11,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
 import * as algoliasearch from 'algoliasearch';
 import { environment } from 'src/environments/environment';
+import { Ask } from 'src/app/models/ask';
+import { Bid } from 'src/app/models/bid';
 
 declare var gtag: any;
 
@@ -166,8 +168,8 @@ export class MakeAnOfferComponent implements OnInit {
       let ask: any;
       const size = `US${ele}${this.sizeSuffix}`;
 
-      this.sellService.getLowestListing(this.selectedPair.productID, 'new', size).subscribe(askdata => {
-        ask = askdata[0];
+      this.sellService.getLowestListing(this.selectedPair.productID, 'new', size).then(askdata => {
+        askdata.empty ? ask = undefined : ask = askdata.docs[0].data() as Ask
 
         const data = {
           LowestAsk: ask,
@@ -184,11 +186,11 @@ export class MakeAnOfferComponent implements OnInit {
   }
 
   getProductStats() {
-    this.sellService.getLowestListing(this.selectedPair.productID, 'new').subscribe(response => {
-      this.LowestAsk = response[0];
+    this.sellService.getLowestListing(this.selectedPair.productID, 'new').then(response => {
+      response.empty ? this.LowestAsk = undefined : this.LowestAsk = response.docs[0].data() as Ask;
 
-      this.sellService.getHighestOffer(this.selectedPair.productID, 'new').subscribe(res => {
-        this.HighestBid = res[0];
+      this.sellService.getHighestOffer(this.selectedPair.productID, 'new').then(res => {
+        res.empty ? this.HighestBid = undefined : this.HighestBid = res.docs[0].data() as Bid
 
         if (!this.selectedSize) {
           this.currentAsk = this.LowestAsk;
@@ -297,19 +299,19 @@ export class MakeAnOfferComponent implements OnInit {
   selectSize(size: string) {
     this.selectedSize = size;
 
-    this.sellService.getHighestOffer(this.selectedPair.productID, 'new', this.selectedSize).subscribe(res => {
-      if (isNullOrUndefined(res[0])) {
+    this.sellService.getHighestOffer(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+      if (res.empty) {
         this.currentBid = NaN;
       } else {
-        this.currentBid = res[0];
+        this.currentBid = res.docs[0].data() as Bid
       }
     });
 
-    this.sellService.getLowestListing(this.selectedPair.productID, 'new', this.selectedSize).subscribe(res => {
-      if (isNullOrUndefined(res[0])) {
+    this.sellService.getLowestListing(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+      if (res.empty) {
         this.currentAsk = NaN;
       } else {
-        this.currentAsk = res[0];
+        this.currentAsk = res.docs[0].data() as Ask
       }
     });
   }

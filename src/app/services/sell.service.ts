@@ -104,19 +104,19 @@ export class SellService {
   }*/
 
   getHighestOffer(productID: string, condition: string, size?: string) {
-    let offerRef;
+    let offerRef: firebase.firestore.Query<firebase.firestore.DocumentData>;
 
-    isNullOrUndefined(size) ? offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`, ref => ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `desc`).limit(1)) : offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`, ref => ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `desc`).limit(1));
+    isNullOrUndefined(size) ? offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `desc`).limit(1) : offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `desc`).limit(1);
 
-    return offerRef.valueChanges();
+    return offerRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>;
   }
 
   getLowestListing(productID: string, condition: string, size?: string) {
-    let listingRef;
+    let listingRef: firebase.firestore.Query<firebase.firestore.DocumentData>;
 
-    isNullOrUndefined(size) ? listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`, ref => ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `asc`).limit(1)) : listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`, ref => ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `asc`).limit(1));
+    isNullOrUndefined(size) ? listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`).ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `asc`).limit(1) : listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`).ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `asc`).limit(1);
 
-    return listingRef.valueChanges();
+    return listingRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>;
   }
 
 }

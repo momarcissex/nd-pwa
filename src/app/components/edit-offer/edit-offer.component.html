@@ -89,7 +89,7 @@
         (click)="updateOffer()">Update Bid</button>
 
       <button id="save-changes-btn" *ngIf="!loading && !error && !updated && !showSaveChanges" class="btn"
-        (click)="buyNow()">Buy at {{ lowestListing | currency: 'CAD' }}</button>
+        (click)="buyNow()">Buy at {{ lowest_ask.price | currency: 'CAD' }}</button>
 
       <button id="save-changes-btn" class="btn" *ngIf="loading">
         <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>

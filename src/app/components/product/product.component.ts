@@ -89,11 +89,11 @@ export class ProductComponent implements OnInit {
   }*/
 
   getItemInformation() {
-    this.productService.getProductInfo(this.productID).subscribe(data => {
+    this.productService.getProductInfo(this.productID).then(data => {
       if (isNullOrUndefined(data)) {
         this.router.navigate([`page-not-found`]);
       } else {
-        this.productInfo = data as Product;
+        this.productInfo = data.data() as Product;
         this.title.setTitle(`${this.productInfo.model} - ${this.productInfo.brand} | NXTDROP`);
         this.seo.addTags('Product', this.productInfo);
 
@@ -116,7 +116,9 @@ export class ProductComponent implements OnInit {
   }
 
   countView() {
-    this.productService.countView(this.productID).catch(err => {
+    this.productService.countView(this.productID).then(() => {
+      //console.log('view count updated')
+    }).catch(err => {
       console.error(err);
     })
   }
@@ -196,6 +198,7 @@ export class ProductComponent implements OnInit {
   }
 
   getOffers() {
+    //console.log('getOffers run')
     let suffix: string;
     let shoeSizes: Array<number>;
 
@@ -221,11 +224,11 @@ export class ProductComponent implements OnInit {
 
       const size = `US${ele}${this.sizeSuffix}`;
 
-      this.sellService.getHighestOffer(`${this.productID}`, 'new', size).subscribe(bidData => {
-        bid = bidData[0];
+      this.sellService.getHighestOffer(`${this.productID}`, 'new', size).then(bidData => {
+        bidData.empty ? bid = undefined : bid = bidData.docs[0].data()
 
-        this.sellService.getLowestListing(`${this.productID}`, 'new', size).subscribe(askData => {
-          ask = askData[0];
+        this.sellService.getLowestListing(`${this.productID}`, 'new', size).then(askData => {
+          askData.empty ? ask = undefined : ask = askData.docs[0].data()
 
           const data = {
             LowestAsk: ask,

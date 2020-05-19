@@ -17,7 +17,7 @@ export class ProductService {
   ) { }
 
   getProductInfo(productID) {
-    return this.afs.collection('products').doc(`${productID}`).valueChanges();
+    return this.afs.collection('products').doc(`${productID}`).ref.get();
   }
 
   getBuy(productID) {

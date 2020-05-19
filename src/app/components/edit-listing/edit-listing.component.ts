@@ -74,15 +74,15 @@ export class EditListingComponent implements OnInit {
           this.shoeSizes();
           this.calculateSellerFees();
 
-          this.sellService.getHighestOffer(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).subscribe(data => {
-            if (data.length > 0) {
-              this.highestOffer = data[0] as Bid
+          this.sellService.getHighestOffer(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+            if (!data.empty) {
+              this.highestOffer = data.docs[0].data() as Bid
             }
           });
 
-          this.sellService.getLowestListing(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).subscribe(data => {
-            if (data > 0) {
-              this.lowest_ask = data[0].price
+          this.sellService.getLowestListing(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+            if (!data.empty) {
+              this.lowest_ask = data.docs[0].data().price
             }
           })
         }

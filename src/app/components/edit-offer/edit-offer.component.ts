@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileService } from 'src/app/services/profile.service';
 import { OfferService } from 'src/app/services/offer.service';
 import { SellService } from 'src/app/services/sell.service';
-import { isUndefined } from 'util';
+import { isUndefined, isNullOrUndefined } from 'util';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { Bid } from 'src/app/models/bid';
+import { Ask } from 'src/app/models/ask';
 
 @Component({
   selector: 'app-edit-offer',
@@ -31,7 +32,7 @@ export class EditOfferComponent implements OnInit {
   curPrice;
   curSize;
 
-  lowestListing: number;
+  lowest_ask: Ask;
   showSaveChanges = true;
 
   isWomen = false;
@@ -65,11 +66,9 @@ export class EditOfferComponent implements OnInit {
 
           this.shoeSizes();
 
-          this.sellService.getLowestListing(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).subscribe(data => {
-            if (data.length > 0) {
-              this.lowestListing = data[0].price
-            } else {
-              this.lowestListing = -1;
+          this.sellService.getLowestListing(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+            if (!data.empty) {
+              this.lowest_ask = data.docs[0].data() as Ask
             }
           });
 
@@ -195,19 +194,25 @@ export class EditOfferComponent implements OnInit {
   }
 
   showSaveChangesBtn() {
-    if (this.curPrice >= this.lowestListing) {
-      if (this.lowestListing != -1) {
-        this.showSaveChanges = false;
-      } else {
-        this.showSaveChanges = true;
-      }
+    if (isNullOrUndefined(this.lowest_ask)) {
+      this.showSaveChanges = true
     } else {
-      if (this.lowestListing != -1) {
-        this.showSaveChanges = true;
+      if (this.curPrice >= this.lowest_ask.price) {
+        this.showSaveChanges = false
       } else {
-        this.showSaveChanges = true;
+        this.showSaveChanges = true
       }
     }
+  }
+
+  buyNow() {
+    this.router.navigate(['/checkout'], {
+      queryParams: {
+        product: this.lowest_ask.listingID,
+        sell: false,
+        redirectTo: this.router.url
+      }
+    })
   }
 
   back() {
