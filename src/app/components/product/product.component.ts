@@ -72,9 +72,8 @@ export class ProductComponent implements OnInit {
         this.countView();
       }
     });
-
+    
     await this.getItemInformation()
-
     this.getSizeSuffix();
   }
 
@@ -88,18 +87,19 @@ export class ProductComponent implements OnInit {
     });
   }*/
 
-  getItemInformation() {
-    this.productService.getProductInfo(this.productID).then(data => {
+  async getItemInformation() {
+    await this.productService.getProductInfo(this.productID).subscribe(data => {
       if (isNullOrUndefined(data)) {
         this.router.navigate([`page-not-found`]);
       } else {
-        this.productInfo = data.data() as Product;
+        this.productInfo = data;
         this.title.setTitle(`${this.productInfo.model} - ${this.productInfo.brand} | NXTDROP`);
         this.seo.addTags('Product', this.productInfo);
-
-        this.getOffers();
       }
     });
+
+    this.getOffers();
+    return;
   }
 
   getSizeSuffix() {

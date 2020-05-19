@@ -17,7 +17,7 @@ export class ProductService {
   ) { }
 
   getProductInfo(productID) {
-    return this.afs.collection('products').doc(`${productID}`).ref.get();
+    return this.afs.collection('products').doc(`${productID}`).valueChanges() as Observable<Product>
   }
 
   getBuy(productID) {
