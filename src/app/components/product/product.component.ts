@@ -64,17 +64,21 @@ export class ProductComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    //console.log('oninit start')
     this.productID = this.route.snapshot.params.id;
 
-    this.auth.isConnected().then(res => {
+    this.auth.isConnected().then((res) => {
+      //console.log('isConnected start')
       if (!isNullOrUndefined(res)) {
         this.UID = res.uid;
-        this.countView();
       }
+      //console.log('isConnected end')
     });
-    
+
     await this.getItemInformation()
+
     this.getSizeSuffix();
+    //console.log('oninit end')
   }
 
   /*addToCart(listing) {
@@ -88,7 +92,9 @@ export class ProductComponent implements OnInit {
   }*/
 
   async getItemInformation() {
-    await this.productService.getProductInfo(this.productID).subscribe(data => {
+    //console.log('getItemInformation start')
+    this.productService.getProductInfo(this.productID).subscribe(data => {
+      console.log('getProductInfo start')
       if (isNullOrUndefined(data)) {
         this.router.navigate([`page-not-found`]);
       } else {
@@ -96,10 +102,12 @@ export class ProductComponent implements OnInit {
         this.title.setTitle(`${this.productInfo.model} - ${this.productInfo.brand} | NXTDROP`);
         this.seo.addTags('Product', this.productInfo);
       }
-    });
 
-    this.getOffers();
-    return;
+      if (this.offers.length === 0) {
+        this.getOffers();
+      }
+      //console.log('getProductInfo end')
+    });
   }
 
   getSizeSuffix() {
@@ -115,12 +123,15 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  countView() {
+  async countView() {
+    //console.log('countView start')
     this.productService.countView(this.productID).then(() => {
       //console.log('view count updated')
     }).catch(err => {
       console.error(err);
     })
+
+    //console.log('countView end')
   }
 
   buyNow(listing) {
@@ -198,9 +209,10 @@ export class ProductComponent implements OnInit {
   }
 
   getOffers() {
-    //console.log('getOffers run')
+    //console.log('getOffers start')
     let suffix: string;
     let shoeSizes: Array<number>;
+    this.offers.length = 0
 
     if (this.sizeSuffix === 'W') {
       suffix = this.sizeSuffix;
@@ -257,10 +269,12 @@ export class ProductComponent implements OnInit {
           if (shoeSizes.length === this.offers.length) {
             this.currentOffer.LowestAsk = this.lowestAsk;
             this.currentOffer.HighestBid = this.highestBid;
+            this.countView()
           }
         });
       });
     });
+    //console.log('getOffers end')
   }
 
   selectSize(selected: any) {

@@ -12,7 +12,8 @@
     "serve:ssr": "node dist/server",
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
     "build:client-and-server-bundles": "ng build --prod && ng run nd-pwa:server:production",
-    "deploy": "npm run build:ssr && gcloud app deploy"
+    "deploy": "npm run build:ssr && gcloud app deploy",
+    "deploy:local": "npm run build:ssr && npm run serve:ssr"
   },
   "private": true,
   "dependencies": {

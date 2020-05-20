@@ -17,7 +17,6 @@ export class MetaService {
   ) { }
 
   addTags(pageTitle: string, product?: Product) {
-    console.log('before tags')
     if (product === undefined) {
       this.meta.addTags([
         { name: `title`, content: `${pageTitle} | NXTDROP: No Fakes, No Duties` },
@@ -59,8 +58,6 @@ export class MetaService {
         ])
       }
     }
-
-    console.log('after tags')
   }
 
   createCanonicalLink() {
