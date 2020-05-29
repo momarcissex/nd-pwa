@@ -170,7 +170,7 @@ export class CheckoutComponent implements OnInit {
         }
         transaction.then(res => {
           if (isPlatformBrowser(this._platformId)) {
-            gtag('event', 'purchase', {
+            gtag('event', 'item_bought', {
               'event_category': 'ecommerce',
               'event_label': this.product.model,
               'event_value': this.product.price
