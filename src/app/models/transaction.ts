@@ -1,4 +1,5 @@
 export class Transaction {
+    id?: string;
     assetURL: string;
     boughtAt?: number;
     soldAt?: number;

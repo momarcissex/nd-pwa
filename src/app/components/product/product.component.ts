@@ -7,7 +7,8 @@ import { Product } from 'src/app/models/product';
 import { isNullOrUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
-import { SellService } from 'src/app/services/sell.service';
+import { AskService } from 'src/app/services/ask.service';
+import { BidService } from 'src/app/services/bid.service';
 
 declare const gtag: any;
 
@@ -59,7 +60,8 @@ export class ProductComponent implements OnInit {
     private title: Title,
     private seo: MetaService,
     private ngZone: NgZone,
-    private sellService: SellService,
+    private askService: AskService,
+    private bidService: BidService,
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
@@ -94,7 +96,7 @@ export class ProductComponent implements OnInit {
   async getItemInformation() {
     //console.log('getItemInformation start')
     this.productService.getProductInfo(this.productID).subscribe(data => {
-      console.log('getProductInfo start')
+      //console.log('getProductInfo start')
       if (isNullOrUndefined(data)) {
         this.router.navigate([`page-not-found`]);
       } else {
@@ -236,10 +238,10 @@ export class ProductComponent implements OnInit {
 
       const size = `US${ele}${this.sizeSuffix}`;
 
-      this.sellService.getHighestOffer(`${this.productID}`, 'new', size).then(bidData => {
+      this.bidService.getHighestBid(`${this.productID}`, 'new', size).then(bidData => {
         bidData.empty ? bid = undefined : bid = bidData.docs[0].data()
 
-        this.sellService.getLowestListing(`${this.productID}`, 'new', size).then(askData => {
+        this.askService.getLowestAsk(`${this.productID}`, 'new', size).then(askData => {
           askData.empty ? ask = undefined : ask = askData.docs[0].data()
 
           const data = {

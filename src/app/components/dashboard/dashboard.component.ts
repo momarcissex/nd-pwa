@@ -6,6 +6,7 @@ import { User } from 'src/app/models/user';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
+import { Transaction } from 'src/app/models/transaction';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,8 +17,8 @@ export class DashboardComponent implements OnInit {
 
   UID: string;
   user: User;
-  purchases = [];
-  sales = [];
+  purchases: Transaction[] = [];
+  sales: Transaction[] = [];
 
   //Boolean
   showPurchases: boolean = true;
@@ -28,8 +29,7 @@ export class DashboardComponent implements OnInit {
     private auth: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private title: Title,
-    private seo: MetaService
+    private title: Title
   ) { }
 
   ngOnInit() {
@@ -61,46 +61,57 @@ export class DashboardComponent implements OnInit {
   }
 
   getPurchases() {
+    //console.log('run getPurchases')
     document.getElementById(`purchase-btn`).classList.add('active');
     document.getElementById(`sales-btn`).classList.remove('active');
     this.showPurchases = true;
     this.showSales = false;
 
     if (this.purchases.length === 0) {
-      this.dashboardService.purchases(this.UID).subscribe(data => {
+      this.dashboardService.purchases(this.UID).subscribe((data: any) => {
         data.forEach(doc => {
-          const d = doc.data();
+          const d = doc as Transaction;
           d.id = doc.id;
           this.purchases.push(d);
-          console.log(d)
+          //console.log(d)
         })
       });
     }
   }
 
   getSales() {
+    //console.log('run getSales')
     document.getElementById(`purchase-btn`).classList.remove('active');
     document.getElementById(`sales-btn`).classList.add('active');
     this.showSales = true;
     this.showPurchases = false;
 
     if (this.sales.length === 0) {
-      this.dashboardService.sales(this.UID).subscribe(data => {
+      this.dashboardService.sales(this.UID).subscribe((data: any) => {
         data.forEach(doc => {
-          const d = doc.data();
+          const d = doc as Transaction;
           d.id = doc.id;
           this.sales.push(d);
-          console.log(d)
+          //console.log(d)
         })
       });
     }
   }
 
-  printOrderStatus(status) {
+  printOrderStatus(status: Transaction["status"], type: string, paymentID: string, id: string) {
+    //console.log(`${type}, ${id}, ${paymentID}`)
+    if (type == 'bought') {
+      if (isNullOrUndefined(status.sellerConfirmation) || !status.sellerConfirmation && !status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+        return 'waiting for seller to ship'
+      }
+    } else {
+      if (paymentID === '') {
+        return 'waiting buyer to checkout'
+      }
+    }
+
     if (status.cancelled) {
       return 'cancelled'
-    } else if (isNullOrUndefined(status.sellerConfirmation) || !status.sellerConfirmation && !status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
-      return 'awaiting seller confirmation'
     } else if (!status.shippedForVerification && status.sellerConfirmation && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
       return 'waiting for seller to ship'
     } else if (status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
@@ -118,11 +129,11 @@ export class DashboardComponent implements OnInit {
 
   more() {
     if (this.showSales) {
-      this.dashboardService.sales(this.UID, this.sales[this.sales.length - 1].purchaseDate).subscribe(data => {
+      this.dashboardService.sales(this.UID, this.sales[this.sales.length - 1].purchaseDate).subscribe((data: any) => {
         this.sales.concat(data.docs);
       })
     } else {
-      this.dashboardService.purchases(this.UID, this.sales[this.sales.length - 1].purchaseDate).subscribe(data => {
+      this.dashboardService.purchases(this.UID, this.sales[this.sales.length - 1].purchaseDate).subscribe((data: any) => {
         this.sales.concat(data.docs);
       })
     }

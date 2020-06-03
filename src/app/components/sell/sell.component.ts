@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
-import { SellService } from 'src/app/services/sell.service';
 import { Product } from 'src/app/models/product';
 import { Router, ActivatedRoute } from '@angular/router';
 import { isUndefined, isNullOrUndefined, isNull } from 'util';
@@ -12,6 +11,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
 import { Bid } from 'src/app/models/bid';
 import { Ask } from 'src/app/models/ask';
+import { AskService } from 'src/app/services/ask.service';
+import { BidService } from 'src/app/services/bid.service';
 
 declare const gtag: any;
 
@@ -72,7 +73,8 @@ export class SellComponent implements OnInit {
   payout = 0;
 
   constructor(
-    private sellService: SellService,
+    private askService: AskService,
+    private bidService: BidService,
     private ngZone: NgZone,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -131,7 +133,7 @@ export class SellComponent implements OnInit {
       return;
     }
 
-    this.sellService.addListing(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentAsk.price)
+    this.askService.submitAsk(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentAsk.price)
       .then((res) => {
         if (isPlatformBrowser(this._platformId)) {
           gtag('event', 'ask', {
@@ -183,7 +185,7 @@ export class SellComponent implements OnInit {
     const patternW = new RegExp(/.\(W\)/);
     const patternGS = new RegExp(/.\(GS\)/);
 
-    console.log(pair.model.toUpperCase());
+    //console.log(pair.model.toUpperCase());
     if (patternW.test(pair.model.toUpperCase())) {
       //console.log('Woman Size');
       this.sizeSuffix = 'W';
@@ -236,7 +238,7 @@ export class SellComponent implements OnInit {
       let bid: any;
       const size = `US${ele}${this.sizeSuffix}`;
 
-      this.sellService.getHighestOffer(this.selectedPair.productID, 'new', size).then(bidData => {
+      this.bidService.getHighestBid(this.selectedPair.productID, 'new', size).then(bidData => {
         bidData.empty ? bid = undefined : bid = bidData.docs[0].data() as Bid
 
         const data = {
@@ -254,10 +256,10 @@ export class SellComponent implements OnInit {
   }
 
   getProductStats() {
-    this.sellService.getLowestListing(this.selectedPair.productID, 'new').then(response => {
+    this.askService.getLowestAsk(this.selectedPair.productID, 'new').then(response => {
       response.empty ? this.LowestAsk = undefined : this.LowestAsk = response.docs[0].data() as Ask
 
-      this.sellService.getHighestOffer(this.selectedPair.productID, 'new').then(res => {
+      this.bidService.getHighestBid(this.selectedPair.productID, 'new').then(res => {
         res.empty ? this.HighestBid = undefined : this.HighestBid = res.docs[0].data() as Bid
 
         if (!this.selectedSize) {
@@ -274,7 +276,7 @@ export class SellComponent implements OnInit {
     if (this.inputLength) {
       this.showResults = true;
 
-      console.log(event.target.value);
+      //console.log(event.target.value);
 
       this.index.search({
         query: event.target.value
@@ -282,7 +284,7 @@ export class SellComponent implements OnInit {
         if (err) throw err;
 
         this.results = hits.hits;
-        console.log(hits);
+        //console.log(hits);
       });
     } else {
       this.showResults = false;
@@ -320,7 +322,7 @@ export class SellComponent implements OnInit {
   selectSize(size: string) {
     this.selectedSize = size;
 
-    this.sellService.getHighestOffer(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+    this.bidService.getHighestBid(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
       if (res.empty) {
         this.currentBid = NaN;
       } else {
@@ -328,7 +330,7 @@ export class SellComponent implements OnInit {
       }
     });
 
-    this.sellService.getLowestListing(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+    this.askService.getLowestAsk(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
       if (res.empty) {
         this.currentAsk = NaN;
       } else {

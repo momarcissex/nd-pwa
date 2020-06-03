@@ -91,7 +91,7 @@ export class SignUpComponent implements OnInit {
 
   public signup() {
     this.loading = true;
-    console.log('signup called');
+    //console.log('signup called');
 
     if (isUndefined(this.inviteCode)) {
       return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value).then(res => {

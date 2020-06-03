@@ -17,17 +17,17 @@ export class DashboardService {
 
   purchases(uid: string, startAfter?: number) {
     if (isNullOrUndefined(startAfter)) {
-      return this.afs.collection(`transactions`, ref => ref.where(`buyerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc')).get();
+      return this.afs.collection(`transactions`, ref => ref.where(`buyerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').limit(15)).valueChanges();
     } else {
-      return this.afs.collection(`transactions`, ref => ref.where(`buyerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').startAfter(startAfter)).get();
+      return this.afs.collection(`transactions`, ref => ref.where(`buyerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').startAfter(startAfter)).valueChanges();
     }
   }
 
   sales(uid: string, startAfter?: number) {
     if (isNullOrUndefined(startAfter)) {
-      return this.afs.collection(`transactions`, ref => ref.where(`sellerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc')).get();
+      return this.afs.collection(`transactions`, ref => ref.where(`sellerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').limit(15)).valueChanges();
     } else {
-      return this.afs.collection(`transactions`, ref => ref.where(`sellerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').startAfter(startAfter)).get();
+      return this.afs.collection(`transactions`, ref => ref.where(`sellerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').startAfter(startAfter)).valueChanges();
     }
   }
 }

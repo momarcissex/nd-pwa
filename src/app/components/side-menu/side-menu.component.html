@@ -21,6 +21,10 @@
       </li>
 
       <li>
+        <a routerLink="/dashboard">Dashboard</a>
+      </li>
+
+      <li>
         <a routerLink="/profile">Profile</a>
       </li>
 
@@ -49,6 +53,10 @@
       <ul class="main-menus">
         <li>
           <a routerLink="/">Browse</a>
+        </li>
+
+        <li>
+          <a [routerLink]="['/search']" [queryParams]="{ q: '' }">Search</a>
         </li>
 
         <li>

@@ -1,9 +1,7 @@
 import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
-import { SellService } from 'src/app/services/sell.service';
 import { isUndefined, isNull, isNullOrUndefined } from 'util';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
-import { OfferService } from 'src/app/services/offer.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Title } from '@angular/platform-browser';
 import { SlackService } from 'src/app/services/slack.service';
@@ -13,6 +11,8 @@ import * as algoliasearch from 'algoliasearch';
 import { environment } from 'src/environments/environment';
 import { Ask } from 'src/app/models/ask';
 import { Bid } from 'src/app/models/bid';
+import { AskService } from 'src/app/services/ask.service';
+import { BidService } from 'src/app/services/bid.service';
 
 declare var gtag: any;
 
@@ -71,10 +71,10 @@ export class MakeAnOfferComponent implements OnInit {
   total: number = 0;
 
   constructor(
-    private sellService: SellService,
+    private askService: AskService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private offerService: OfferService,
+    private bidService: BidService,
     private ngZone: NgZone,
     private auth: AuthService,
     private title: Title,
@@ -112,7 +112,7 @@ export class MakeAnOfferComponent implements OnInit {
     if (this.inputLength) {
       this.showResults = true;
 
-      console.log(event.target.value);
+      //console.log(event.target.value);
 
       this.index.search({
         query: event.target.value
@@ -120,7 +120,7 @@ export class MakeAnOfferComponent implements OnInit {
         if (err) throw err;
 
         this.results = hits.hits;
-        console.log(hits);
+        //console.log(hits);
       });
     } else {
       this.showResults = false;
@@ -133,7 +133,7 @@ export class MakeAnOfferComponent implements OnInit {
     const patternW = new RegExp(/.\(W\)/);
     const patternGS = new RegExp(/.\(GS\)/);
 
-    console.log(pair.model.toUpperCase());
+    //console.log(pair.model.toUpperCase());
     if (patternW.test(pair.model.toUpperCase())) {
       //console.log('Woman Size');
       this.sizeSuffix = 'W';
@@ -168,7 +168,7 @@ export class MakeAnOfferComponent implements OnInit {
       let ask: any;
       const size = `US${ele}${this.sizeSuffix}`;
 
-      this.sellService.getLowestListing(this.selectedPair.productID, 'new', size).then(askdata => {
+      this.askService.getLowestAsk(this.selectedPair.productID, 'new', size).then(askdata => {
         askdata.empty ? ask = undefined : ask = askdata.docs[0].data() as Ask
 
         const data = {
@@ -186,10 +186,10 @@ export class MakeAnOfferComponent implements OnInit {
   }
 
   getProductStats() {
-    this.sellService.getLowestListing(this.selectedPair.productID, 'new').then(response => {
+    this.askService.getLowestAsk(this.selectedPair.productID, 'new').then(response => {
       response.empty ? this.LowestAsk = undefined : this.LowestAsk = response.docs[0].data() as Ask;
 
-      this.sellService.getHighestOffer(this.selectedPair.productID, 'new').then(res => {
+      this.askService.getLowestAsk(this.selectedPair.productID, 'new').then(res => {
         res.empty ? this.HighestBid = undefined : this.HighestBid = res.docs[0].data() as Bid
 
         if (!this.selectedSize) {
@@ -252,7 +252,7 @@ export class MakeAnOfferComponent implements OnInit {
       return;
     }
 
-    this.offerService.addOffer(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price).then(res => {
+    this.bidService.submitBid(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price).then(res => {
       if (res) {
         if (isPlatformBrowser(this._platformId)) {
           gtag('event', 'bid', {
@@ -299,7 +299,7 @@ export class MakeAnOfferComponent implements OnInit {
   selectSize(size: string) {
     this.selectedSize = size;
 
-    this.sellService.getHighestOffer(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+    this.bidService.getHighestBid(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
       if (res.empty) {
         this.currentBid = NaN;
       } else {
@@ -307,7 +307,7 @@ export class MakeAnOfferComponent implements OnInit {
       }
     });
 
-    this.sellService.getLowestListing(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+    this.askService.getLowestAsk(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
       if (res.empty) {
         this.currentAsk = NaN;
       } else {

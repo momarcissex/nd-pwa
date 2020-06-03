@@ -53,7 +53,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   resetPassword() {
-    console.log(`resetPassword called`);
+    //console.log(`resetPassword called`);
     const pwd = (document.getElementById('new-pwd') as HTMLInputElement).value;
     const confPwd = (document.getElementById('confirm-new-pwd') as HTMLInputElement).value;
 

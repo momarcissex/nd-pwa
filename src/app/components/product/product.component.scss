@@ -198,6 +198,14 @@
     display: grid;
     justify-items: center;
 
+    #l_a {
+      color: $prodBtnPrimary
+    }
+
+    #h_b {
+      color: $prodBtnPrimary2;
+    }
+
     .accessibility {
       align-self: flex-start;
       width: 100%;

@@ -63,15 +63,15 @@ export class TransactionReviewComponent implements OnInit {
       if (this.transaction.type !== 'bought' && this.transaction.type !== 'sold') {
         this.error = true;
       }
-      console.log(this.transaction);
+      //console.log(this.transaction);
     })
   }
 
   getUserData(UID: string) {
-    console.log(UID)
+    //console.log(UID)
     this.auth.getUserData(UID).subscribe(userData => {
       this.user = userData;
-      console.log(this.user)
+      //console.log(this.user)
     });
   }
 

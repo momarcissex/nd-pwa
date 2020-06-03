@@ -1,12 +1,12 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProfileService } from 'src/app/services/profile.service';
-import { SellService } from 'src/app/services/sell.service';
 import { isUndefined, isNullOrUndefined } from 'util';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { Ask } from 'src/app/models/ask';
 import { Bid } from 'src/app/models/bid';
+import { AskService } from 'src/app/services/ask.service';
+import { BidService } from 'src/app/services/bid.service';
 
 @Component({
   selector: 'app-edit-listing',
@@ -46,10 +46,10 @@ export class EditListingComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private profileService: ProfileService,
     private ngZone: NgZone,
     private router: Router,
-    private sellService: SellService,
+    private askService: AskService,
+    private bidService: BidService,
     private title: Title,
     private meta: MetaService
   ) { }
@@ -60,7 +60,7 @@ export class EditListingComponent implements OnInit {
 
     this.listingID = this.route.snapshot.params.id;
     this.source = this.route.snapshot.queryParamMap.get('source');
-    this.profileService.getListing(this.listingID).then(val => {
+    this.askService.getAsk(this.listingID).then(val => {
       val.subscribe(data => {
         if (isUndefined(data)) {
           this.router.navigate([`page-not-found`]);
@@ -74,13 +74,13 @@ export class EditListingComponent implements OnInit {
           this.shoeSizes();
           this.calculateSellerFees();
 
-          this.sellService.getHighestOffer(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+          this.bidService.getHighestBid(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
             if (!data.empty) {
               this.highestOffer = data.docs[0].data() as Bid
             }
           });
 
-          this.sellService.getLowestListing(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+          this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
             if (!data.empty) {
               this.lowest_ask = data.docs[0].data().price
             }
@@ -169,7 +169,7 @@ export class EditListingComponent implements OnInit {
         return;
       }
 
-      this.profileService.updateListing(this.offerInfo.listingID, this.offerInfo.productID, this.offerInfo.price, condition, price, size).then((res) => {
+      this.askService.updateAsk(this.offerInfo.listingID, this.offerInfo.productID, this.offerInfo.price, condition, price, size).then((res) => {
         if (res) {
           this.udpateSuccessful();
         } else {
@@ -180,7 +180,7 @@ export class EditListingComponent implements OnInit {
   }
 
   deleteListing() {
-    this.profileService.deleteListing(this.offerInfo)
+    this.askService.deleteAsk(this.offerInfo)
       .then((res) => {
         if (res) {
           return this.ngZone.run(() => {

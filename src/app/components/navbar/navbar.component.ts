@@ -57,7 +57,7 @@ export class NavbarComponent implements OnInit {
     this.checkWidth();
 
     const url = this.route.snapshot.url;
-    console.log(url)
+    //console.log(url)
 
     if (url.length > 0 && !this.isMobile) {
       if (url[0].path === 'search' || url[0].path === 'home') {

@@ -1,13 +1,12 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProfileService } from 'src/app/services/profile.service';
-import { OfferService } from 'src/app/services/offer.service';
-import { SellService } from 'src/app/services/sell.service';
 import { isUndefined, isNullOrUndefined } from 'util';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { Bid } from 'src/app/models/bid';
 import { Ask } from 'src/app/models/ask';
+import { BidService } from 'src/app/services/bid.service';
+import { AskService } from 'src/app/services/ask.service';
 
 @Component({
   selector: 'app-edit-offer',
@@ -42,10 +41,10 @@ export class EditOfferComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private offerService: OfferService,
+    private bidService: BidService,
+    private askService: AskService,
     private ngZone: NgZone,
     private router: Router,
-    private sellService: SellService,
     private title: Title,
     private meta: MetaService
   ) { }
@@ -53,7 +52,7 @@ export class EditOfferComponent implements OnInit {
   ngOnInit() {
     this.listingID = this.route.snapshot.params.id;
     this.source = this.route.snapshot.queryParamMap.get('source');
-    this.offerService.getOffer(this.listingID).then(val => {
+    this.bidService.getBid(this.listingID).then(val => {
       val.subscribe(data => {
         if (isUndefined(data)) {
           this.router.navigate(['page-not-found']);
@@ -66,7 +65,7 @@ export class EditOfferComponent implements OnInit {
 
           this.shoeSizes();
 
-          this.sellService.getLowestListing(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+          this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
             if (!data.empty) {
               this.lowest_ask = data.docs[0].data() as Ask
             }
@@ -84,7 +83,7 @@ export class EditOfferComponent implements OnInit {
     const patternGS = new RegExp(/.\(GS\)/);
     let type = 'item-size';
 
-    console.log(this.offerInfo.model.toUpperCase());
+    //console.log(this.offerInfo.model.toUpperCase());
     if (patternW.test(this.offerInfo.model.toUpperCase())) {
       //console.log(`women size`);
       this.isWomen = true;
@@ -151,7 +150,7 @@ export class EditOfferComponent implements OnInit {
         return;
       }
 
-      this.offerService.updateOffer(this.offerInfo.offerID, this.offerInfo.productID, this.offerInfo.price, condition, price, size).then(res => {
+      this.bidService.updateBid(this.offerInfo.offerID, this.offerInfo.productID, this.offerInfo.price, condition, price, size).then(res => {
         if (res) {
           this.udpateSuccessful();
         } else {
@@ -162,7 +161,7 @@ export class EditOfferComponent implements OnInit {
   }
 
   deleteOffer() {
-    this.offerService.deleteoffer(this.offerInfo)
+    this.bidService.deleteBid(this.offerInfo)
       .then((res) => {
         if (res) {
           return this.ngZone.run(() => {

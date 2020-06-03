@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
     this.title.setTitle(`Log In | NXTDROP: Buy and Sell Sneakers in Canada`);
     this.meta.addTags('Log In');
 
-    console.log(this.route.snapshot.queryParams.redirectTo);
+    //console.log(this.route.snapshot.queryParams.redirectTo);
 
     this.loginForm = this.fb.group({
       email: ['', [

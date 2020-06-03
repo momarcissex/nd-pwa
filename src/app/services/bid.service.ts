@@ -1,29 +1,46 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
-import { Product } from '../models/product';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
+import { isNullOrUndefined } from 'util';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Bid } from '../models/bid';
-import { isNullOrUndefined, isUndefined } from 'util';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { Product } from '../models/product';
+import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import * as firebase from 'firebase/app';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OfferService {
+export class BidService {
 
   bid_data: Bid;
 
   constructor(
-    private auth: AuthService,
     private afs: AngularFirestore,
-    private http: HttpClient,
-    private router: Router
+    private auth: AuthService,
+    private router: Router,
+    private http: HttpClient
   ) { }
 
-  async addOffer(pair: Product, condition: string, price: number, size: string, size_highest_bid: number) {
+  public getBid(offerID) {
+    let UID: string;
+    return this.auth.isConnected().then(data => {
+      UID = data.uid;
+
+      return this.afs.collection('users').doc(`${UID}`).collection('offers').doc(`${offerID}`).get()
+    });
+  }
+
+  public getHighestBid(productID: string, condition: string, size?: string) {
+    let offerRef: firebase.firestore.Query<firebase.firestore.DocumentData>;
+
+    isNullOrUndefined(size) ? offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `desc`).limit(1) : offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `desc`).limit(1);
+
+    return offerRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>;
+  }
+
+  async submitBid(pair: Product, condition: string, price: number, size: string, size_highest_bid: number) {
     let UID: string;
     await this.auth.isConnected()
       .then(data => {
@@ -105,16 +122,74 @@ export class OfferService {
     })
   }
 
-  public getOffer(offerID) {
-    let UID: string;
-    return this.auth.isConnected().then(data => {
-      UID = data.uid;
+  public async deleteBid(bid: Bid) {
+    const batch = this.afs.firestore.batch();
 
-      return this.afs.collection('users').doc(`${UID}`).collection('offers').doc(`${offerID}`).get()
+    const userBidRef = this.afs.firestore.collection('users').doc(`${bid.buyerID}`).collection('offers').doc(`${bid.offerID}`);
+    const prodBidRef = this.afs.firestore.collection('products').doc(`${bid.productID}`).collection('offers').doc(`${bid.offerID}`);
+    const userRef = this.afs.firestore.collection('users').doc(`${bid.buyerID}`);
+    const bidRef = this.afs.firestore.collection(`bids`).doc(`${bid.offerID}`);
+
+    batch.delete(userBidRef); //remove bid in user document
+    batch.delete(prodBidRef); //remove bid in prod document
+    batch.delete(bidRef); //remove bid bid collection
+    batch.update(userRef, {
+      offers: firebase.firestore.FieldValue.increment(-1)
     });
+
+    const prodRef = this.afs.firestore.collection('products').doc(`${bid.productID}`);
+    let prices: Bid[] = []
+    let size_prices: Bid[] = []
+
+    await prodRef.collection('offers').orderBy('price', 'desc').limit(2).get().then(snap => {
+      snap.forEach(data => {
+        prices.push(data.data().price)
+      })
+    })
+
+    await prodRef.collection(`offers`).where('size', '==', `${bid.size}`).where('condition', '==', `${bid.condition}`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
+      snap.forEach(ele => {
+        size_prices.push(ele.data() as Bid);
+      })
+    })
+
+    if (prices.length === 1) {
+      batch.update(prodRef, {
+        highest_bid: firebase.firestore.FieldValue.delete()
+      })
+    } else if (bid.price === prices[0].price && prices[0].price != prices[1].price) {
+      batch.update(prodRef, {
+        highest_bid: prices[1].price
+      })
+    }
+
+    return batch.commit()
+      .then(() => {
+        //console.log('Offer deleted');
+        console.log(`offerID: ${bid.offerID}; size[0]: ${size_prices[0].offerID}`)
+        console.log(`size[1]: ${size_prices[1]}`)
+
+        if (bid.offerID === size_prices[0].offerID && !isNullOrUndefined(size_prices[1])) {
+          console.log(size_prices[1])
+          this.http.put(`${environment.cloud.url}highestBidNotification`, {
+            product_id: size_prices[1].productID,
+            buyer_id: size_prices[1].buyerID,
+            condition: size_prices[1].condition,
+            size: size_prices[1].size,
+            offer_id: size_prices[1].offerID,
+            price: size_prices[1].price
+          }).subscribe()
+        }
+
+        return true;
+      })
+      .catch((err) => {
+        console.error(err);
+        return false;
+      });
   }
 
-  public async updateOffer(offer_id: string, product_id: string, old_price: number, condition: string, price: number, size: string): Promise<boolean> {
+  public async updateBid(offer_id: string, product_id: string, old_price: number, condition: string, price: number, size: string): Promise<boolean> {
     let UID: string;
     await this.auth.isConnected().then(data => {
       UID = data.uid;
@@ -189,73 +264,6 @@ export class OfferService {
       .then(() => {
         //console.log('Offer updated');
         this.sendHighestBidNotification(price, condition, size, UID, product_id, offer_id, size_prices)
-        return true;
-      })
-      .catch((err) => {
-        console.error(err);
-        return false;
-      });
-  }
-
-  public async deleteoffer(bid: Bid) {
-    const batch = this.afs.firestore.batch();
-
-    const userBidRef = this.afs.firestore.collection('users').doc(`${bid.buyerID}`).collection('offers').doc(`${bid.offerID}`);
-    const prodBidRef = this.afs.firestore.collection('products').doc(`${bid.productID}`).collection('offers').doc(`${bid.offerID}`);
-    const userRef = this.afs.firestore.collection('users').doc(`${bid.buyerID}`);
-    const bidRef = this.afs.firestore.collection(`bids`).doc(`${bid.offerID}`);
-
-    batch.delete(userBidRef); //remove bid in user document
-    batch.delete(prodBidRef); //remove bid in prod document
-    batch.delete(bidRef); //remove bid bid collection
-    batch.update(userRef, {
-      offers: firebase.firestore.FieldValue.increment(-1)
-    });
-
-    const prodRef = this.afs.firestore.collection('products').doc(`${bid.productID}`);
-    let prices: Bid[] = []
-    let size_prices: Bid[] = []
-
-    await prodRef.collection('offers').orderBy('price', 'desc').limit(2).get().then(snap => {
-      snap.forEach(data => {
-        prices.push(data.data().price)
-      })
-    })
-
-    await prodRef.collection(`offers`).where('size', '==', `${bid.size}`).where('condition', '==', `${bid.condition}`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
-      snap.forEach(ele => {
-        size_prices.push(ele.data() as Bid);
-      })
-    })
-
-    if (prices.length === 1) {
-      batch.update(prodRef, {
-        highest_bid: firebase.firestore.FieldValue.delete()
-      })
-    } else if (bid.price === prices[0].price && prices[0].price != prices[1].price) {
-      batch.update(prodRef, {
-        highest_bid: prices[1].price
-      })
-    }
-
-    return batch.commit()
-      .then(() => {
-        //console.log('Offer deleted');
-        console.log(`offerID: ${bid.offerID}; size[0]: ${size_prices[0].offerID}`)
-        console.log(`size[1]: ${size_prices[1]}`)
-
-        if (bid.offerID === size_prices[0].offerID && !isNullOrUndefined(size_prices[1])) {
-          console.log(size_prices[1])
-          this.http.put(`${environment.cloud.url}highestBidNotification`, {
-            product_id: size_prices[1].productID,
-            buyer_id: size_prices[1].buyerID,
-            condition: size_prices[1].condition,
-            size: size_prices[1].size,
-            offer_id: size_prices[1].offerID,
-            price: size_prices[1].price
-          }).subscribe()
-        }
-
         return true;
       })
       .catch((err) => {
