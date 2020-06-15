@@ -82,7 +82,7 @@
     <a routerLink="/faq/buying/on-what-circumstances-do-i-get-a-refund" class="return">Return & Refund Policy</a>
   </div>
 
-  <div class="checkout-shipping" *ngIf="product && userID != product.sellerID && connected">
+  <div class="checkout-shipping" *ngIf="product && connected">
     <h3>Shipping Address</h3>
 
     <div *ngIf="shippingInfo">
