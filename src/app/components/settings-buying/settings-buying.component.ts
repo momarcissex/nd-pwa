@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { isUndefined } from 'util';
+import { isUndefined, isNullOrUndefined } from 'util';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CheckoutService } from 'src/app/services/checkout.service';
+import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-settings-buying',
@@ -10,16 +12,7 @@ import { CheckoutService } from 'src/app/services/checkout.service';
 })
 export class SettingsBuyingComponent implements OnInit {
 
-  shippingInfo = {
-    street: '',
-    line: '',
-    city: '',
-    postalCode: '',
-    province: '',
-    country: '',
-    firstName: '',
-    lastName: ''
-  };
+  shippingInfo: User['shippingAddress']['buying'];
 
   billingInfo = {
     street: '',
@@ -59,15 +52,22 @@ export class SettingsBuyingComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private checkoutService: CheckoutService
+    private userService: UserService,
+    private auth: AuthService
   ) { }
 
   ngOnInit() {
     this.redirectURI = this.route.snapshot.queryParams.redirectURI;
 
-    this.checkoutService.getShippingInfo().then(data => {
-      this.shippingInfo = data;
-    });
+    this.auth.isConnected().then(res => {
+      if (isNullOrUndefined(res)) {
+
+      } else {
+        this.userService.getUserInfo(res.uid).subscribe(data => {
+          this.shippingInfo = data.shippingAddress.buying;
+        });
+      }
+    })
   }
 
   isEmptyOrBlank(str) {

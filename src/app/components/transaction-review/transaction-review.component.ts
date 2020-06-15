@@ -57,7 +57,7 @@ export class TransactionReviewComponent implements OnInit {
   }
 
   getData() {
-    this.TranService.getTransaction(this.transactionID).subscribe(data => {
+    this.TranService.checkTransaction(this.transactionID).subscribe(data => {
       this.transaction = data;
 
       if (this.transaction.type !== 'bought' && this.transaction.type !== 'sold') {

@@ -1,5 +1,5 @@
 export class Transaction {
-    id?: string;
+    id: string;
     assetURL: string;
     boughtAt?: number;
     soldAt?: number;
@@ -17,8 +17,23 @@ export class Transaction {
     sellerID: string;
     shippingCost?: number;
     discount?: number;
+    discountCardID?: string;
     total: number;
     size: string;
+    shipTracking: {
+        address: {
+            recipient: string,
+            line1: string,
+            line2: string,
+            city: string,
+            province: string,
+            postalCode: string,
+            country: string
+        },
+        label?: string,
+        carrier?: string,
+        trackingID?: string
+    }
     status: {
         cancelled: boolean,
         delivered: boolean,

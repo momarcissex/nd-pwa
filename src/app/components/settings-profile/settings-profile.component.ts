@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { SettingsProfileService } from 'src/app/services/settings-profile.service';
 import { User } from 'src/app/models/user';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
+import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { isNullOrUndefined } from 'util';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings-profile',
@@ -26,26 +29,33 @@ export class SettingsProfileComponent implements OnInit {
   updated = false;
 
   constructor(
-    private settingsProfileService: SettingsProfileService,
     private title: Title,
-    private meta: MetaService
+    private meta: MetaService,
+    private userService: UserService,
+    private auth: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.title.setTitle(`Edit Profile | NXTDROP: Sell and Buy Sneakers in Canada`);
     this.meta.addTags('Edit Profile');
-    
-    this.settingsProfileService.getUserInfo().then(res => {
-      res.subscribe(data => {
-        this.user = data;
-        this.firstName = this.user.firstName;
-        this.lastName = this.user.lastName;
-        this.username = this.user.username;
-        this.dob = this.user.dob;
-        this.getDate(this.user.dob);
-        // console.log(this.user);
-      });
-    });
+
+    this.auth.isConnected().then(res => {
+      if (isNullOrUndefined(res)) {
+        this.router.navigate(['/login'], {
+          queryParams: { redirectURI: 'settings/profile' }
+        })
+      } else {
+        this.userService.getUserInfo(res.uid).subscribe(data => {
+          this.user = data;
+          this.firstName = this.user.firstName;
+          this.lastName = this.user.lastName;
+          this.username = this.user.username;
+          this.dob = this.user.dob;
+          this.getDate(this.user.dob);
+        })
+      }
+    })
   }
 
   getDate(unixTimestamp) {
@@ -107,7 +117,7 @@ export class SettingsProfileComponent implements OnInit {
 
     // console.log(`Fn: ${this.nameReformat(curFn)}, Ln: ${this.nameReformat(curLn)}, Un: ${curUn.toLowerCase()}, dob: ${curDOB}`);
 
-    this.settingsProfileService.updateUserProfile(this.nameReformat(curFn), this.nameReformat(curLn), curUn, curDOB).then(res => {
+    this.userService.updateUserProfile(this.user.uid, this.nameReformat(curFn), this.nameReformat(curLn), curUn, curDOB).then(res => {
       if (res) {
         this.loading = false;
         this.updated = true;
@@ -134,11 +144,11 @@ export class SettingsProfileComponent implements OnInit {
     });
   }
 
-  nameReformat(name) {
+  nameReformat(name: string) {
     const res = name.split(' ');
     let formattedName = '';
     const length = res.length;
-    for(let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       if (i != 0) {
         formattedName += ' ';
       }

@@ -98,7 +98,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  printOrderStatus(status: Transaction["status"], type: string, paymentID: string, id: string) {
+  printOrderStatus(status: Transaction["status"], type: string, paymentID: string) {
     //console.log(`${type}, ${id}, ${paymentID}`)
     if (type == 'bought') {
       if (isNullOrUndefined(status.sellerConfirmation) || !status.sellerConfirmation && !status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {

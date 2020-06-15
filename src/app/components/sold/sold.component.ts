@@ -33,7 +33,7 @@ export class SoldComponent implements OnInit {
     if (isNullOrUndefined(this.transactionID)) {
       this.error = true;
     } else {
-      this.TranService.getTransaction(this.transactionID).subscribe(data => {
+      this.TranService.checkTransaction(this.transactionID).subscribe(data => {
         this.transaction = data;
 
         if (this.transaction.type !== 'sold') {

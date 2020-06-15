@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import * as firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,13 +24,8 @@ export class BidService {
     private http: HttpClient
   ) { }
 
-  public getBid(offerID) {
-    let UID: string;
-    return this.auth.isConnected().then(data => {
-      UID = data.uid;
-
-      return this.afs.collection('users').doc(`${UID}`).collection('offers').doc(`${offerID}`).get()
-    });
+  public getBid(offerID): Observable<Bid> {
+    return this.afs.collection('bids').doc(`${offerID}`).valueChanges() as Observable<Bid>
   }
 
   public getHighestBid(productID: string, condition: string, size?: string) {

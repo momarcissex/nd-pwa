@@ -16,6 +16,28 @@ p {
   margin: $spacing-small;
 }
 
+a {
+  display: block;
+  border: none;
+  margin: $spacing-large auto;
+  padding: $spacing-small;
+  border-radius: $spacing-xsmall;
+  cursor: pointer;
+  font-size: $font-large;
+  font-weight: $weight-black;
+  letter-spacing: 2px;
+  background: $black;
+  color: $white;
+  text-align: center;
+  text-transform: uppercase;
+  @include vendor(transition, 0.25s ease-in-out);
+
+  &:hover {
+    background: $matteblack;
+    color: $white;
+  }
+}
+
 input {
   display: block;
   padding: $spacing-xsmall;
@@ -68,15 +90,21 @@ button {
 @media only screen and (min-width: 0px) and (max-width: 400px) {
   input {
     width: 90%;
+    font-size: 0.6rem;
   }
 
   #ship-state,
   #ship-country {
     width: 90%;
+    font-size: 0.6rem;
   }
 
   p {
     font-size: $font-xxsmall;
+  }
+
+  a {
+    width: 90%;
   }
 
   .settings-btn {
@@ -86,54 +114,72 @@ button {
 
 @media only screen and (min-width: 400px) and (max-width: 800px) {
   input {
-    width: 70%;
+    width: 80%;
+    font-size: 0.7rem;
   }
 
   #ship-state,
   #ship-country {
-    width: 70%;
+    width: 80%;
+    font-size: 0.7rem;
   }
 
   p {
     font-size: $font-xsmall;
   }
 
+  a {
+    width: 80%;
+  }
+
   .settings-btn {
-    width: 70%;
+    width: 80%;
   }
 }
 
 @media only screen and (min-width: 800px) and (max-width: 1200px) {
   input {
-    width: 40%;
+    width: 50%;
+    font-size: 0.8rem;
   }
 
   #ship-state,
   #ship-country {
-    width: 40%;
+    width: 50%;
+    font-size: 0.8rem;
   }
 
   p {
     font-size: $font-xsmall;
   }
 
+  a {
+    width: 50%;
+  }
+
   .settings-btn {
-    width: 40%;
+    width: 50%;
   }
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1800px) {
   input {
     width: 40%;
+    font-size: 0.9rem;
   }
 
   #ship-state,
   #ship-country {
     width: 40%;
+    font-size: 0.9rem;
   }
 
   p {
     font-size: $font-xsmall;
+  }
+
+  a {
+    width: 35%;
   }
 
   .settings-btn {
@@ -143,38 +189,50 @@ button {
 
 @media only screen and (min-width: 1800px) and (max-width: 2000px) {
   input {
-    width: 30%;
+    width: 40%;
+    font-size: 1rem;
   }
 
   #ship-state,
   #ship-country {
-    width: 30%;
+    width: 40%;
+    font-size: 1rem;
   }
 
   p {
     font-size: $font-small;
   }
 
-  .settings-btn {
+  a {
     width: 30%;
+  }
+
+  .settings-btn {
+    width: 40%;
   }
 }
 
 @media only screen and (min-width: 2000px) {
   input {
-    width: 25%;
+    width: 40%;
+    font-size: 1rem;
   }
 
   #ship-state,
   #ship-country {
-    width: 25%;
+    width: 40%;
+    font-size: 1rem;
   }
 
   p {
     font-size: $font-small;
   }
 
+  a {
+    width: 30%;
+  }
+
   .settings-btn {
-    width: 25%;
+    width: 40%;
   }
 }

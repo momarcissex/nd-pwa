@@ -1,41 +1,65 @@
 <app-navbar></app-navbar>
 
-<div class="main-container">
-      
-  <h2>Edit your selling address</h2>
-  <p>This address will only be used to print shipping labels when selling.</p>
-  <input type="text" id="ship-firstName" placeholder="First Name" (keyup)="firstNameChanges()" value="{{ firstName }}">
-  <input type="text" id="ship-lastName" placeholder="Last Name" (keyup)="lastNameChanges()" value="{{ lastName }}">
-  <input type="text" id="ship-street" placeholder="Street Address" (keyup)="streetAddChanges()" value="{{ street }}">
-  <input type="text" id="ship-street2" placeholder="Address Line 2" (keyup)="addLineChanges()" value="{{ line }}">
-  <input type="text" id="ship-city" placeholder="City" (keyup)="cityChanges()" value="{{ city }}">
-  <select name="state" id="ship-state" (change)="provinceChanges()">
-    <option value="AB" selected>Alberta</option>
-    <option value="BC">British Columbia</option>
-    <option value="MB">Manitoba</option>
-    <option value="NB">New Brunswick</option>
-    <option value="NL">Newfoundland and Labrador</option>
-    <option value="NS">Nova Scotia</option>
-    <option value="ON">Ontario</option>
-    <option value="PE">Prince Edward Island</option>
-    <option value="QC">Quebec</option>
-    <option value="SK">Saskatchewan</option>
-    <option value="NT">Northwest Territories</option>
-    <option value="NU">Nunavut</option>
-    <option value="YT">Yukon</option>
-  </select>
-  <input type="text" id="ship-zip" placeholder="Postal Code" (keyup)="zipChanges()" value="{{ postalCode }}" mask="AAA AAA">
-  <select name="country" id="ship-country">
-    <option value="Canada" selected>Canada</option>
-  </select>
-    
-  <div class="settings-btn">
-    <button class="settings-back-btn btn" (click)="backBtn()">Back</button>
-    <button [className]="streetChanged || lineChanged || cityChanged || provinceChanged || postalCodeChanged || firstNameChanged || lastNameChanged ? 'settings-save-btn btn' : 'settings-save-btn btn disabled'" (click)="updateShipping()" *ngIf="!loading && !error && !updated">Save Changes</button>
-    <button class="settings-save-btn btn" *ngIf="loading"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
-    <button class="settings-save-btn btn error-btn" *ngIf="error">Error</button>
-    <button class="settings-save-btn btn" *ngIf="updated">Updated</button>
+<section class="main-container">
+
+  <div id="menu" *ngIf="!selling && !buying">
+    <h2>Edit your address</h2>
+    <a routerLink="/settings/shipping/buying">Buying</a>
+    <a routerLink="/settings/shipping/selling">Selling</a>
+    <a class="settings-back-btn btn" routerLink="/settings">Back</a>
   </div>
-</div>
-      
+
+  <div id="selling" *ngIf="selling || buying">
+    <div *ngIf="selling">
+      <h2>Edit your selling address</h2>
+      <p>This address will only be used to print shipping labels when selling.</p>
+    </div>
+
+    <div *ngIf="buying">
+      <h2>Edit your buying address</h2>
+      <p>This address will only be used to print shipping labels when buying.</p>
+    </div>
+
+    <input type="text" id="ship-firstName" placeholder="First Name" (keyup)="firstNameChanges()"
+      value="{{ firstName }}">
+    <input type="text" id="ship-lastName" placeholder="Last Name" (keyup)="lastNameChanges()" value="{{ lastName }}">
+    <input type="text" id="ship-street" placeholder="Street Address" (keyup)="streetAddChanges()" value="{{ street }}">
+    <input type="text" id="ship-street2" placeholder="Address Line 2" (keyup)="addLineChanges()" value="{{ line }}">
+    <input type="text" id="ship-city" placeholder="City" (keyup)="cityChanges()" value="{{ city }}">
+    <select name="state" id="ship-state" (change)="provinceChanges()">
+      <option value="AB" selected>Alberta</option>
+      <option value="BC">British Columbia</option>
+      <option value="MB">Manitoba</option>
+      <option value="NB">New Brunswick</option>
+      <option value="NL">Newfoundland and Labrador</option>
+      <option value="NS">Nova Scotia</option>
+      <option value="ON">Ontario</option>
+      <option value="PE">Prince Edward Island</option>
+      <option value="QC">Quebec</option>
+      <option value="SK">Saskatchewan</option>
+      <option value="NT">Northwest Territories</option>
+      <option value="NU">Nunavut</option>
+      <option value="YT">Yukon</option>
+    </select>
+    <input type="text" id="ship-zip" placeholder="Postal Code" (keyup)="zipChanges()" value="{{ postalCode }}"
+      mask="AAA AAA">
+    <select name="country" id="ship-country">
+      <option value="CA" selected>Canada</option>
+    </select>
+
+    <div class="settings-btn">
+      <button class="settings-back-btn btn" (click)="backBtn()">Back</button>
+      <button
+        [className]="streetChanged || lineChanged || cityChanged || provinceChanged || postalCodeChanged || firstNameChanged || lastNameChanged ? 'settings-save-btn btn' : 'settings-save-btn btn disabled'"
+        (click)="updateShipping()" *ngIf="!loading && !error && !updated">Save Changes</button>
+      <button class="settings-save-btn btn" *ngIf="loading">
+        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+      </button>
+      <button class="settings-save-btn btn error-btn" *ngIf="error">Error</button>
+      <button class="settings-save-btn btn" *ngIf="updated">Updated</button>
+    </div>
+  </div>
+
+</section>
+
 <app-footer></app-footer>

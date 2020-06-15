@@ -12,6 +12,11 @@ import { SlackService } from 'src/app/services/slack.service';
 import { Bid } from 'src/app/models/bid';
 import { Ask } from 'src/app/models/ask';
 import { Transaction } from 'src/app/models/transaction';
+import { User } from 'src/app/models/user';
+import { UserService } from 'src/app/services/user.service';
+import { TransactionService } from 'src/app/services/transaction.service';
+import { AskService } from 'src/app/services/ask.service';
+import { BidService } from 'src/app/services/bid.service';
 
 declare const gtag: any;
 
@@ -24,16 +29,7 @@ export class CheckoutComponent implements OnInit {
 
   public payPalConfig?: IPayPalConfig;
 
-  /*shippingInfo = {
-    street: '',
-    line: '',
-    city: '',
-    postalCode: '',
-    province: '',
-    country: '',
-    firstName: '',
-    lastName: ''
-  };*/
+  shippingInfo: User['shippingAddress']['buying']
 
   // cartItems = [];
 
@@ -67,7 +63,11 @@ export class CheckoutComponent implements OnInit {
     private ngZone: NgZone,
     @Inject(PLATFORM_ID) private _platformId: Object,
     private meta: MetaService,
-    private slack: SlackService
+    private slack: SlackService,
+    private userService: UserService,
+    private tranService: TransactionService,
+    private askService: AskService,
+    private bidService: BidService
   ) { }
 
   ngOnInit() {
@@ -93,18 +93,6 @@ export class CheckoutComponent implements OnInit {
         this.isUserConnected()
       }
     }
-
-    // console.log(this.product);
-
-    /*this.checkoutService.getCartItems().then(res => {
-      res.subscribe(data => {
-        this.cartItems = data;
-      });
-    });
-
-    this.checkoutService.getShippingInfo().then(data => {
-      this.shippingInfo = data;
-    })*/
   }
 
   private initConfig() {
@@ -132,7 +120,20 @@ export class CheckoutComponent implements OnInit {
               currency_code: 'CAD',
               value: (this.total).toString(),
             },
-          }]
+          }],
+          shipping: {
+            name: {
+              full_name: `${this.shippingInfo.firstName} ${this.shippingInfo.lastName}`
+            },
+            address: {
+              address_line_1: this.shippingInfo.street,
+              address_line_2: this.shippingInfo.line2,
+              admin_area_1: this.shippingInfo.province,
+              admin_area_2: this.shippingInfo.city,
+              postal_code: this.shippingInfo.postalCode,
+              country_code: 'CA'
+            }
+          }
         }]
       },
       advanced: {
@@ -149,6 +150,17 @@ export class CheckoutComponent implements OnInit {
         //console.log('onApprove - transaction was approved, but not authorized', data, actions);
         actions.order.get().then(details => {
           //console.log('onApprove - you can get full order details inside onApprove: ', details);
+
+          this.shippingInfo.street = details.purchase_units[0].shipping.address.address_line_1
+          isNullOrUndefined(details.purchase_units[0].shipping.address.address_line_2) ? this.shippingInfo.line2 = '' : this.shippingInfo.line2 = details.purchase_units[0].shipping.address.address_line_2
+          this.shippingInfo.city = details.purchase_units[0].shipping.address.admin_area_2
+          this.shippingInfo.province = details.purchase_units[0].shipping.address.admin_area_1
+          this.shippingInfo.postalCode = details.purchase_units[0].shipping.address.postal_code
+          this.shippingInfo.country = details.purchase_units[0].shipping.address.country_code
+          this.shippingInfo.firstName = details.payer.name.given_name
+          this.shippingInfo.lastName = details.payer.name.surname
+
+          this.userService.updateShippingInfo(this.userID, this.shippingInfo.firstName, this.shippingInfo.lastName, this.shippingInfo.street, this.shippingInfo.line2, this.shippingInfo.city, this.shippingInfo.province, this.shippingInfo.postalCode, this.shippingInfo.country, true)
         });
       },
       onClientAuthorization: (data) => {
@@ -157,15 +169,15 @@ export class CheckoutComponent implements OnInit {
 
         if (isUndefined(this.tID)) {
           if (this.promoApplied) {
-            transaction = this.checkoutService.transactionApproved(this.product, data.id, this.shippingPrice, this.total, this.discount, this.discountCardID);
+            transaction = this.tranService.transactionApproved(this.userID, this.product as Ask, this.shippingInfo, data.id, this.shippingPrice, this.total, this.discount, this.discountCardID);
           } else {
-            transaction = this.checkoutService.transactionApproved(this.product, data.id, this.shippingPrice, this.total);
+            transaction = this.tranService.transactionApproved(this.userID, this.product as Ask, this.shippingInfo, data.id, this.shippingPrice, this.total);
           }
         } else {
           if (this.promoApplied) {
-            transaction = this.checkoutService.addTransaction(this.product, data.id, this.shippingPrice, this.tID, this.discount, this.discountCardID);
+            transaction = this.tranService.updateTransaction(data.id, this.shippingInfo, this.shippingPrice, this.tID, this.discount, this.discountCardID);
           } else {
-            transaction = this.checkoutService.addTransaction(this.product, data.id, this.shippingPrice, this.tID);
+            transaction = this.tranService.updateTransaction(data.id, this.shippingInfo, this.shippingPrice, this.tID);
           }
         }
         transaction.then(res => {
@@ -254,33 +266,14 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  /*private checkFreeShipping() {
-    if (this.connected) {
-      this.checkoutService.getFreeShipping().then(res => {
-        res.subscribe(response => {
-          //console.log(response);
-          if (!isUndefined(response.data().freeShipping) || response.data().ordered === 0) {
-            this.shippingPrice = 0;
-          } else {
-            this.shippingPrice = 18;
-          }
-
-          this.total = this.subtotal + this.shippingPrice;
-        })
-      });
-    } else {
-      this.total = this.subtotal + this.shippingPrice;
-    }
-  }*/
-
   getListing(listingID: string) {
     this.isUserConnected()
 
-    this.checkoutService.getListing(listingID).then(res => {
-      if (isNullOrUndefined(res.data())) {
+    this.askService.getAsk(listingID).subscribe(res => {
+      if (isNullOrUndefined(res)) {
         this.router.navigate(['page-not-found']);
       } else {
-        this.product = res.data() as Ask;
+        this.product = res;
         this.subtotal = this.product.price;
         this.total = this.subtotal + this.shippingPrice;
 
@@ -301,13 +294,19 @@ export class CheckoutComponent implements OnInit {
   getOffer(offerID: string) {
     this.isUserConnected()
 
-    this.checkoutService.getOffer(offerID).then(res => {
-      if (isNullOrUndefined(res.data())) {
+    this.bidService.getBid(offerID).subscribe(res => {
+      if (isNullOrUndefined(res)) {
         this.router.navigate(['page-not-found']);
       } else {
-        this.product = res.data() as Bid;
+        this.product = res;
         this.subtotal = this.product.price;
         this.total = this.subtotal + this.shippingPrice;
+
+        this.userService.getUserInfo(this.userID).subscribe(data => {
+          if (!isNullOrUndefined(data.shippingAddress) && !isNullOrUndefined(data.shippingAddress.buying)) {
+            this.shippingInfo = data.shippingAddress.selling
+          }
+        })
       }
 
       if (isPlatformBrowser(this._platformId)) {
@@ -320,22 +319,26 @@ export class CheckoutComponent implements OnInit {
   }
 
   checkUserAndTransaction(transactionID: string) {
-    this.checkoutService.checkTransaction(transactionID).then(res => {
-      if (res) {
-        this.checkoutService.getTransaction(transactionID).subscribe(response => {
-          this.product = response as Transaction;
-          this.subtotal = this.product.price;
-          this.total = this.subtotal + this.shippingPrice;
-          this.initConfig();
+    this.tranService.checkTransaction(transactionID).subscribe(res => {
+      if (!isNullOrUndefined(res) && !res.status.cancelled && res.paymentID === '') {
+        this.product = res
+        this.subtotal = this.product.price
+        this.total = this.subtotal + this.shippingPrice
+        this.initConfig()
+
+        this.userService.getUserInfo(this.userID).subscribe(data => {
+          if (!isNullOrUndefined(data.shippingAddress) && !isNullOrUndefined(data.shippingAddress.buying)) {
+            this.shippingInfo = data.shippingAddress.buying
+          }
         })
       } else {
         this.router.navigate(['page-not-found']);
       }
-    });
+    })
   }
 
   sellNow() {
-    this.checkoutService.sellTransactionApproved(this.product).then(res => {
+    this.tranService.sellTransactionApproved(this.userID, this.product as Bid).then(res => {
       if (isPlatformBrowser(this._platformId)) {
         gtag('event', 'item_sold', {
           'event_category': 'ecommerce',
@@ -359,7 +362,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   buyNow() {
-    this.checkoutService.transactionApproved(this.product, '', this.shippingPrice, this.total, this.discount, this.discountCardID)
+    this.tranService.transactionApproved(this.userID, this.product as Ask, this.shippingInfo, this.discountCardID, this.shippingPrice, this.total, this.discount, this.discountCardID)
       .then(res => {
         if (isPlatformBrowser(this._platformId)) {
           gtag('event', 'purchase', {
@@ -423,7 +426,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   updateLastCartItem(product_id: string, size: string) {
-    this.checkoutService.updateLastCartItem(this.userID, product_id, size);
+    this.userService.updateLastCartItem(this.userID, product_id, size);
   }
 
   private isUserConnected() {
@@ -440,6 +443,14 @@ export class CheckoutComponent implements OnInit {
               queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
             });
           }
+
+          if (!this.isSelling) {
+            this.userService.getUserInfo(this.userID).subscribe(data => {
+              if (!isNullOrUndefined(data.shippingAddress) && !isNullOrUndefined(data.shippingAddress.buying)) {
+                this.shippingInfo = data.shippingAddress.buying
+              }
+            })
+          }
         }
       } else {
         if (!isNullOrUndefined(this.tID)) {
@@ -449,13 +460,19 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  /*editShipping() {
-    this.router.navigate(['../settings/shipping'], {
-      queryParams: { redirectURI: 'checkout' }
-    });
+  editShipping() {
+    if (this.isSelling) {
+      this.router.navigate(['../settings/shipping/selling'], {
+        queryParams: { redirectURI: this.router.url }
+      });
+    } else {
+      this.router.navigate(['../settings/shipping/buying'], {
+        queryParams: { redirectURI: this.router.url }
+      });
+    }
   }
 
-  editPayment() {
+  /*editPayment() {
     this.router.navigate(['../settings/buying'], {
       queryParams: { redirectURI: 'checkout' }
     });

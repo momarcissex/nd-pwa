@@ -60,33 +60,31 @@ export class EditListingComponent implements OnInit {
 
     this.listingID = this.route.snapshot.params.id;
     this.source = this.route.snapshot.queryParamMap.get('source');
-    this.askService.getAsk(this.listingID).then(val => {
-      val.subscribe(data => {
-        if (isUndefined(data)) {
-          this.router.navigate([`page-not-found`]);
-        } else {
-          this.offerInfo = data as Ask;
-          //(document.getElementById('radio-' + this.offerInfo.condition) as HTMLInputElement).checked = true;
-          this.curCondition = this.offerInfo.condition;
-          this.curPrice = this.offerInfo.price;
-          this.curSize = this.offerInfo.size;
+    this.askService.getAsk(this.listingID).subscribe(data => {
+      if (isUndefined(data)) {
+        this.router.navigate([`page-not-found`]);
+      } else {
+        this.offerInfo = data;
+        //(document.getElementById('radio-' + this.offerInfo.condition) as HTMLInputElement).checked = true;
+        this.curCondition = this.offerInfo.condition;
+        this.curPrice = this.offerInfo.price;
+        this.curSize = this.offerInfo.size;
 
-          this.shoeSizes();
-          this.calculateSellerFees();
+        this.shoeSizes();
+        this.calculateSellerFees();
 
-          this.bidService.getHighestBid(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
-            if (!data.empty) {
-              this.highestOffer = data.docs[0].data() as Bid
-            }
-          });
+        this.bidService.getHighestBid(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+          if (!data.empty) {
+            this.highestOffer = data.docs[0].data() as Bid
+          }
+        });
 
-          this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
-            if (!data.empty) {
-              this.lowest_ask = data.docs[0].data().price
-            }
-          })
-        }
-      });
+        this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+          if (!data.empty) {
+            this.lowest_ask = data.docs[0].data().price
+          }
+        })
+      }
     });
   }
 
@@ -135,7 +133,7 @@ export class EditListingComponent implements OnInit {
     }
 
     this.curPrice = +$event.target.value;
-    
+
     this.calculateSellerFees();
     this.showSaveChangesBtn();
   }

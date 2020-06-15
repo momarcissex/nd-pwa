@@ -1,8 +1,6 @@
-<app-navbar></app-navbar>
-
 <section class="main-container">
   <div class="checkout-summary" *ngIf="product">
-    <h4>Summary</h4>
+    <h4>Order Details</h4>
 
     <app-trustbox></app-trustbox>
 
@@ -81,21 +79,30 @@
       <button class="btn promo-btn-invalid" *ngIf="promoError">Invalid</button>
     </div>
 
-    <a routerLink="/faq/buying/on-what-circumstances-do-i-get-a-refund" class="return">Return Policy</a>
+    <a routerLink="/faq/buying/on-what-circumstances-do-i-get-a-refund" class="return">Return & Refund Policy</a>
   </div>
 
-  <!--<div class="checkout-shipping">
-    <fa-icon [icon]="['fas', 'home']"></fa-icon>
-    <h3>Shipping Information</h3>
+  <div class="checkout-shipping" *ngIf="product && userID != product.sellerID && connected">
+    <h3>Shipping Address</h3>
 
-    <h6>First Name: <span *ngIf="shippingInfo.firstName != ''">{{ shippingInfo.firstName }}</span></h6>
-    <h6>Last Name: <span *ngIf="shippingInfo.lastName != ''">{{ shippingInfo.lastName }}</span></h6>
-    <h6>Address: <span *ngIf="shippingInfo.street != ''">{{ shippingInfo.street + ', ' + shippingInfo.city + ', ' + shippingInfo.province + ' ' + shippingInfo.postalCode + ', ' + shippingInfo.country}}</span></h6>
+    <div *ngIf="shippingInfo">
+      <h6>Name: <span>{{ shippingInfo.firstName + ' ' + shippingInfo.lastName }}</span></h6>
+      <h6>Address:
+        <span>{{ shippingInfo.street + ', ' + shippingInfo.city + ', ' + shippingInfo.province + ' ' + shippingInfo.postalCode}}</span>
+      </h6>
+    </div>
+
+    <div *ngIf="!shippingInfo">
+      <h6>Name: <span>NONE</span></h6>
+      <h6>Address:
+        <span>NONE</span>
+      </h6>
+    </div>
 
     <button class="btn edit-btn" (click)="editShipping()">Edit</button>
   </div>
 
-  <div class="checkout-payment">
+  <!--<div class="checkout-payment">
       <fa-icon [icon]="['fas', 'credit-card']"></fa-icon>
       <h3>Payment Information</h3>
   
@@ -108,12 +115,17 @@
 
   <div class="checkout-btns" *ngIf="product">
     <!--user viewing an ask-->
-    <div *ngIf="!isSelling && !freePair && connected && userID != product.sellerID">
+    <div *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && shippingInfo">
       <h2>Select Payment Method</h2>
       <ngx-paypal [config]="payPalConfig"></ngx-paypal>
     </div>
 
-    <button *ngIf="!isSelling && !freePair && connected && userID === product.sellerID" class="btn" [routerLink]="['/edit-ask', product.listingID]" [queryParams]="{ source: 'checkout?product=' + product.listingID + '&sell=false'}">Edit Ask</button>
+    <button class="btn" *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && !shippingInfo"
+      (click)="editShipping()">Continue to Shipping</button>
+
+    <button *ngIf=" !isSelling && !freePair && connected && userID===product.sellerID" class="btn"
+      [routerLink]="['/edit-ask', product.listingID]"
+      [queryParams]="{ source: 'checkout?product=' + product.listingID + '&sell=false'}">Edit Ask</button>
     <!--user viewing an ask end-->
 
     <!--user not logged in-->
@@ -124,11 +136,17 @@
     <!--user not logged in end-->
 
     <!--user buying pair for free (when using a promo covering all expenses)-->
-    <button *ngIf="freePair" (click)="buyNow()" class="btn">Confirm</button>
+    <button *ngIf="freePair && !shippingInfo" (click)="editShipping()" class="btn">Continue to Shipping</button>
+    <button *ngIf="freePair && shippingInfo" (click)="buyNow()" class="btn">Confirm Purchase</button>
+    <!--user buying pair for free (when using a promo covering all expenses) end-->
 
     <!--User viewing a bid-->
-    <button *ngIf="isSelling && userID === product.buyerID" class="btn"  [routerLink]="['/edit-bid', product.offerID]" [queryParams]="{ source: 'checkout?product=' + product.offerID + '&sell=true'}">Edit Bid</button>
-    <button *ngIf="isSelling && userID != product.buyerID" (click)="sellNow()" class="btn">Confirm</button>
+    <button *ngIf="isSelling && userID === product.buyerID" class="btn" [routerLink]="['/edit-bid', product.offerID]"
+      [queryParams]="{ source: 'checkout?product=' + product.offerID + '&sell=true'}">Edit Bid</button>
+    <button *ngIf="isSelling && userID != product.buyerID && !shippingInfo" class="btn"
+      (click)="editShipping()">Continue to Shpping</button>
+    <button *ngIf="isSelling && userID != product.buyerID && shippingInfo" (click)="sellNow()" class="btn">Confirm
+      Sale</button>
     <!--User viewing a bid end-->
 
 
@@ -140,5 +158,3 @@
     <fa-icon [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
   </div>
 </section>
-
-<app-footer></app-footer>

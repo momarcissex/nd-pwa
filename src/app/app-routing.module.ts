@@ -65,6 +65,8 @@ const routes: Routes = [
   //{ path: 'settings/buying', component: SettingsBuyingComponent },
   //{ path: 'settings/selling', component: SettingsSellingComponent },
   { path: 'settings/shipping', component: SettingsShippingComponent },
+  { path: 'settings/shipping/:mode', component: SettingsShippingComponent },
+  { path: 'settings/shipping/:mode', component: SettingsShippingComponent },
   //{ path: 'settings/payout', component: SettingsPayoutComponent },
   { path: 'transaction', component: TransactionReviewComponent },
   { path: 'sell', component: SellComponent },

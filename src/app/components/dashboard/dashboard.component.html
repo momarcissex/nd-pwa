@@ -32,7 +32,7 @@
     <tr class="purchases-row" *ngFor="let purchase of purchases">
       <td>{{ purchase.model + ', ' + purchase.size }}</td>
       <td>{{ purchase.purchaseDate | date:'medium' }}</td>
-      <td>{{ printOrderStatus(purchase.status, purchase.type, purchase.paymentID, purchase.id) }}</td>
+      <td>{{ printOrderStatus(purchase.status, purchase.type, purchase.paymentID) }}</td>
       
       <td [routerLink]="['/transaction']"
         [queryParams]="{ transactionID: purchase.id, redirectTo: 'dashboard/purchases' }">More
@@ -52,13 +52,17 @@
     <tr class="sales-row" *ngFor="let sale of sales">
       <td>{{ sale.model + ', ' + sale.size }}</td>
       <td>{{ sale.purchaseDate | date:'medium' }}</td>
-      <td>{{ printOrderStatus(sale.status, sale.type, sale.paymentID, sale.id) }}</td>
+      <td>{{ printOrderStatus(sale.status, sale.type, sale.paymentID) }}</td>
 
-      <td *ngIf="!sale.status.sellerConfirmation" [routerLink]="['/transaction']"
+      <td *ngIf="!sale.status.sellerConfirmation && !sale.status.cancelled" [routerLink]="['/transaction']"
         [queryParams]="{ transactionID: sale.id, redirectTo: 'dashboard/sales' }">Confirm
       </td>
 
       <td *ngIf="sale.status.sellerConfirmation" [routerLink]="['/transaction']"
+        [queryParams]="{ transactionID: sale.id, redirectTo: 'dashboard/sales' }">More Details
+      </td>
+
+      <td *ngIf="!sale.status.sellerConfirmation && sale.status.cancelled" [routerLink]="['/transaction']"
         [queryParams]="{ transactionID: sale.id, redirectTo: 'dashboard/sales' }">More Details
       </td>
     </tr>

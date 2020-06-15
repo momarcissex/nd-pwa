@@ -7,6 +7,7 @@ import * as firebase from 'firebase/app';
 import { isUndefined, isNullOrUndefined } from 'util';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +22,8 @@ export class AskService {
     private http: HttpClient
   ) { }
 
-  public async getAsk(listing_id: string) {
-    let UID: string;
-    await this.auth.isConnected().then(data => {
-      UID = data.uid;
-    });
-
-    return this.afs.collection('users').doc(`${UID}`).collection('listings').doc(`${listing_id}`).valueChanges();
+  public getAsk(listing_id: string): Observable<Ask> {
+    return this.afs.collection('asks').doc(`${listing_id}`).valueChanges() as Observable<Ask>;
   }
 
   getLowestAsk(productID: string, condition: string, size?: string) {

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SettingsShippingService } from 'src/app/services/settings-shipping.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { isUndefined } from 'util';
+import { Router, ActivatedRoute } from '@angular/router';
+import { isUndefined, isNullOrUndefined } from 'util';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-settings-shipping',
@@ -11,75 +12,99 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class SettingsShippingComponent implements OnInit {
 
-  shippingInfo;
+  shippingInfo: User["shippingAddress"] //shipping information
+  UID: string //user id
 
-  firstName = '';
-  lastName = '';
-  street = '';
-  line = '';
-  city = '';
-  province = '';
-  postalCode = '';
+  //current shipping information inputs
+  firstName = ''
+  lastName = ''
+  street = ''
+  line = ''
+  city = ''
+  province = ''
+  postalCode = ''
 
-  firstNameChanged = false;
-  lastNameChanged = false;
-  streetChanged = false;
-  lineChanged = false;
-  cityChanged = false;
-  provinceChanged = false;
-  postalCodeChanged = false;
+  // input boolean controls
+  firstNameChanged = false
+  lastNameChanged = false
+  streetChanged = false
+  lineChanged = false
+  cityChanged = false
+  provinceChanged = false
+  postalCodeChanged = false
 
-  loading = false;
-  error = false;
-  updated = false;
+  // btn boolean controls
+  loading = false
+  error = false
+  updated = false
 
-  redirectURI: string;
+  redirectURI: string
 
-  UID: string;
+  buying: boolean = false
+  selling: boolean = false
 
   constructor(
-    private shippingService: SettingsShippingService,
-    private route: ActivatedRoute,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private userService: UserService,
+    private route: ActivatedRoute
   ) { }
 
-  ngOnInit() {
-    this.redirectURI = this.route.snapshot.queryParams.redirectURI;
 
-    this.auth.isConnected().then(res => {
-      if (!res) {
-        this.router.navigate(['/login'], {
-          queryParams: { redirectURI: 'settings/shipping' }
-        })
-      } else {
-        this.UID = res.uid;
-        this.getShippingInfo();
-      }
-    });
+
+  ngOnInit() {
+    this.redirectURI = this.route.snapshot.queryParams.redirectURI
+
+    if (this.route.snapshot.params.mode === 'buying') {
+      this.buying = true
+    } else if (this.route.snapshot.params.mode === 'selling') {
+      this.selling = true
+    } else {
+      this.buying = false
+      this.selling = false
+    }
+
+    if (this.buying || this.selling) {
+      this.auth.isConnected().then(res => {
+        if (isNullOrUndefined(res)) {
+          this.router.navigate(['/login'], {
+            queryParams: { redirectURI: 'settings/shipping' }
+          })
+        } else {
+          this.UID = res.uid
+          this.getShippingInfo(this.UID)
+        }
+      })
+    }
   }
 
-  getShippingInfo() {
-    this.shippingService.getShippingInfo(this.UID).subscribe(res => {
-      this.shippingInfo = res;
+  getShippingInfo(UID: string) {
+    this.userService.getUserInfo(UID).subscribe(data => {
+      if (!isNullOrUndefined(data.shippingAddress)) {
+        this.shippingInfo = data.shippingAddress
+        let curShip: User["shippingAddress"]['buying'] | User["shippingAddress"]["selling"]
 
-      //console.log(this.shippingInfo);
+        this.buying ? curShip = this.shippingInfo.buying : curShip = this.shippingInfo.selling
 
-      if (this.shippingInfo.shippingAddress.selling) {
-        this.firstName = this.shippingInfo.shippingAddress.selling.firstName;
-        this.lastName = this.shippingInfo.shippingAddress.selling.lastName;
-        this.street = this.shippingInfo.shippingAddress.selling.street;
-        this.line = this.shippingInfo.shippingAddress.selling.line2;
-        this.city = this.shippingInfo.shippingAddress.selling.city;
-        this.province = this.shippingInfo.shippingAddress.selling.province;
-        this.postalCode = this.shippingInfo.shippingAddress.selling.postalCode;
+        if (!isNullOrUndefined(curShip)) {
+          this.firstName = curShip.firstName
+          this.lastName = curShip.lastName
+          this.street = curShip.street
+          this.line = curShip.line2
+          this.city = curShip.city
+          this.province = curShip.province
+          this.postalCode = curShip.postalCode;
 
-        (document.getElementById('ship-state') as HTMLInputElement).value = this.province;
+          (document.getElementById('ship-state') as HTMLInputElement).value = this.province
+        } else {
+          this.firstName = data.firstName
+          this.lastName = data.lastName
+        }
       } else {
-        this.firstName = this.shippingInfo.firstName;
-        this.lastName = this.shippingInfo.lastName;
+        this.firstName = data.firstName
+        this.lastName = data.lastName
       }
-    });
+    })
   }
 
   updateShipping() {
@@ -98,7 +123,7 @@ export class SettingsShippingComponent implements OnInit {
       if (!this.isEmptyOrBlank(firstName) && !this.isEmptyOrBlank(lastName) && !this.isEmptyOrBlank(street) && !this.isEmptyOrBlank(city) && !this.isEmptyOrBlank(province) && !this.isEmptyOrBlank(postalCode)) {
         this.loading = true;
 
-        this.shippingService.updateShippingInfo(this.shippingInfo.uid, firstName, lastName, street, line, city, province, postalCode, country).then(res => {
+        this.userService.updateShippingInfo(this.UID, firstName, lastName, street, line, city, province, postalCode, country, this.buying).then(res => {
           if (res) {
             this.loading = false;
             this.updated = true;
@@ -209,7 +234,7 @@ export class SettingsShippingComponent implements OnInit {
 
   backBtn() {
     if (isUndefined(this.redirectURI)) {
-      this.router.navigate(['/settings']);
+      this.router.navigate(['/settings/shipping']);
     } else {
       this.router.navigateByUrl(this.redirectURI);
     }

@@ -52,29 +52,27 @@ export class EditOfferComponent implements OnInit {
   ngOnInit() {
     this.listingID = this.route.snapshot.params.id;
     this.source = this.route.snapshot.queryParamMap.get('source');
-    this.bidService.getBid(this.listingID).then(val => {
-      val.subscribe(data => {
-        if (isUndefined(data)) {
-          this.router.navigate(['page-not-found']);
-        } else {
-          this.offerInfo = data.data() as Bid;
-          //(document.getElementById('radio-' + this.offerInfo.condition) as HTMLInputElement).checked = true;
-          this.curCondition = this.offerInfo.condition;
-          this.curPrice = this.offerInfo.price;
-          this.curSize = this.offerInfo.size;
+    this.bidService.getBid(this.listingID).subscribe(data => {
+      if (isUndefined(data)) {
+        this.router.navigate(['page-not-found']);
+      } else {
+        this.offerInfo = data;
+        //(document.getElementById('radio-' + this.offerInfo.condition) as HTMLInputElement).checked = true;
+        this.curCondition = this.offerInfo.condition;
+        this.curPrice = this.offerInfo.price;
+        this.curSize = this.offerInfo.size;
 
-          this.shoeSizes();
+        this.shoeSizes();
 
-          this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
-            if (!data.empty) {
-              this.lowest_ask = data.docs[0].data() as Ask
-            }
-          });
+        this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+          if (!data.empty) {
+            this.lowest_ask = data.docs[0].data() as Ask
+          }
+        });
 
-          this.title.setTitle(`Edit Offer | NXTDROP: Buy and Sell Authentic Sneakers in Canada`);
-          this.meta.addTags('Edit Offer');
-        }
-      });
+        this.title.setTitle(`Edit Offer | NXTDROP: Buy and Sell Authentic Sneakers in Canada`);
+        this.meta.addTags('Edit Offer');
+      }
     });
   }
 
