@@ -50,7 +50,7 @@ export class ProductComponent implements OnInit {
 
   modalTimeout;
 
-  UID: string = '';
+  UID: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -127,11 +127,13 @@ export class ProductComponent implements OnInit {
 
   async countView() {
     //console.log('countView start')
-    this.productService.countView(this.productID).then(() => {
-      //console.log('view count updated')
-    }).catch(err => {
-      console.error(err);
-    })
+    if (!isNullOrUndefined(this.UID)) {
+      this.productService.countView(this.productID).then(() => {
+        //console.log('view count updated')
+      }).catch(err => {
+        console.error(err);
+      })
+    }
 
     //console.log('countView end')
   }

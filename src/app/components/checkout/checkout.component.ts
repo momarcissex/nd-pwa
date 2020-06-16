@@ -52,6 +52,20 @@ export class CheckoutComponent implements OnInit {
   promoLoading = false;
   freePair = false;
 
+  //Shipping Details Boolean
+  showSellingShipping: boolean = false
+  showBuyingShipping: boolean = false
+  showNoneShipping: boolean = false
+
+  //Checkout Btns Boolean
+  showContinueShipping: boolean = false
+  showPaypal: boolean = false
+  showEditAsk: boolean = false
+  showEditBid: boolean = false
+  showConfirmSale: boolean = false
+  showConfirmPurchase: boolean = false
+  showLoginBtns: boolean = false
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -224,7 +238,8 @@ export class CheckoutComponent implements OnInit {
     if (code.length == 10) {
       this.promoLoading = true;
       this.nxtdropCCService.getPromoCode(code).subscribe(res => {
-        console.log(res)
+        console.log(res.initiationDate)
+        console.log(this.user.creation_date)
         if (!isNullOrUndefined(res) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
           this.discount = res
           if (res.type === 'cash') {
@@ -241,6 +256,8 @@ export class CheckoutComponent implements OnInit {
 
           this.promoLoading = false;
           this.promoApplied = true;
+
+          this.showCheckoutBtns()
         } else {
           this.promoLoading = false;
           this.promoError = true;
@@ -253,7 +270,7 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  getListing(listingID: string, userID?: string) {
+  getListing(listingID: string, user?: firebase.User) {
     this.askService.getAsk(listingID).subscribe(res => {
       if (isNullOrUndefined(res)) {
         this.router.navigate(['page-not-found']);
@@ -268,15 +285,33 @@ export class CheckoutComponent implements OnInit {
             'event_label': this.product.model
           });
 
-          if (!isNullOrUndefined(userID)) {
-            this.updateLastCartItem(this.product.productID, this.product.size)
+          if (!isNullOrUndefined(user)) {
+            this.updateLastCartItem(this.product.productID, this.product.size, user)
+
+            if (isNullOrUndefined(user.phoneNumber) && !isNullOrUndefined(this.route.snapshot.queryParams.product) && this.isSelling) {
+              this.router.navigate(['/phone-verification'], {
+                queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
+              });
+            }
           }
+        }
+
+        if (isNullOrUndefined(user)) {
+          this.showShipping()
+          this.showCheckoutBtns()
+        } else {
+          this.userService.getUserInfo(user.uid).subscribe(data => {
+            this.user = data
+            this.connected = true
+            this.showShipping()
+            this.showCheckoutBtns()
+          })
         }
       }
     })
   }
 
-  getOffer(offerID: string) {
+  getOffer(offerID: string, user?: firebase.User) {
     this.bidService.getBid(offerID).subscribe(res => {
       if (isNullOrUndefined(res)) {
         this.router.navigate(['page-not-found']);
@@ -291,6 +326,24 @@ export class CheckoutComponent implements OnInit {
           'event_category': 'ecommerce',
           'event_label': this.product.model
         });
+
+        if (!isNullOrUndefined(user) && isNullOrUndefined(user.phoneNumber) && !isNullOrUndefined(this.route.snapshot.queryParams.product) && this.isSelling) {
+          this.router.navigate(['/phone-verification'], {
+            queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
+          });
+        }
+      }
+
+      if (isNullOrUndefined(user)) {
+        this.showShipping()
+        this.showCheckoutBtns()
+      } else {
+        this.userService.getUserInfo(user.uid).subscribe(data => {
+          this.user = data
+          this.connected = true
+          this.showShipping()
+          this.showCheckoutBtns()
+        })
       }
     })
   }
@@ -309,6 +362,9 @@ export class CheckoutComponent implements OnInit {
       } else {
         this.router.navigate(['page-not-found']);
       }
+
+      this.showShipping()
+      this.showCheckoutBtns()
     })
   }
 
@@ -400,35 +456,23 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  updateLastCartItem(product_id: string, size: string) {
-    this.userService.updateLastCartItem(this.user.uid, product_id, size);
+  updateLastCartItem(product_id: string, size: string, user: firebase.User) {
+    this.userService.updateLastCartItem(user.uid, product_id, size);
   }
 
   private isUserConnected() {
     this.auth.isConnected().then(res => {
       if (!isNullOrUndefined(res)) {
-        this.userService.getUserInfo(res.uid).subscribe(data => {
-          this.user = data
-          this.connected = true
-        })
-
-
         if (!isNullOrUndefined(this.tID)) {
           this.checkUserAndTransaction(this.tID, res.uid);
         } else {
-          if (isNullOrUndefined(res.phoneNumber) && !isNullOrUndefined(this.route.snapshot.queryParams.product) && this.isSelling) {
-            this.router.navigate(['/phone-verification'], {
-              queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
-            });
-          }
-
           if (this.isSelling != 'true') {
-            this.getListing(this.route.snapshot.queryParams.product, res.uid);
             this.isSelling = false;
+            this.getListing(this.route.snapshot.queryParams.product, res);
             this.initConfig();
           } else {
             this.isSelling = true;
-            this.getOffer(this.route.snapshot.queryParams.product);
+            this.getOffer(this.route.snapshot.queryParams.product, res);
           }
         }
       } else {
@@ -459,9 +503,48 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  /*editPayment() {
-    this.router.navigate(['../settings/buying'], {
-      queryParams: { redirectURI: 'checkout' }
-    });
-  }*/
+  showShipping() {
+    if (this.connected) {
+      if (!this.isSelling) {
+        if (isNullOrUndefined(this.user.shippingAddress)) {
+          this.showBuyingShipping = false
+        } else if (!isNullOrUndefined(this.user.shippingAddress.buying)) {
+          this.showBuyingShipping = true
+        }
+      } else if (this.isSelling) {
+        if (isNullOrUndefined(this.user.shippingAddress)) {
+          this.showSellingShipping = false
+        } else if (!isNullOrUndefined(this.user.shippingAddress.selling)) {
+          this.showSellingShipping = true
+        }
+      }
+
+      this.showBuyingShipping || this.showSellingShipping ? this.showNoneShipping = false : this.showNoneShipping = true
+    }
+  }
+
+  showCheckoutBtns() {
+    this.showContinueShipping = this.showPaypal = this.showEditAsk = this.showEditBid = this.showConfirmSale = this.showConfirmPurchase = this.showLoginBtns = false
+
+    if (!this.connected) {
+      this.showLoginBtns = true
+    } else {
+      if (!isNullOrUndefined(this.tID)) {
+        const t = this.product as Transaction
+        if (t.buyerID === this.user.uid && isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.selling)) this.showContinueShipping = true
+        else this.showPaypal = true
+      } else if (this.isSelling) {
+        const t = this.product as Bid
+        if (t.buyerID === this.user.uid) this.showEditBid = true
+        else if (isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.selling)) this.showContinueShipping = true
+        else this.showConfirmSale = true
+      } else if (!this.isSelling) {
+        const t = this.product as Ask
+        if (t.sellerID === this.user.uid) this.showEditAsk = true
+        else if (isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.buying)) this.showContinueShipping = true
+        else if (this.total === 0) this.showConfirmPurchase = true
+        else this.showPaypal = true
+      }
+    }
+  }
 }
