@@ -37,7 +37,7 @@
 
       <div class="summary-tax" *ngIf="promoApplied">
         <h5>Discount</h5>
-        <h5>- {{ discount | currency: 'CAD' }}</h5>
+        <h5>- {{ discount.amount | currency: 'CAD' }}</h5>
       </div>
 
       <div class="summary-total">
@@ -85,14 +85,30 @@
   <div class="checkout-shipping" *ngIf="product && connected">
     <h3>Shipping Address</h3>
 
-    <div *ngIf="shippingInfo">
-      <h6>Name: <span>{{ shippingInfo.firstName + ' ' + shippingInfo.lastName }}</span></h6>
+    <div *ngIf="user.shippingAddress.buying && !isSelling">
+      <h6>Name: <span>{{ user.shippingAddress.buying.firstName + ' ' + user.shippingAddress.buying.lastName }}</span>
+      </h6>
       <h6>Address:
-        <span>{{ shippingInfo.street + ', ' + shippingInfo.city + ', ' + shippingInfo.province + ' ' + shippingInfo.postalCode}}</span>
+        <span>{{ user.shippingAddress.buying.street + ', ' + user.shippingAddress.buying.city + ', ' + user.shippingAddress.buying.province + ' ' + user.shippingAddress.buying.postalCode}}</span>
       </h6>
     </div>
 
-    <div *ngIf="!shippingInfo">
+    <div *ngIf="user.shippingAddress.selling && isSelling">
+      <h6>Name: <span>{{ user.shippingAddress.selling.firstName + ' ' + user.shippingAddress.selling.lastName }}</span>
+      </h6>
+      <h6>Address:
+        <span>{{ user.shippingAddress.selling.street + ', ' + user.shippingAddress.selling.city + ', ' + user.shippingAddress.selling.province + ' ' + user.shippingAddress.selling.postalCode}}</span>
+      </h6>
+    </div>
+
+    <div *ngIf="!user.shippingAddress.buying && !isSelling">
+      <h6>Name: <span>NONE</span></h6>
+      <h6>Address:
+        <span>NONE</span>
+      </h6>
+    </div>
+
+    <div *ngIf="!user.shippingAddress.selling && isSelling">
       <h6>Name: <span>NONE</span></h6>
       <h6>Address:
         <span>NONE</span>
@@ -115,12 +131,13 @@
 
   <div class="checkout-btns" *ngIf="product">
     <!--user viewing an ask-->
-    <div *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && shippingInfo">
+    <div *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && user.shippingAddress.buying">
       <h2>Select Payment Method</h2>
       <ngx-paypal [config]="payPalConfig"></ngx-paypal>
     </div>
 
-    <button class="btn" *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && !shippingInfo"
+    <button class="btn"
+      *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && !user.shippingAddress.buying"
       (click)="editShipping()">Continue to Shipping</button>
 
     <button *ngIf=" !isSelling && !freePair && connected && userID===product.sellerID" class="btn"
@@ -136,16 +153,18 @@
     <!--user not logged in end-->
 
     <!--user buying pair for free (when using a promo covering all expenses)-->
-    <button *ngIf="freePair && !shippingInfo" (click)="editShipping()" class="btn">Continue to Shipping</button>
-    <button *ngIf="freePair && shippingInfo" (click)="buyNow()" class="btn">Confirm Purchase</button>
+    <button *ngIf="freePair && !user.shippingAddress.buying" (click)="editShipping()" class="btn">Continue to
+      Shipping</button>
+    <button *ngIf="freePair && user.shippingAddress.buying" (click)="buyNow()" class="btn">Confirm Purchase</button>
     <!--user buying pair for free (when using a promo covering all expenses) end-->
 
     <!--User viewing a bid-->
     <button *ngIf="isSelling && userID === product.buyerID" class="btn" [routerLink]="['/edit-bid', product.offerID]"
       [queryParams]="{ source: 'checkout?product=' + product.offerID + '&sell=true'}">Edit Bid</button>
-    <button *ngIf="isSelling && userID != product.buyerID && !shippingInfo" class="btn"
+    <button *ngIf="isSelling && userID != product.buyerID && !user.shippingAddress.selling" class="btn"
       (click)="editShipping()">Continue to Shpping</button>
-    <button *ngIf="isSelling && userID != product.buyerID && shippingInfo" (click)="sellNow()" class="btn">Confirm
+    <button *ngIf="isSelling && userID != product.buyerID && user.shippingAddress.selling" (click)="sellNow()"
+      class="btn">Confirm
       Sale</button>
     <!--User viewing a bid end-->
 

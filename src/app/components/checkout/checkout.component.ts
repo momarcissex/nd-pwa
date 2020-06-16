@@ -1,9 +1,8 @@
 import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
-import { CheckoutService } from 'src/app/services/checkout.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined, isBoolean, isUndefined, isNull } from 'util';
+import { isNullOrUndefined, isBoolean } from 'util';
 import { Title } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { isPlatformBrowser } from '@angular/common';
@@ -17,6 +16,8 @@ import { UserService } from 'src/app/services/user.service';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
+import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
+import { NxtdropCcService } from 'src/app/services/nxtdrop-cc.service';
 
 declare const gtag: any;
 
@@ -29,21 +30,18 @@ export class CheckoutComponent implements OnInit {
 
   public payPalConfig?: IPayPalConfig;
 
-  shippingInfo: User['shippingAddress']['buying']
-
   // cartItems = [];
 
   product: Ask | Bid | Transaction;
   shippingPrice = 15;
   subtotal = 0;
   total = 0;
-  discount = 0;
-  discountCardID: string;
+  discount: NxtdropCC;
 
   connected = false;
   isSelling: any;
 
-  userID: string;
+  user: User;
 
   // User Checking out item sold to them
   tID;
@@ -55,7 +53,6 @@ export class CheckoutComponent implements OnInit {
   freePair = false;
 
   constructor(
-    private checkoutService: CheckoutService,
     private router: Router,
     private route: ActivatedRoute,
     private auth: AuthService,
@@ -67,7 +64,8 @@ export class CheckoutComponent implements OnInit {
     private userService: UserService,
     private tranService: TransactionService,
     private askService: AskService,
-    private bidService: BidService
+    private bidService: BidService,
+    private nxtdropCCService: NxtdropCcService
   ) { }
 
   ngOnInit() {
@@ -77,17 +75,10 @@ export class CheckoutComponent implements OnInit {
 
     this.isSelling = this.route.snapshot.queryParams.sell;
 
-    if (!isUndefined(this.isSelling) && !isUndefined(this.route.snapshot.queryParams.product)) {
-      if (this.isSelling != 'true') {
-        this.getListing(this.route.snapshot.queryParams.product);
-        this.isSelling = false;
-        this.initConfig();
-      } else {
-        this.isSelling = true;
-        this.getOffer(this.route.snapshot.queryParams.product);
-      }
+    if (!isNullOrUndefined(this.isSelling) && !isNullOrUndefined(this.route.snapshot.queryParams.product)) {
+      this.isUserConnected()
     } else {
-      if (isUndefined(this.tID)) {
+      if (isNullOrUndefined(this.tID)) {
         this.router.navigate([`..`]);
       } else {
         this.isUserConnected()
@@ -123,14 +114,14 @@ export class CheckoutComponent implements OnInit {
           }],
           shipping: {
             name: {
-              full_name: `${this.shippingInfo.firstName} ${this.shippingInfo.lastName}`
+              full_name: `${this.user.shippingAddress.buying.firstName} ${this.user.shippingAddress.buying.lastName}`
             },
             address: {
-              address_line_1: this.shippingInfo.street,
-              address_line_2: this.shippingInfo.line2,
-              admin_area_1: this.shippingInfo.province,
-              admin_area_2: this.shippingInfo.city,
-              postal_code: this.shippingInfo.postalCode,
+              address_line_1: this.user.shippingAddress.buying.street,
+              address_line_2: this.user.shippingAddress.buying.line2,
+              admin_area_1: this.user.shippingAddress.buying.province,
+              admin_area_2: this.user.shippingAddress.buying.city,
+              postal_code: this.user.shippingAddress.buying.postalCode,
               country_code: 'CA'
             }
           }
@@ -151,33 +142,33 @@ export class CheckoutComponent implements OnInit {
         actions.order.get().then(details => {
           //console.log('onApprove - you can get full order details inside onApprove: ', details);
 
-          this.shippingInfo.street = details.purchase_units[0].shipping.address.address_line_1
-          isNullOrUndefined(details.purchase_units[0].shipping.address.address_line_2) ? this.shippingInfo.line2 = '' : this.shippingInfo.line2 = details.purchase_units[0].shipping.address.address_line_2
-          this.shippingInfo.city = details.purchase_units[0].shipping.address.admin_area_2
-          this.shippingInfo.province = details.purchase_units[0].shipping.address.admin_area_1
-          this.shippingInfo.postalCode = details.purchase_units[0].shipping.address.postal_code
-          this.shippingInfo.country = details.purchase_units[0].shipping.address.country_code
-          this.shippingInfo.firstName = details.payer.name.given_name
-          this.shippingInfo.lastName = details.payer.name.surname
+          this.user.shippingAddress.buying.street = details.purchase_units[0].shipping.address.address_line_1
+          isNullOrUndefined(details.purchase_units[0].shipping.address.address_line_2) ? this.user.shippingAddress.buying.line2 = '' : this.user.shippingAddress.buying.line2 = details.purchase_units[0].shipping.address.address_line_2
+          this.user.shippingAddress.buying.city = details.purchase_units[0].shipping.address.admin_area_2
+          this.user.shippingAddress.buying.province = details.purchase_units[0].shipping.address.admin_area_1
+          this.user.shippingAddress.buying.postalCode = details.purchase_units[0].shipping.address.postal_code
+          this.user.shippingAddress.buying.country = details.purchase_units[0].shipping.address.country_code
+          this.user.shippingAddress.buying.firstName = details.payer.name.given_name
+          this.user.shippingAddress.buying.lastName = details.payer.name.surname
 
-          this.userService.updateShippingInfo(this.userID, this.shippingInfo.firstName, this.shippingInfo.lastName, this.shippingInfo.street, this.shippingInfo.line2, this.shippingInfo.city, this.shippingInfo.province, this.shippingInfo.postalCode, this.shippingInfo.country, true)
+          this.userService.updateShippingInfo(this.user.uid, this.user.shippingAddress.buying.firstName, this.user.shippingAddress.buying.lastName, this.user.shippingAddress.buying.street, this.user.shippingAddress.buying.line2, this.user.shippingAddress.buying.city, this.user.shippingAddress.buying.province, this.user.shippingAddress.buying.postalCode, this.user.shippingAddress.buying.country, true)
         });
       },
       onClientAuthorization: (data) => {
         //console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
         let transaction;
 
-        if (isUndefined(this.tID)) {
+        if (isNullOrUndefined(this.tID)) {
           if (this.promoApplied) {
-            transaction = this.tranService.transactionApproved(this.userID, this.product as Ask, this.shippingInfo, data.id, this.shippingPrice, this.total, this.discount, this.discountCardID);
+            transaction = this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shippingAddress.buying, data.id, this.shippingPrice, this.total, this.discount);
           } else {
-            transaction = this.tranService.transactionApproved(this.userID, this.product as Ask, this.shippingInfo, data.id, this.shippingPrice, this.total);
+            transaction = this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shippingAddress.buying, data.id, this.shippingPrice, this.total);
           }
         } else {
           if (this.promoApplied) {
-            transaction = this.tranService.updateTransaction(data.id, this.shippingInfo, this.shippingPrice, this.tID, this.discount, this.discountCardID);
+            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shippingAddress.buying, this.shippingPrice, this.tID, this.discount);
           } else {
-            transaction = this.tranService.updateTransaction(data.id, this.shippingInfo, this.shippingPrice, this.tID);
+            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shippingAddress.buying, this.shippingPrice, this.tID);
           }
         }
         transaction.then(res => {
@@ -232,20 +223,24 @@ export class CheckoutComponent implements OnInit {
 
     if (code.length == 10) {
       this.promoLoading = true;
-      this.checkoutService.getPromoCode(code).then(res => {
-        if (res.exists && res.data().amount != 0 && res.data().expirationDate > now) {
-          if (this.total <= res.data().amount) {
-            this.discount = this.total;
-            this.total = 0;
-            this.freePair = true;
+      this.nxtdropCCService.getPromoCode(code).subscribe(res => {
+        console.log(res)
+        if (!isNullOrUndefined(res) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
+          this.discount = res
+          if (res.type === 'cash') {
+            if (this.total <= res.amount) {
+              this.total = 0;
+              this.freePair = true;
+            } else {
+              this.total = this.total - res.amount;
+            }
           } else {
-            this.total = this.total - res.data().amount;
-            this.discount = res.data().amount;
+            this.total = this.total * (1 - (this.discount.amount / 100))
+            this.discount.amount = this.total * (this.discount.amount / 100)
           }
 
           this.promoLoading = false;
           this.promoApplied = true;
-          this.discountCardID = code;
         } else {
           this.promoLoading = false;
           this.promoError = true;
@@ -254,21 +249,11 @@ export class CheckoutComponent implements OnInit {
             this.promoError = false;
           }, 2000);
         }
-      }).catch(err => {
-        console.error(err);
-        this.promoLoading = false;
-        this.promoError = true;
-
-        setTimeout(() => {
-          this.promoError = false;
-        }, 2000);
       })
     }
   }
 
-  getListing(listingID: string) {
-    this.isUserConnected()
-
+  getListing(listingID: string, userID: string) {
     this.askService.getAsk(listingID).subscribe(res => {
       if (isNullOrUndefined(res)) {
         this.router.navigate(['page-not-found']);
@@ -283,17 +268,15 @@ export class CheckoutComponent implements OnInit {
             'event_label': this.product.model
           });
 
-          if (!isNullOrUndefined(this.userID)) {
+          if (!isNullOrUndefined(userID)) {
             this.updateLastCartItem(this.product.productID, this.product.size)
           }
         }
       }
-    });
+    })
   }
 
   getOffer(offerID: string) {
-    this.isUserConnected()
-
     this.bidService.getBid(offerID).subscribe(res => {
       if (isNullOrUndefined(res)) {
         this.router.navigate(['page-not-found']);
@@ -301,12 +284,6 @@ export class CheckoutComponent implements OnInit {
         this.product = res;
         this.subtotal = this.product.price;
         this.total = this.subtotal + this.shippingPrice;
-
-        this.userService.getUserInfo(this.userID).subscribe(data => {
-          if (!isNullOrUndefined(data.shippingAddress) && !isNullOrUndefined(data.shippingAddress.buying)) {
-            this.shippingInfo = data.shippingAddress.selling
-          }
-        })
       }
 
       if (isPlatformBrowser(this._platformId)) {
@@ -315,10 +292,10 @@ export class CheckoutComponent implements OnInit {
           'event_label': this.product.model
         });
       }
-    });
+    })
   }
 
-  checkUserAndTransaction(transactionID: string) {
+  checkUserAndTransaction(transactionID: string, userID: string) {
     this.tranService.checkTransaction(transactionID).subscribe(res => {
       if (!isNullOrUndefined(res) && !res.status.cancelled && res.paymentID === '') {
         this.product = res
@@ -326,10 +303,8 @@ export class CheckoutComponent implements OnInit {
         this.total = this.subtotal + this.shippingPrice
         this.initConfig()
 
-        this.userService.getUserInfo(this.userID).subscribe(data => {
-          if (!isNullOrUndefined(data.shippingAddress) && !isNullOrUndefined(data.shippingAddress.buying)) {
-            this.shippingInfo = data.shippingAddress.buying
-          }
+        this.userService.getUserInfo(userID).subscribe(data => {
+          this.user = data
         })
       } else {
         this.router.navigate(['page-not-found']);
@@ -338,7 +313,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   sellNow() {
-    this.tranService.sellTransactionApproved(this.userID, this.product as Bid).then(res => {
+    this.tranService.sellTransactionApproved(this.user.uid, this.product as Bid).then(res => {
       if (isPlatformBrowser(this._platformId)) {
         gtag('event', 'item_sold', {
           'event_category': 'ecommerce',
@@ -362,7 +337,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   buyNow() {
-    this.tranService.transactionApproved(this.userID, this.product as Ask, this.shippingInfo, this.discountCardID, this.shippingPrice, this.total, this.discount, this.discountCardID)
+    this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shippingAddress.buying, this.discount.cardID, this.shippingPrice, this.total, this.discount)
       .then(res => {
         if (isPlatformBrowser(this._platformId)) {
           gtag('event', 'purchase', {
@@ -426,17 +401,20 @@ export class CheckoutComponent implements OnInit {
   }
 
   updateLastCartItem(product_id: string, size: string) {
-    this.userService.updateLastCartItem(this.userID, product_id, size);
+    this.userService.updateLastCartItem(this.user.uid, product_id, size);
   }
 
   private isUserConnected() {
     this.auth.isConnected().then(res => {
       if (!isNullOrUndefined(res)) {
-        this.connected = true;
-        this.userID = res.uid;
+        this.userService.getUserInfo(res.uid).subscribe(data => {
+          this.user = data
+          this.connected = true
+        })
 
-        if (!isUndefined(this.tID)) {
-          this.checkUserAndTransaction(this.tID);
+
+        if (!isNullOrUndefined(this.tID)) {
+          this.checkUserAndTransaction(this.tID, res.uid);
         } else {
           if (isNullOrUndefined(res.phoneNumber) && !isNullOrUndefined(this.route.snapshot.queryParams.product) && this.isSelling) {
             this.router.navigate(['/phone-verification'], {
@@ -444,17 +422,18 @@ export class CheckoutComponent implements OnInit {
             });
           }
 
-          if (!this.isSelling) {
-            this.userService.getUserInfo(this.userID).subscribe(data => {
-              if (!isNullOrUndefined(data.shippingAddress) && !isNullOrUndefined(data.shippingAddress.buying)) {
-                this.shippingInfo = data.shippingAddress.buying
-              }
-            })
+          if (this.isSelling != 'true') {
+            this.getListing(this.route.snapshot.queryParams.product, res.uid);
+            this.isSelling = false;
+            this.initConfig();
+          } else {
+            this.isSelling = true;
+            this.getOffer(this.route.snapshot.queryParams.product);
           }
         }
       } else {
         if (!isNullOrUndefined(this.tID)) {
-          this.checkUserAndTransaction(this.tID);
+          this.checkUserAndTransaction(this.tID, '');
         }
       }
     });

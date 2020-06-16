@@ -33,7 +33,7 @@
 
         <div class="tax" *ngIf="transaction.discount">
           <h5>Discount</h5>
-          <h5>- {{ transaction.discount | currency: 'CAD' }}</h5>
+          <h5>- {{ transaction.discount.amount | currency: 'CAD' }}</h5>
         </div>
 
         <div class="total">

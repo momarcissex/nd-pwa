@@ -1,3 +1,5 @@
+import { NxtdropCC } from './nxtdrop_cc'
+
 export class Transaction {
     id: string;
     assetURL: string;
@@ -16,7 +18,7 @@ export class Transaction {
     productID: string;
     sellerID: string;
     shippingCost?: number;
-    discount?: number;
+    discount?: NxtdropCC | number;
     discountCardID?: string;
     total: number;
     size: string;

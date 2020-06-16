@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CheckoutService } from './checkout.service';
+import { NxtdropCcService } from './nxtdrop-cc.service';
 
-describe('CheckoutService', () => {
+describe('NxtdropCcService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: CheckoutService = TestBed.get(CheckoutService);
+    const service: NxtdropCcService = TestBed.get(NxtdropCcService);
     expect(service).toBeTruthy();
   });
 });

@@ -11,6 +11,7 @@ import { SlackService } from './slack.service';
 import { Bid } from '../models/bid';
 import { User } from '../models/user';
 import { Ask } from '../models/ask';
+import { NxtdropCC } from '../models/nxtdrop_cc';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class TransactionService {
    * discount: amount discounted from total
    * 
    */
-  async transactionApproved(UID: string, product: Ask, shippingInfo: User['shippingAddress']['buying'], paymentID: string, shippingCost: number, total: number, discount?: number, discountCardID?: string) {
+  async transactionApproved(UID: string, product: Ask, shippingInfo: User['shippingAddress']['buying'], paymentID: string, shippingCost: number, total: number, discount?: NxtdropCC) {
     const batch = firebase.firestore().batch();
     const id = product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase();
     const boughtAt = Date.now();
@@ -91,12 +92,19 @@ export class TransactionService {
 
     //add discount to transaction data
     if (!isNullOrUndefined(discount)) {
-      transactionData.discount = discount
-      transactionData.discountCardID = discountCardID
-      const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discountCardID}`)
-      batch.update(discountRef, {
-        amount: firebase.firestore.FieldValue.increment(-discount)
-      })
+      if (discount.reusable) {
+        transactionData.discount = discount
+        const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discount.cardID}`)
+        batch.update(discountRef, {
+          used_by: firebase.firestore.FieldValue.arrayUnion(UID)
+        })
+      } else {
+        transactionData.discount = discount
+        const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discount.cardID}`)
+        batch.update(discountRef, {
+          amount: firebase.firestore.FieldValue.increment(-discount.amount)
+        })
+      }
     }
 
     let prices = []; //lowest prices
@@ -263,7 +271,7 @@ export class TransactionService {
    * discount: amount discounted from total
    * discountCardID: ID of discount card used to make purchase
    */
-  async updateTransaction(paymentID: string, shippingInfo: User['shippingAddress']['buying'], shippingCost: number, transaction_id: string, discount?: number, discountCardID?: string): Promise<string | boolean> {
+  async updateTransaction(userID: string, paymentID: string, shippingInfo: User['shippingAddress']['buying'], shippingCost: number, transaction_id: string, discount?: NxtdropCC): Promise<string | boolean> {
     const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transaction_id}`); //transaction doc ref
     const batch = firebase.firestore().batch();
 
@@ -288,14 +296,20 @@ export class TransactionService {
     if (!isNullOrUndefined(discount)) {
       batch.update(tranRef, {
         discount,
-        discountCardID,
-        total: firebase.firestore.FieldValue.increment(-discount)
+        total: firebase.firestore.FieldValue.increment(-discount.amount)
       });
 
-      const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discountCardID}`);
-      batch.update(discountRef, {
-        amount: firebase.firestore.FieldValue.increment(-discount)
-      });
+      if (!discount.reusable) {
+        const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discount.cardID}`);
+        batch.update(discountRef, {
+          amount: firebase.firestore.FieldValue.increment(-discount.amount)
+        });
+      } else {
+        const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discount.cardID}`);
+        batch.update(discountRef, {
+          used_by: firebase.firestore.FieldValue.arrayUnion(userID)
+        });
+      }
     }
 
     //commit transaction
