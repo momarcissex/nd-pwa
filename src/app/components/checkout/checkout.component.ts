@@ -253,7 +253,7 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  getListing(listingID: string, userID: string) {
+  getListing(listingID: string, userID?: string) {
     this.askService.getAsk(listingID).subscribe(res => {
       if (isNullOrUndefined(res)) {
         this.router.navigate(['page-not-found']);
@@ -434,6 +434,14 @@ export class CheckoutComponent implements OnInit {
       } else {
         if (!isNullOrUndefined(this.tID)) {
           this.checkUserAndTransaction(this.tID, '');
+        } else {
+          if (this.isSelling != 'true') {
+            this.getListing(this.route.snapshot.queryParams.product);
+            this.isSelling = false;
+          } else {
+            this.isSelling = true;
+            this.getOffer(this.route.snapshot.queryParams.product);
+          }
         }
       }
     });
