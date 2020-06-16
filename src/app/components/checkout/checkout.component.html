@@ -131,16 +131,16 @@
 
   <div class="checkout-btns" *ngIf="product">
     <!--user viewing an ask-->
-    <div *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && user.shippingAddress.buying">
+    <div *ngIf="!isSelling && !freePair && connected && user.uid != product.sellerID && user.shippingAddress.buying">
       <h2>Select Payment Method</h2>
       <ngx-paypal [config]="payPalConfig"></ngx-paypal>
     </div>
 
     <button class="btn"
-      *ngIf="!isSelling && !freePair && connected && userID != product.sellerID && !user.shippingAddress.buying"
+      *ngIf="!isSelling && !freePair && connected && user.uid != product.sellerID && !user.shippingAddress.buying"
       (click)="editShipping()">Continue to Shipping</button>
 
-    <button *ngIf=" !isSelling && !freePair && connected && userID===product.sellerID" class="btn"
+    <button *ngIf=" !isSelling && !freePair && connected && user.uid === product.sellerID" class="btn"
       [routerLink]="['/edit-ask', product.listingID]"
       [queryParams]="{ source: 'checkout?product=' + product.listingID + '&sell=false'}">Edit Ask</button>
     <!--user viewing an ask end-->
@@ -159,11 +159,11 @@
     <!--user buying pair for free (when using a promo covering all expenses) end-->
 
     <!--User viewing a bid-->
-    <button *ngIf="isSelling && userID === product.buyerID" class="btn" [routerLink]="['/edit-bid', product.offerID]"
+    <button *ngIf="isSelling && user.uid === product.buyerID" class="btn" [routerLink]="['/edit-bid', product.offerID]"
       [queryParams]="{ source: 'checkout?product=' + product.offerID + '&sell=true'}">Edit Bid</button>
-    <button *ngIf="isSelling && userID != product.buyerID && !user.shippingAddress.selling" class="btn"
+    <button *ngIf="isSelling && user.uid != product.buyerID && !user.shippingAddress.selling" class="btn"
       (click)="editShipping()">Continue to Shpping</button>
-    <button *ngIf="isSelling && userID != product.buyerID && user.shippingAddress.selling" (click)="sellNow()"
+    <button *ngIf="isSelling && user.uid != product.buyerID && user.shippingAddress.selling" (click)="sellNow()"
       class="btn">Confirm
       Sale</button>
     <!--User viewing a bid end-->
