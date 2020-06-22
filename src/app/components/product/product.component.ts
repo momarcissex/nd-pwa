@@ -11,6 +11,7 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 
 declare const gtag: any;
+declare const fbq: any;
 
 @Component({
   selector: 'app-product',
@@ -103,6 +104,14 @@ export class ProductComponent implements OnInit {
         this.productInfo = data;
         this.title.setTitle(`${this.productInfo.model} - ${this.productInfo.brand} | NXTDROP`);
         this.seo.addTags('Product', this.productInfo);
+
+        fbq('track', 'ViewContent', {
+          content_ids: [`${this.productID}`],
+          content_category: 'sneaker',
+          content_name: `${this.productInfo.model}`,
+          content_type: 'product',
+          contents: [{'id':`${this.productID}`,'quantity':'1'}],
+        })
       }
 
       if (this.offers.length === 0) {

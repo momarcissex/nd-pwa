@@ -24,6 +24,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
 declare const gtag: any;
+declare const fbq: any;
 
 @Injectable({
   providedIn: 'root'
@@ -234,6 +235,8 @@ export class AuthService {
             "user_hash": data.hash
           });
         });
+
+        fbq('track', 'Lead')
 
         return true;
       })

@@ -20,6 +20,7 @@ import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
 import { NxtdropCcService } from 'src/app/services/nxtdrop-cc.service';
 
 declare const gtag: any;
+declare const fbq: any;
 
 @Component({
   selector: 'app-checkout',
@@ -192,6 +193,16 @@ export class CheckoutComponent implements OnInit {
               'event_label': this.product.model,
               'event_value': this.product.price
             });
+
+            fbq('track', 'Purchase', {
+              content_ids: [`${this.product.productID}`],
+              content_name: this.product.model,
+              content_type: 'sneaker',
+              contents: [{'id':`${this.product.productID}`,'quantity': '1'}],
+              currency: 'CAD',
+              num_items: 1,
+              value: this.product.price + this.shippingPrice
+            })
           }
 
           if (isBoolean(res)) {
@@ -307,6 +318,15 @@ export class CheckoutComponent implements OnInit {
             this.showCheckoutBtns()
           })
         }
+
+        fbq('track', 'InitiateCheckout', {
+          content_category: 'sneaker',
+          content_ids: [`${this.product.productID}`],
+          contents: [{'id': `${this.product.productID}`, 'quantity': '1'}],
+          currency: 'CAD',
+          num_item: 1,
+          value: this.product.price + this.shippingPrice
+        })
       }
     })
   }

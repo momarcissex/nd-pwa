@@ -6,6 +6,8 @@ import { Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
 
+declare const fbq: any;
+
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -80,6 +82,11 @@ export class SearchComponent implements OnInit {
 
         //console.log(this.nbPages);
         //console.log(hits);
+
+        fbq('track', 'Search', {
+          content_category: 'sneaker',
+          search_string: `${term}`
+        })
       });
     }, this.doneTypingInterval);
   }
