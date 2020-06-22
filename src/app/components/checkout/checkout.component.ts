@@ -348,7 +348,7 @@ export class CheckoutComponent implements OnInit {
     })
   }
 
-  checkUserAndTransaction(transactionID: string, userID: string) {
+  checkUserAndTransaction(transactionID: string, userID?: string) {
     this.tranService.checkTransaction(transactionID).subscribe(res => {
       if (!isNullOrUndefined(res) && !res.status.cancelled && res.paymentID === '') {
         this.product = res
@@ -356,15 +356,25 @@ export class CheckoutComponent implements OnInit {
         this.total = this.subtotal + this.shippingPrice
         this.initConfig()
 
-        this.userService.getUserInfo(userID).subscribe(data => {
-          this.user = data
-        })
+        if (!isNullOrUndefined(userID)) {
+          console.log('run if')
+          this.userService.getUserInfo(userID).subscribe(data => {
+            this.user = data
+            this.connected = true
+
+            if (!isNullOrUndefined(data.uid)) {
+              this.showShipping()
+              this.showCheckoutBtns()
+            }
+          })
+        } else {
+          console.log('run else')
+          this.showShipping()
+          this.showCheckoutBtns()
+        }
       } else {
         this.router.navigate(['page-not-found']);
       }
-
-      this.showShipping()
-      this.showCheckoutBtns()
     })
   }
 
@@ -477,7 +487,7 @@ export class CheckoutComponent implements OnInit {
         }
       } else {
         if (!isNullOrUndefined(this.tID)) {
-          this.checkUserAndTransaction(this.tID, '');
+          this.checkUserAndTransaction(this.tID);
         } else {
           if (this.isSelling != 'true') {
             this.getListing(this.route.snapshot.queryParams.product);
@@ -505,7 +515,9 @@ export class CheckoutComponent implements OnInit {
 
   showShipping() {
     if (this.connected) {
-      if (!this.isSelling) {
+      if (isNullOrUndefined(this.isSelling)) {
+        this.showBuyingShipping = true
+      } else if (!this.isSelling) {
         if (isNullOrUndefined(this.user.shippingAddress)) {
           this.showBuyingShipping = false
         } else if (!isNullOrUndefined(this.user.shippingAddress.buying)) {
@@ -531,7 +543,7 @@ export class CheckoutComponent implements OnInit {
     } else {
       if (!isNullOrUndefined(this.tID)) {
         const t = this.product as Transaction
-        if (t.buyerID === this.user.uid && isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.selling)) this.showContinueShipping = true
+        if (t.buyerID === this.user.uid && isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.buying)) this.showContinueShipping = true
         else this.showPaypal = true
       } else if (this.isSelling) {
         const t = this.product as Bid

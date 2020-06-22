@@ -58,7 +58,7 @@ export class SaleConfirmationComponent implements OnInit {
     this.confService.transactionData(transactionId).subscribe((data: Transaction) => {
       this.transactionData = data;
 
-      this.consignmentFee = this.transactionData.price * 0.085;
+      this.consignmentFee = this.transactionData.price * 0.095;
       this.paymentProcessingFee = this.transactionData.price * 0.03;
       this.payout = this.transactionData.price - this.consignmentFee - this.paymentProcessingFee;
       //console.log(this.transactionData);
