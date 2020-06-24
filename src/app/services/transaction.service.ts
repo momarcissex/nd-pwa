@@ -36,16 +36,16 @@ export class TransactionService {
    * 
    */
   async transactionApproved(UID: string, product: Ask, shippingInfo: User['shippingAddress']['buying'], paymentID: string, shippingCost: number, total: number, discount?: NxtdropCC) {
-    const batch = firebase.firestore().batch();
-    const id = product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase();
-    const boughtAt = Date.now();
-    const transactionID = `${UID}-${product.sellerID}-${boughtAt}`;
+    const batch = firebase.firestore().batch()
+    const id = product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()
+    const boughtAt = Date.now()
+    const transactionID = `${UID}-${product.sellerID}-${boughtAt}`
 
-    const sellerRef = this.afs.firestore.collection(`users`).doc(`${product.sellerID}`); //seller doc ref
-    const buyerRef = this.afs.firestore.collection(`users`).doc(`${UID}`); //buyer doc ref
-    const prodRef = this.afs.firestore.collection(`products`).doc(`${id}`); //prod doc ref
-    const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`); //transaction doc ref
-    const askRef = this.afs.firestore.collection(`asks`); //ask collection ref
+    const sellerRef = this.afs.firestore.collection(`users`).doc(`${product.sellerID}`) //seller doc ref
+    const buyerRef = this.afs.firestore.collection(`users`).doc(`${UID}`) //buyer doc ref
+    const prodRef = this.afs.firestore.collection(`products`).doc(`${id}`) //prod doc ref
+    const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`) //transaction doc ref
+    const askRef = this.afs.firestore.collection(`asks`) //ask collection ref
 
     //transaction data
     const transactionData: Transaction = {
@@ -88,7 +88,7 @@ export class TransactionService {
       paymentID,
       shippingCost,
       type: 'bought'
-    };
+    }
 
     //add discount to transaction data
     if (!isNullOrUndefined(discount)) {
@@ -107,30 +107,46 @@ export class TransactionService {
       }
     }
 
-    let prices = []; //lowest prices
+    let prices: Ask[] = []; //lowest asks
+    let size_prices: Ask[] = [] //size lowest asks
+    let userBid: Bid
 
     //get lowest two prices
-    await this.afs.firestore.collection('products').doc(`${id}`).collection(`listings`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
+    await prodRef.collection(`listings`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
       snap.forEach(data => {
-        prices.push(data.data().price);
-      });
-    });
+        prices.push(data.data() as Ask);
+      })
+    })
+
+    //get two lowest prices in specific size
+    await prodRef.collection(`listings`).where('size', '==', `${product.size}`).where('condition', '==', `${product.condition}`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
+      snap.forEach(ele => {
+        size_prices.push(ele.data() as Ask);
+      })
+    })
+
+    //get buyer's highest bid if applicable
+    await buyerRef.collection('offers').where('productID', '==', `${product.productID}`).where('size', '==', `${product.size}`).orderBy('price', 'desc').limit(1).get().then(snap => {
+      snap.forEach(data => {
+        userBid = data.data() as Bid
+      })
+    })
 
     //delete or update lowest_price
     if (prices.length === 1) {
       batch.update(prodRef, {
         lowestPrice: firebase.firestore.FieldValue.delete()
       });
-    } else {
-      batch.set(prodRef, {
-        lowestPrice: prices[1]
-      }, { merge: true });
+    } else if (product.price === prices[0].price && prices[0].price != prices[1].price) {
+      batch.update(prodRef, {
+        lowestPrice: prices[1].price
+      })
     }
 
     // delete listings
-    batch.delete(sellerRef.collection(`listings`).doc(`${product.listingID}`));
-    batch.delete(prodRef.collection(`listings`).doc(`${product.listingID}`));
-    batch.delete(askRef.doc(`${product.listingID}`));
+    batch.delete(sellerRef.collection(`listings`).doc(`${product.listingID}`))
+    batch.delete(prodRef.collection(`listings`).doc(`${product.listingID}`))
+    batch.delete(askRef.doc(`${product.listingID}`))
 
     // update ordered and sold fields
     batch.update(buyerRef, {
@@ -140,10 +156,39 @@ export class TransactionService {
     batch.update(sellerRef, {
       listed: firebase.firestore.FieldValue.increment(-1),
       sold: firebase.firestore.FieldValue.increment(1),
-    });
+    })
 
     // add transaction doc to  transactions collection
-    batch.set(tranRef, transactionData, { merge: true })
+    batch.set(tranRef, transactionData)
+
+    //remove buyer's highest bid
+    if (!isNullOrUndefined(userBid)) {
+      let p: Bid[] = []
+
+      await prodRef.collection(`offers`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
+        snap.forEach(data => {
+          p.push(data.data() as Bid);
+        })
+      })
+
+      //delete or update highest_bid
+      if (p.length === 1) {
+        batch.update(prodRef, {
+          highest_bid: firebase.firestore.FieldValue.delete()
+        });
+      } else if (userBid.price === p[0].price && p[0].price != p[1].price) {
+        batch.update(prodRef, {
+          highest_bid: p[1].price
+        })
+      }
+
+      batch.delete(sellerRef.collection('offers').doc(`${userBid.offerID}`))
+      batch.delete(prodRef.collection('offers').doc(`${userBid.offerID}`))
+      batch.delete(this.afs.firestore.collection(`bids`).doc(`${userBid.offerID}`))
+      batch.update(buyerRef, {
+        offers: firebase.firestore.FieldValue.increment(-1)
+      })
+    }
 
     //commit the transaction
     return batch.commit()
@@ -153,15 +198,26 @@ export class TransactionService {
         //send alert to slack
         this.slack.sendAlert('sales', `${UID} bought ${product.model}, size ${product.size} at ${product.price} from ${product.sellerID}`).catch(err => {
           //console.error(err)
-        });
+        }) //send notification to slack
 
-        this.http.post(`${environment.cloud.url}orderConfirmation`, transactionData).subscribe(); //send email notification
+        if (product.listingID === size_prices[0].listingID && !isNullOrUndefined(size_prices[1])) {
+          this.http.put(`${environment.cloud.url}lowestAskNotification`, {
+            product_id: size_prices[1].productID,
+            seller_id: size_prices[1].sellerID,
+            condition: size_prices[1].condition,
+            size: size_prices[1].size,
+            listing_id: size_prices[1].listingID,
+            price: size_prices[1].price
+          }).subscribe()
+        }
 
-        return transactionID; //return transaction_id
+        this.http.post(`${environment.cloud.url}orderConfirmation`, transactionData).subscribe() //send email notification
+
+        return transactionID //return transaction_id
       })
       .catch(err => {
-        console.error(err);
-        return false;
+        console.error(err)
+        return false
       })
   }
 
@@ -171,17 +227,16 @@ export class TransactionService {
    * product: buyer's Bid
    */
   async sellTransactionApproved(UID: string, product: Bid): Promise<string | boolean> {
-    const batch = firebase.firestore().batch();
-    const id = product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase();
-    const purchaseDate = Date.now();
-    const transactionID = `${product.buyerID}-${UID}-${purchaseDate}`;
-    const shippingCost = 15;
+    const batch = firebase.firestore().batch()
+    const purchaseDate = Date.now()
+    const transactionID = `${product.buyerID}-${UID}-${purchaseDate}`
+    const shippingCost = 15
 
-    const buyerRef = this.afs.firestore.collection(`users`).doc(`${product.buyerID}`); //buyer doc ref
-    const sellerRef = this.afs.firestore.collection(`users`).doc(`${UID}`); //seller doc ref
-    const prodRef = this.afs.firestore.collection(`products`).doc(`${id}`); //prod doc ref
-    const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`); //transaction doc ref
-    const bidRef = this.afs.firestore.collection('bids'); //bid collection ref
+    const buyerRef = this.afs.firestore.collection(`users`).doc(`${product.buyerID}`) //buyer doc ref
+    const sellerRef = this.afs.firestore.collection(`users`).doc(`${UID}`) //seller doc ref
+    const prodRef = this.afs.firestore.collection(`products`).doc(`${product.productID}`) //prod doc ref
+    const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`) //transaction doc ref
+    const bidRef = this.afs.firestore.collection('bids') //bid collection ref
 
     //transaction data
     const transactionData: Transaction = {
@@ -189,7 +244,7 @@ export class TransactionService {
       assetURL: product.assetURL,
       condition: product.condition,
       offerID: product.offerID,
-      productID: id,
+      productID: product.productID,
       model: product.model,
       price: product.price,
       total: product.price + shippingCost,
@@ -224,24 +279,90 @@ export class TransactionService {
       },
       paymentID: '',
       type: 'sold'
-    };
+    }
+
+    let prices: Bid[] = [] //highest bids
+    let size_prices: Bid[] = [] //size highest bids
+    let userAsk: Ask
+
+    //get two highest bids
+    await prodRef.collection(`offers`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
+      snap.forEach(data => {
+        prices.push(data.data() as Bid);
+      })
+    })
+
+    //get two highest prices in specific size
+    await prodRef.collection(`offers`).where('size', '==', `${product.size}`).where('condition', '==', `${product.condition}`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
+      snap.forEach(ele => {
+        size_prices.push(ele.data() as Bid);
+      })
+    })
+
+    //get seller's lowest ask if applicable
+    await sellerRef.collection('listings').where('productID', '==', `${product.productID}`).where('size', '==', `${product.size}`).orderBy('price', 'asc').limit(1).get().then(snap => {
+      snap.forEach(data => {
+        userAsk = data.data() as Ask
+      })
+    })
+
+    //delete or update highest_bid
+    if (prices.length === 1) {
+      batch.update(prodRef, {
+        highest_bid: firebase.firestore.FieldValue.delete()
+      });
+    } else if (product.price === prices[0].price && prices[0].price != prices[1].price) {
+      batch.update(prodRef, {
+        highest_bid: prices[1].price
+      })
+    }
 
     // delete listings
-    batch.delete(buyerRef.collection(`offers`).doc(`${product.offerID}`));
-    batch.delete(prodRef.collection(`offers`).doc(`${product.offerID}`));
-    batch.delete(bidRef.doc(`${product.offerID}`));
+    batch.delete(buyerRef.collection(`offers`).doc(`${product.offerID}`))
+    batch.delete(prodRef.collection(`offers`).doc(`${product.offerID}`))
+    batch.delete(bidRef.doc(`${product.offerID}`))
 
     // set ordered and sol fields
     batch.set(buyerRef, {
       ordered: firebase.firestore.FieldValue.increment(1),
       offers: firebase.firestore.FieldValue.increment(-1)
-    }, { merge: true });
+    }, { merge: true })
     batch.set(sellerRef, {
       sold: firebase.firestore.FieldValue.increment(1)
-    }, { merge: true });
+    }, { merge: true })
 
     // add transaction doc to  transactions collection
-    batch.set(tranRef, transactionData, { merge: true })
+    batch.set(tranRef, transactionData)
+
+    //remove seller's lowest ask
+    if (!isNullOrUndefined(userAsk)) {
+      let p: Ask[] = []
+      //get lowest two prices
+      await prodRef.collection(`listings`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
+        snap.forEach(data => {
+          p.push(data.data() as Ask);
+        })
+      })
+
+      //delete or update lowest_price
+      if (p.length === 1) {
+        batch.update(prodRef, {
+          lowestPrice: firebase.firestore.FieldValue.delete()
+        });
+      } else if (userAsk.price === p[0].price && p[0].price != p[1].price) {
+        batch.update(prodRef, {
+          lowestPrice: p[1].price
+        })
+      }
+
+
+      batch.delete(sellerRef.collection('listings').doc(`${userAsk.listingID}`))
+      batch.delete(prodRef.collection('listings').doc(`${userAsk.listingID}`))
+      batch.delete(this.afs.firestore.collection(`asks`).doc(`${userAsk.listingID}`))
+      batch.update(sellerRef, {
+        listings: firebase.firestore.FieldValue.increment(-1)
+      })
+    }
 
     //commit the transaction
     return batch.commit()
@@ -251,14 +372,25 @@ export class TransactionService {
         //send alert to slack
         this.slack.sendAlert('sales', `${UID} sold ${product.model}, size ${product.size} at ${product.price} to ${product.buyerID}`).catch(err => {
           //console.error(err)
-        });
+        })
+
+        if (product.offerID === size_prices[0].offerID && !isNullOrUndefined(size_prices[1])) {
+          this.http.put(`${environment.cloud.url}highestBidNotification`, {
+            product_id: size_prices[1].productID,
+            buyer_id: size_prices[1].buyerID,
+            condition: size_prices[1].condition,
+            size: size_prices[1].size,
+            offer_id: size_prices[1].offerID,
+            price: size_prices[1].price
+          }).subscribe()
+        }
 
         this.http.post(`${environment.cloud.url}orderConfirmation`, transactionData).subscribe(); //send order confirmation email
 
         return transactionID; //return transaction_id
       })
       .catch(err => {
-        //console.error(err);
+        console.error(err);
         return false;
       })
   }

@@ -126,9 +126,9 @@ export class BidService {
     const userRef = this.afs.firestore.collection('users').doc(`${bid.buyerID}`);
     const bidRef = this.afs.firestore.collection(`bids`).doc(`${bid.offerID}`);
 
-    batch.delete(userBidRef); //remove bid in user document
-    batch.delete(prodBidRef); //remove bid in prod document
-    batch.delete(bidRef); //remove bid bid collection
+    batch.delete(userBidRef) //remove bid in user document
+    batch.delete(prodBidRef) //remove bid in prod document
+    batch.delete(bidRef) //remove bid bid collection
     batch.update(userRef, {
       offers: firebase.firestore.FieldValue.increment(-1)
     });
@@ -139,13 +139,13 @@ export class BidService {
 
     await prodRef.collection('offers').orderBy('price', 'desc').limit(2).get().then(snap => {
       snap.forEach(data => {
-        prices.push(data.data().price)
+        prices.push(data.data() as Bid)
       })
     })
 
     await prodRef.collection(`offers`).where('size', '==', `${bid.size}`).where('condition', '==', `${bid.condition}`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
       snap.forEach(ele => {
-        size_prices.push(ele.data() as Bid);
+        size_prices.push(ele.data() as Bid)
       })
     })
 
@@ -180,16 +180,16 @@ export class BidService {
         return true;
       })
       .catch((err) => {
-        console.error(err);
-        return false;
-      });
+        console.error(err)
+        return false
+      })
   }
 
   public async updateBid(offer_id: string, product_id: string, old_price: number, condition: string, price: number, size: string): Promise<boolean> {
     let UID: string;
     await this.auth.isConnected().then(data => {
-      UID = data.uid;
-    });
+      UID = data.uid
+    })
 
     const batch = this.afs.firestore.batch();
     const last_updated = Date.now()
@@ -204,13 +204,13 @@ export class BidService {
 
     await prodRef.collection(`offers`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
       snap.forEach(ele => {
-        prices.push(ele.data().price);
-      });
-    });
+        prices.push(ele.data() as Bid)
+      })
+    })
 
     await prodRef.collection(`offers`).where('size', '==', `${size}`).where('condition', '==', `${condition}`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
       snap.forEach(ele => {
-        size_prices.push(ele.data() as Bid);
+        size_prices.push(ele.data() as Bid)
       })
     })
 
@@ -240,21 +240,21 @@ export class BidService {
       price: price,
       size: size,
       last_updated
-    });
+    })
 
     batch.update(userBidRef, {
       condition: condition,
       price: price,
       size: size,
       last_updated
-    });
+    })
 
     batch.update(prodBidRef, {
       condition: condition,
       price: price,
       size: size,
       last_updated
-    });
+    })
 
     return batch.commit()
       .then(() => {
@@ -263,9 +263,9 @@ export class BidService {
         return true;
       })
       .catch((err) => {
-        console.error(err);
-        return false;
-      });
+        console.error(err)
+        return false
+      })
   }
 
   sendHighestBidNotification(price: number, condition: string, size: string, UID: string, product_id: string, offer_id: string, size_prices: Bid[]) {

@@ -249,8 +249,8 @@ export class CheckoutComponent implements OnInit {
     if (code.length == 10) {
       this.promoLoading = true;
       this.nxtdropCCService.getPromoCode(code).subscribe(res => {
-        console.log(res.initiationDate)
-        console.log(this.user.creation_date)
+        //console.log(res.initiationDate)
+        //console.log(this.user.creation_date)
         if (!isNullOrUndefined(res) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
           this.discount = res
           if (res.type === 'cash') {
@@ -261,8 +261,8 @@ export class CheckoutComponent implements OnInit {
               this.total = this.total - res.amount;
             }
           } else {
-            this.total = this.total * (1 - (this.discount.amount / 100))
             this.discount.amount = this.total * (this.discount.amount / 100)
+            this.total = this.total - this.discount.amount
           }
 
           this.promoLoading = false;
