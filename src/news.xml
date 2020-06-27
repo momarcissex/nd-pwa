@@ -5,7 +5,7 @@
 			https://nxtdrop.com/news/nxtdrop-the-canadian-stockx-is-finally-here
 		</loc>
 		<lastmod>
-			2020-05-17
+			2020-06-27
 		</lastmod>
 		<changefreq>
 			weekly
@@ -19,7 +19,7 @@
 			https://nxtdrop.com/news/top-5-sneakers-to-wear-for-halloween
 		</loc>
 		<lastmod>
-			2020-05-17
+			2020-06-27
 		</lastmod>
 		<changefreq>
 			weekly
@@ -33,7 +33,7 @@
 			https://nxtdrop.com/news/the-best-canadian-online-sneaker-stores
 		</loc>
 		<lastmod>
-			2020-05-17
+			2020-06-27
 		</lastmod>
 		<changefreq>
 			weekly
@@ -47,7 +47,7 @@
 			https://nxtdrop.com/news/buying-from-stockx-as-a-canadian
 		</loc>
 		<lastmod>
-			2020-05-17
+			2020-06-27
 		</lastmod>
 		<changefreq>
 			weekly
@@ -61,7 +61,21 @@
 			https://nxtdrop.com/news/selling-sneakers-in-canada
 		</loc>
 		<lastmod>
-			2020-05-17
+			2020-06-27
+		</lastmod>
+		<changefreq>
+			weekly
+		</changefreq>
+		<priority>
+			0.9
+		</priority>
+	</url>
+	<url>
+		<loc>
+			https://nxtdrop.com/news/heat-this-week-feb-29th-edition
+		</loc>
+		<lastmod>
+			2020-06-27
 		</lastmod>
 		<changefreq>
 			weekly

@@ -20,14 +20,14 @@ declare const fbq: any;
 })
 export class ProductComponent implements OnInit {
 
-  productID: string;
+  productID: string
 
   default_sizes: { [key: string]: number[] } = {
     'M': [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 18],
     'Y': [3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7],
     'W': [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5]
-  };
-  sizeSuffix: string = '';
+  }
+  sizeSuffix: string = ''
 
   productInfo: Product = {
     assetURL: '',
@@ -38,20 +38,20 @@ export class ProductComponent implements OnInit {
     type: '',
     productID: '',
     colorway: ''
-  };
+  }
 
-  offers = [];
+  offers = []
   currentOffer = {
     LowestAsk: '',
     HighestBid: ''
   }
-  sizeSelected: string = '';
-  lowestAsk: any;
-  highestBid: any;
+  sizeSelected: string = ''
+  lowestAsk: any
+  highestBid: any
 
-  modalTimeout;
+  modalTimeout
 
-  UID: string;
+  UID: string
 
   constructor(
     private route: ActivatedRoute,
@@ -308,6 +308,16 @@ export class ProductComponent implements OnInit {
       (document.getElementById(`${selected}`) as HTMLInputElement).classList.add('selected');
       document.body.scrollTop = 0; //For Safari
       window.scrollTo({ top: 0, behavior: 'smooth' }); //For Chrome, Firefox, Opera and IE
+    }
+  }
+
+  sizeAlert() {
+    const  w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+
+    if (w >= 800) {
+      alert('Please select a size')
+    } else {
+      alert('Please select a size below')
     }
   }
 
