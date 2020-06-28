@@ -13,6 +13,7 @@ import { Bid } from 'src/app/models/bid';
 import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
+import { User } from 'firebase';
 
 declare const gtag: any;
 
@@ -24,53 +25,56 @@ declare const gtag: any;
 export class SellComponent implements OnInit {
 
   // Algolia Set up
-  algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey);
-  index;
-  results;
+  algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey)
+  index
+  results
 
-  showResults = false;
+  showResults = false
 
-  showHowItWorks: boolean = true;
-  showSearch: boolean = false;
-  showItem: boolean = false;
+  showHowItWorks: boolean = true
+  showSearch: boolean = false
+  showItem: boolean = false
 
   default_sizes: { [keys: string]: number[] } = {
     "M": [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 18],
     "W": [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5],
     "GS": [3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7]
-  };
-  sizeType: string = 'M';
-  sizeSuffix: string = '';
+  }
+  sizeType: string = 'M'
+  sizeSuffix: string = ''
 
-  offers = [];
+  offers = []
 
-  inputLength = 0; // Length of search box input
+  inputLength = 0 // Length of search box input
 
-  selectedPair: Product; // Listing Product object
-  selectedSize: string = '';
+  selectedPair: Product // Listing Product object
+  selectedSize: string = ''
 
-  HighestBid: any = NaN;
-  LowestAsk: any = NaN;
-  currentBid: any = NaN;
-  currentAsk: any = NaN;
+  HighestBid: any = NaN
+  LowestAsk: any = NaN
+  currentBid: any = NaN
+  currentAsk: any = NaN
 
   // Listing Information
-  pairCondition: string;
-  pairPrice: number;
-  pairSize: string;
+  pairCondition: string
+  pairPrice: number
+  pairSize: string
 
-  priceAdded = false;
+  priceAdded = false
 
   // Page 4 boolean
-  loading = false;
-  listed = false;
-  error = false;
+  loading = false
+  listed = false
+  error = false
 
-  user: any;
+  user: User;
 
-  consignmentFee = 0;
-  paymentProcessingFee = 0;
-  payout = 0;
+  consignmentFee = 0
+  paymentProcessingFee = 0
+  payout = 0
+
+  isDeadstock = false
+  willShip = false
 
   constructor(
     private askService: AskService,
@@ -128,7 +132,7 @@ export class SellComponent implements OnInit {
     this.pairSize = this.selectedSize;
     this.loading = true;
 
-    if (isNaN(this.pairPrice)) {
+    if (isNaN(this.pairPrice) || !this.isDeadstock || !this.willShip) {
       this.addError();
       return;
     }
@@ -303,12 +307,6 @@ export class SellComponent implements OnInit {
   addListed() {
     this.loading = false;
     this.listed = true;
-
-    setTimeout(() => {
-      return this.ngZone.run(() => {
-        return this.router.navigate([`/product/${this.selectedPair.productID}`]);
-      });
-    }, 2500);
   }
 
   sellNow() {
@@ -348,6 +346,20 @@ export class SellComponent implements OnInit {
     this.consignmentFee = 0;
     this.payout = 0;
     this.paymentProcessingFee = 0;
+  }
+
+  agreementsCheckbox(mode: string) {
+    if (mode === 'deadstock') {
+      this.isDeadstock = !this.isDeadstock
+    } else if (mode === 'ship') {
+      this.willShip = !this.willShip
+    }
+  }
+
+  finish() {
+    return this.ngZone.run(() => {
+      return this.router.navigate([`/product/${this.selectedPair.productID}`]);
+    });
   }
 
 }

@@ -242,6 +242,83 @@
           background: $prodBtnPrimary2;
         }
       }
+
+      .checkboxes {
+        div {
+          margin: $spacing-small auto;
+          display: grid;
+          grid-template-columns: 5% 95%;
+          column-gap: 0.6rem;
+        }
+      }
+    }
+  }
+
+  .review {
+    background: $lightergrey;
+    display: grid;
+    align-content: center;
+    width: 100%;
+
+    .review-container {
+      display: grid;
+      grid-template-rows: 1fr;
+
+      .details {
+        width: 100%;
+
+        div {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          padding: $spacing-small 0;
+          border-bottom: 1px dotted $black;
+
+          p {
+            align-self: center;
+
+            &:first-child {
+              justify-self: start;
+            }
+
+            &:last-child {
+              justify-self: end;
+            }
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+
+        .payout {
+          font-weight: $weight-black;
+
+          p {
+            font-size: $font-normal;
+          }
+        }
+      }
+
+      h5 {
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+
+      ul {
+        li {
+          margin-left: 1rem;
+          margin-bottom: 1.2rem;
+          font-weight: lighter;
+        }
+      }
+
+      .finish-btn {
+        width: 50%;
+        padding: $spacing-small;
+        text-transform: uppercase;
+        margin: $spacing-small auto;
+        background: $prodBtnPrimary;
+      }
     }
   }
 }
@@ -507,6 +584,54 @@
             }
           }
         }
+
+        .checkboxes {
+          div {
+            column-gap: 0.6rem;
+
+            p {
+              font-size: 0.7rem;
+            }
+          }
+        }
+      }
+    }
+
+    .review {
+      .review-container {
+        margin: $spacing-normal auto;
+        width: 90%;
+        row-gap: 1rem;
+
+        .details {
+          margin: $spacing-small auto;
+
+          div {
+            p {
+              font-size: $font-xsmall;
+            }
+          }
+
+          .payout {
+            p {
+              font-size: $font-small;
+            }
+          }
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        h5 {
+          font-size: 0.6rem;
+        }
+
+        ul {
+          li {
+            font-size: 0.6rem;
+          }
+        }
       }
     }
   }
@@ -678,6 +803,54 @@
                 font-size: $font-small;
               }
             }
+          }
+        }
+
+        .checkboxes {
+          div {
+            column-gap: 0.6rem;
+
+            p {
+              font-size: 0.7rem;
+            }
+          }
+        }
+      }
+    }
+
+    .review {
+      .review-container {
+        margin: $spacing-normal auto;
+        width: 90%;
+        row-gap: 1rem;
+
+        .details {
+          margin: $spacing-small auto;
+
+          div {
+            p {
+              font-size: $font-xsmall;
+            }
+          }
+
+          .payout {
+            p {
+              font-size: $font-small;
+            }
+          }
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        h5 {
+          font-size: 0.7rem;
+        }
+
+        ul {
+          li {
+            font-size: 0.7rem;
           }
         }
       }
@@ -853,6 +1026,54 @@
             }
           }
         }
+
+        .checkboxes {
+          div {
+            column-gap: 0.6rem;
+
+            p {
+              font-size: 0.7rem;
+            }
+          }
+        }
+      }
+    }
+
+    .review {
+      .review-container {
+        margin: $spacing-normal auto;
+        width: 80%;
+        row-gap: 1rem;
+
+        .details {
+          margin: $spacing-small auto;
+
+          div {
+            p {
+              font-size: $font-small;
+            }
+          }
+
+          .payout {
+            p {
+              font-size: $font-normal;
+            }
+          }
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        h5 {
+          font-size: 0.8rem;
+        }
+
+        ul {
+          li {
+            font-size: 0.8rem;
+          }
+        }
       }
     }
   }
@@ -966,7 +1187,7 @@
         grid-column: 1 / 6;
 
         h2 {
-          font-size: $font-large
+          font-size: $font-large;
         }
 
         h3 {
@@ -1082,6 +1303,54 @@
 
           .sell-now-btn:hover {
             background: #f2635a;
+          }
+        }
+
+        .checkboxes {
+          div {
+            column-gap: 0.6rem;
+
+            p {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+
+    .review {
+      .review-container {
+        margin: $spacing-normal auto;
+        width: 70%;
+        row-gap: 1rem;
+
+        .details {
+          margin: $spacing-small auto;
+
+          div {
+            p {
+              font-size: $font-small;
+            }
+          }
+
+          .payout {
+            p {
+              font-size: $font-normal;
+            }
+          }
+        }
+
+        h2 {
+          font-size: 2rem;
+        }
+
+        h5 {
+          font-size: 1.1rem;
+        }
+
+        ul {
+          li {
+            font-size: 1.1rem;
           }
         }
       }
@@ -1317,6 +1586,54 @@
 
           .sell-now-btn:hover {
             background: #f2635a;
+          }
+        }
+
+        .checkboxes {
+          div {
+            column-gap: 0.6rem;
+
+            p {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+
+    .review {
+      .review-container {
+        margin: $spacing-normal auto;
+        width: 70%;
+        row-gap: 1rem;
+
+        .details {
+          margin: $spacing-normal auto;
+
+          div {
+            p {
+              font-size: $font-normal;
+            }
+          }
+
+          .payout {
+            p {
+              font-size: $font-large;
+            }
+          }
+        }
+
+        h2 {
+          font-size: 2rem;
+        }
+
+        h5 {
+          font-size: 1.1rem;
+        }
+
+        ul {
+          li {
+            font-size: 1.1rem;
           }
         }
       }
@@ -1558,6 +1875,54 @@
 
           .sell-now-btn:hover {
             background: #f2635a;
+          }
+        }
+
+        .checkboxes {
+          div {
+            column-gap: 0.6rem;
+
+            p {
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+    }
+
+    .review {
+      .review-container {
+        margin: $spacing-normal auto;
+        width: 70%;
+        row-gap: 1rem;
+
+        .details {
+          margin: $spacing-normal auto;
+
+          div {
+            p {
+              font-size: $font-normal;
+            }
+          }
+
+          .payout {
+            p {
+              font-size: $font-large;
+            }
+          }
+        }
+
+        h2 {
+          font-size: 2rem;
+        }
+
+        h5 {
+          font-size: 1.1rem;
+        }
+
+        ul {
+          li {
+            font-size: 1.1rem;
           }
         }
       }

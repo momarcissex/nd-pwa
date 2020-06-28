@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <div class="selling-form" *ngIf="selectedSize">
+    <div class="selling-form" *ngIf="selectedSize && !listed">
       <div class="offer-display">
         <div class="sell-now-container">
           <div>
@@ -126,11 +126,23 @@
             </div>
           </div>
 
+          <div class="checkboxes">
+            <div>
+              <input type="checkbox" name="deadstock" id="deadstock" (click)="agreementsCheckbox('deadstock')">
+              <p>My sneakers are new, unworn with original undamaged box</p>
+            </div>
+
+            <div>
+              <input type="checkbox" name="ship" id="ship" (click)="agreementsCheckbox('ship')">
+              <p>I will ship within 2 business of sale to avoid penalties</p>
+            </div>
+          </div>
+
           <button class="btn ripple place-ask-btn"
-            *ngIf="priceAdded && (pairPrice > currentBid.price || !currentBid) && !loading && !listed"
+            *ngIf="priceAdded && (pairPrice > currentBid.price || !currentBid) && !loading && !listed && isDeadstock && willShip"
             (click)="submitListing()">Place Ask</button>
 
-          <button class="btn place-ask-btn disabled" *ngIf="!priceAdded">Place Ask</button>
+          <button class="btn place-ask-btn disabled" *ngIf="!priceAdded || !isDeadstock || !willShip">Place Ask</button>
 
           <button class="btn ripple place-ask-btn" *ngIf="loading">
             <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
@@ -138,7 +150,8 @@
 
           <button class="btn ripple place-ask-btn" *ngIf="listed">Listed</button>
 
-          <button class="btn ripple sell-now-btn" *ngIf="priceAdded && currentBid && pairPrice <= currentBid.price"
+          <button class="btn ripple sell-now-btn"
+            *ngIf="priceAdded && currentBid && pairPrice <= currentBid.price && isDeadstock && willShip"
             (click)="sellNow()">Sell Now</button>
         </div>
       </div>
@@ -146,6 +159,63 @@
       <div class="size-display">
         <h4>{{ selectedSize }}</h4>
         <button class="btn ripple" (click)="changeSize()">Change Size</button>
+      </div>
+    </div>
+
+    <div class="review" *ngIf="listed">
+      <div class="review-container">
+        <div>
+          <h2>Your sneakers are now listed for sale!</h2>
+        </div>
+
+        <div class="details">
+          <div class="size">
+            <p>Size</p>
+            <p>{{ pairSize }}</p>
+          </div>
+
+          <div class="condition">
+            <p>Condition</p>
+            <p>Deadstock; 100% Authentic</p>
+          </div>
+
+          <div class="ask">
+            <p>Your Ask</p>
+            <p>{{ pairPrice | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+
+          <div class="fee">
+            <p>Transaction Fee (9.5%)</p>
+            <p>-{{ consignmentFee | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+
+          <div class="processing">
+            <p>Payment Processing (3%)</p>
+            <p>-{{ paymentProcessingFee | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+
+          <div class="shipping">
+            <p>Shipping</p>
+            <p>{{ 0 | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+
+          <div class="payout">
+            <p>Total Payout</p>
+            <p>{{  payout | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+        </div>
+
+        <div>
+          <h5>Reminder</h5>
+
+          <ul>
+            <li>We require that sneakers are deadstock and 100% authentic</li>
+            <li>Buyers can Bid on your sneakers or buy them immediately</li>
+            <li>You can accept a buyer's Bid at any time</li>
+          </ul>
+        </div>
+
+        <button class="btn ripple finish-btn" (click)="finish()">Finish</button>
       </div>
     </div>
   </section>

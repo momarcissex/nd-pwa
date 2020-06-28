@@ -13,6 +13,8 @@ import { Ask } from 'src/app/models/ask';
 import { Bid } from 'src/app/models/bid';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
+import { User } from 'firebase';
+import { response } from 'express';
 
 declare var gtag: any;
 
@@ -24,51 +26,55 @@ declare var gtag: any;
 export class MakeAnOfferComponent implements OnInit {
 
   // Algolia Set up
-  algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey);
-  index;
-  results;
-  inputLength = 0; // Length of search box input
-  showResults = false;
+  algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey)
+  index
+  results
+  inputLength = 0 // Length of search box input
+  showResults = false
 
   //Size Setup
   default_sizes: { [keys: string]: number[] } = {
     "M": [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 18],
     "W": [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5],
     "GS": [3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7]
-  };
-  sizeType: string = 'M';
-  sizeSuffix: string = '';
+  }
+  sizeType: string = 'M'
+  sizeSuffix: string = ''
 
-  offers = [];
+  offers = []
 
   //Pages Boolean
-  showHowItWorks: boolean = true;
-  showSearch: boolean = false;
-  showItem: boolean = false;
+  showHowItWorks: boolean = true
+  showSearch: boolean = false
+  showItem: boolean = false
 
   // Offer Information
-  pairCondition: string;
-  pairPrice: number;
-  pairSize: string;
+  pairCondition: string
+  pairPrice: number
+  pairSize: string
 
-  selectedPair: Product; // Listing Product object
-  selectedSize: string = '';
+  selectedPair: Product // Listing Product object
+  selectedSize: string = ''
 
-  HighestBid: any = NaN;
-  LowestAsk: any = NaN;
-  currentBid: any = NaN;
-  currentAsk: any = NaN;
+  HighestBid: any = NaN
+  LowestAsk: any = NaN
+  currentBid: any = NaN
+  currentAsk: any = NaN
 
-  priceAdded = false;
+  priceAdded = false
 
-  error: boolean;
-  listed: boolean;
-  loading: boolean;
+  error: boolean
+  listed: boolean
+  loading: boolean
 
-  user: any;
+  user: User
 
-  shippingCost: number = 15;
-  total: number = 0;
+  shippingCost: number = 15
+  total: number = 0
+
+  userBid: Bid
+
+  willCheckout: boolean = false
 
   constructor(
     private askService: AskService,
@@ -89,20 +95,20 @@ export class MakeAnOfferComponent implements OnInit {
 
     this.index = this.algoliaClient.initIndex(environment.algolia.index);
 
-    this.activatedRoute.queryParams.subscribe(params => {
-      if (!isUndefined(params.sneaker)) {
-        this.selectPair(JSON.parse(params.sneaker), false);
-
-        if (!isNullOrUndefined(params.size)) {
-          this.selectSize(params.size);
-        }
-      }
-    });
-
     this.auth.isConnected().then(res => {
       if (!isNull(res)) {
         this.user = res;
       }
+
+      this.activatedRoute.queryParams.subscribe(params => {
+        if (!isUndefined(params.sneaker)) {
+          this.selectPair(JSON.parse(params.sneaker), false);
+
+          if (!isNullOrUndefined(params.size)) {
+            this.selectSize(params.size);
+          }
+        }
+      });
     });
   }
 
@@ -217,12 +223,6 @@ export class MakeAnOfferComponent implements OnInit {
   addListed() {
     this.loading = false;
     this.listed = true;
-
-    setTimeout(() => {
-      return this.ngZone.run(() => {
-        return this.router.navigate([`/product/${this.selectedPair.productID}`]);
-      });
-    }, 2500);
   }
 
   nextPage() {
@@ -247,29 +247,40 @@ export class MakeAnOfferComponent implements OnInit {
     this.pairSize = this.selectedSize;
     this.loading = true;
 
-    if (isNaN(this.pairPrice)) {
+    if (isNaN(this.pairPrice) || !this.willCheckout) {
       this.addError();
       return;
     }
 
-    this.bidService.submitBid(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price).then(res => {
-      if (res) {
-        if (isPlatformBrowser(this._platformId)) {
-          gtag('event', 'bid', {
-            'event_category': 'engagement',
-            'event_label': this.selectedPair.model,
-            'event_value': this.pairPrice
-          });
+    if (isNullOrUndefined(this.userBid)) {
+      this.bidService.submitBid(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price).then(res => {
+        if (res) {
+          if (isPlatformBrowser(this._platformId)) {
+            gtag('event', 'bid', {
+              'event_category': 'engagement',
+              'event_label': this.selectedPair.model,
+              'event_value': this.pairPrice
+            });
+          }
+
+          const msg = `${this.user.uid} placed an offer for ${this.selectedPair.model}, size ${this.pairSize} at ${this.pairPrice}`;
+          this.slack.sendAlert('offers', msg);
+
+          this.addListed();
+        } else {
+          this.addError();
         }
-
-        const msg = `${this.user.uid} placed an offer for ${this.selectedPair.model}, size ${this.pairSize} at ${this.pairPrice}`;
-        this.slack.sendAlert('offers', msg);
-
-        this.addListed();
-      } else {
-        this.addError();
-      }
-    })
+      })
+    } else {
+      this.bidService.updateBid(this.userBid.offerID, this.userBid.productID, this.userBid.price, this.userBid.condition, this.pairPrice, this.pairSize)
+        .then(response => {
+          if (response) {
+            this.addListed()
+          } else {
+            this.addError()
+          }
+        })
+    }
   }
 
   priceChanges($event) {
@@ -298,6 +309,7 @@ export class MakeAnOfferComponent implements OnInit {
 
   selectSize(size: string) {
     this.selectedSize = size;
+    this.userBid = undefined
 
     this.bidService.getHighestBid(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
       if (res.empty) {
@@ -314,6 +326,12 @@ export class MakeAnOfferComponent implements OnInit {
         this.currentAsk = res.docs[0].data() as Ask
       }
     });
+
+    this.bidService.checkUserBid(this.selectedPair.productID, this.selectedSize, this.user.uid, 'new').subscribe(response => {
+      if (response.length > 0) {
+        this.userBid = response[0]
+      }
+    })
   }
 
   changeSize() {
@@ -324,6 +342,18 @@ export class MakeAnOfferComponent implements OnInit {
     this.pairPrice = NaN;
     this.shippingCost = 0;
     this.total = 0;
+  }
+
+  agreementsCheckbox(mode: string) {
+    if (mode === 'checkout') {
+      this.willCheckout = !this.willCheckout
+    } 
+  }
+
+  finish() {
+    return this.ngZone.run(() => {
+      return this.router.navigate([`/product/${this.selectedPair.productID}`]);
+    });
   }
 
 }

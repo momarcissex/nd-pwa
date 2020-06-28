@@ -38,7 +38,7 @@
   </div>
 
   <div *ngIf="listingNav else showOffer">
-    <h2>Listed Items</h2>
+    <h2>Your Items For Sale</h2>
     <div class="profile-items">
       <a class="profile-item" *ngFor="let listing of listings" [routerLink]="['/edit-listing', listing.listingID]" [queryParams]="{ source: 'profile'}">
         <section class="item-specs">
@@ -52,7 +52,7 @@
   </div>
 
   <ng-template #showOffer>
-    <h2> Your Offers</h2>
+    <h2> Your Bids</h2>
     <div class="profile-items">
       <a class="profile-item" *ngFor="let offer of offers" [routerLink]="['/edit-offer', offer.offerID]" [queryParams]="{ source: 'profile'}">
         <section class="item-specs">

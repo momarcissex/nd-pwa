@@ -28,6 +28,10 @@ export class BidService {
     return this.afs.collection('bids').doc(`${offerID}`).valueChanges() as Observable<Bid>
   }
 
+  public checkUserBid(productID: string, size: string, uid: string, condition: string) {
+    return this.afs.collection('bids', ref => ref.where('productID', '==', productID).where('buyerID', '==', uid).where('size', '==', size).where('condition', '==', condition)).valueChanges() as Observable<Bid[]>
+  }
+
   public getHighestBid(productID: string, condition: string, size?: string) {
     let offerRef: firebase.firestore.Query<firebase.firestore.DocumentData>;
 
