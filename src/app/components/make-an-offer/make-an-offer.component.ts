@@ -250,10 +250,17 @@ export class MakeAnOfferComponent implements OnInit {
     if (isNaN(this.pairPrice) || !this.willCheckout) {
       this.addError();
       return;
+    } else if (isNullOrUndefined(this.user)) {
+      this.router.navigate(['/login'], {
+        queryParams: {
+          redirectTo: this.router.url
+        }
+      })
+      return;
     }
 
     if (isNullOrUndefined(this.userBid)) {
-      this.bidService.submitBid(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price).then(res => {
+      this.bidService.submitBid(this.user.uid, this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price).then(res => {
         if (res) {
           if (isPlatformBrowser(this._platformId)) {
             gtag('event', 'bid', {
@@ -327,11 +334,13 @@ export class MakeAnOfferComponent implements OnInit {
       }
     });
 
-    this.bidService.checkUserBid(this.selectedPair.productID, this.selectedSize, this.user.uid, 'new').subscribe(response => {
-      if (response.length > 0) {
-        this.userBid = response[0]
-      }
-    })
+    if (!isNullOrUndefined(this.user)) {
+      this.bidService.checkUserBid(this.selectedPair.productID, this.selectedSize, this.user.uid, 'new').subscribe(response => {
+        if (response.length > 0) {
+          this.userBid = response[0]
+        }
+      })
+    }
   }
 
   changeSize() {
@@ -347,7 +356,7 @@ export class MakeAnOfferComponent implements OnInit {
   agreementsCheckbox(mode: string) {
     if (mode === 'checkout') {
       this.willCheckout = !this.willCheckout
-    } 
+    }
   }
 
   finish() {

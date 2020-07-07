@@ -6,6 +6,8 @@ import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { isUndefined } from 'util';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IpService } from 'src/app/services/ip.service';
+import { SlackService } from 'src/app/services/slack.service';
 
 export class CustomValidators {
 
@@ -44,6 +46,8 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
   loading = false;
   error = false;
 
+  userIP: string
+
   constructor(
     private auth: AuthService,
     private fb: FormBuilder,
@@ -51,7 +55,9 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     private meta: MetaService,
     private ngZone: NgZone,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private ipService: IpService,
+    private slackService: SlackService
   ) { }
 
   ngOnInit() {
@@ -77,11 +83,16 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     });
 
     this.accountCreated = false;
+    this.ipService.getIPAddress().subscribe((data: any) => {
+      this.userIP = data.ip
+    })
   }
 
   ngOnDestroy() {
     //console.log(this.accountCreated);
     if (!this.accountCreated) {
+      console.log('ngOnDestroy')
+      console.log(this.accountCreated)
       this.auth.isConnected().then(res => {
         res.delete();
       });
@@ -93,7 +104,7 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     this.loading = true;
     const redirect = this.route.snapshot.queryParams.redirectTo;
 
-    this.auth.addInformationUser(this.firstName.value, this.lastName.value, this.username.value, this.password.value).then((res) => {
+    this.auth.addInformationUser(this.firstName.value, this.lastName.value, this.username.value, this.password.value, this.userIP).then((res) => {
       if (!res) {
         this.loading = false;
         this.error = true;
@@ -115,7 +126,10 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
         this.error = false;
       }, 1000);
       //console.log(this.accountCreated);
-    });
+    }).catch(err => {
+      console.error(err)
+      this.slackService.sendAlert('bugreport', err)
+    })
   }
 
   // Getters

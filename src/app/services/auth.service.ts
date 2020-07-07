@@ -10,7 +10,6 @@ import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import {
   AngularFirestore,
-  AngularFirestoreDocument
 } from '@angular/fire/firestore';
 
 import { User } from '../models/user';
@@ -22,6 +21,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { IpService } from './ip.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -31,7 +31,8 @@ declare const fbq: any;
 })
 export class AuthService {
   user;
-  userStatus: boolean;
+
+  isEmailSignUp: boolean = false
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -41,6 +42,7 @@ export class AuthService {
     private ngZone: NgZone,
     private emailService: EmailService,
     private http: HttpClient,
+    private ipService: IpService,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
@@ -48,6 +50,7 @@ export class AuthService {
     await this.afAuth.auth.signOut()
       .then(() => {
         console.log('Signed Out');
+        alert('signed out')
         window.Intercom('shutdown')
         window.Intercom("boot", {
           app_id: "w1p7ooc8"
@@ -73,10 +76,12 @@ export class AuthService {
     this.oAuthLogin(provider);
   }
 
-  async emailSignUp(email: string, password: string, firstName: string, lastName: string, username: string, inviteCode?: string) {
+  async emailSignUp(email: string, password: string, firstName: string, lastName: string, username: string, userIP: string, inviteCode?: string) {
     if (email || password || firstName || lastName || username) {
       return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
         .then(user => {
+          this.isEmailSignUp = true
+
           const userData: User = {
             firstName,
             lastName,
@@ -88,7 +93,8 @@ export class AuthService {
             ordered: 0,
             offers: 0,
             isActive: false,
-            creation_date: Date.parse(user.user.metadata.creationTime)
+            creation_date: Date.parse(user.user.metadata.creationTime),
+            ip_address: userIP
           };
 
           if (!isUndefined(inviteCode)) {
@@ -122,22 +128,21 @@ export class AuthService {
 
   async emailLogin(email: string, password: string) {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.isConnected().then(res => {
-          if (!isNullOrUndefined(res)) {
-            this.updateLastActivity(res.uid);
+      .then((response) => {
 
-            this.http.put(`${environment.cloud.url}IntercomData`, { uid: res.uid }).subscribe((data: any) => {
-              window.Intercom("update", {
-                "name": `${data.firstName} ${data.lastName}`, // Full name
-                "email": res.email, // Email address
-                "created_at": res.metadata.creationTime, // Signup date as a Unix timestamp
-                "user_id": res.uid,
-                "user_hash": data.hash
-              });
-            });
-          }
+        this.ipService.getIPAddress().subscribe((data: any) => {
+          this.updateLastActivity(response.user.uid, data.ip)
         })
+
+        this.http.put(`${environment.cloud.url}IntercomData`, { uid: response.user.uid }).subscribe((data: any) => {
+          window.Intercom("update", {
+            "name": `${data.firstName} ${data.lastName}`, // Full name
+            "email": response.user.email, // Email address
+            "created_at": response.user.metadata.creationTime, // Signup date as a Unix timestamp
+            "user_id": response.user.uid,
+            "user_hash": data.hash
+          });
+        });
 
         return true;
       })
@@ -151,36 +156,20 @@ export class AuthService {
     return this.afAuth.auth.signInWithPopup(provider)
       .then((credential) => {
         if (this.handleAuthToken(credential.user)) {
-          console.log('does exist');
+          //console.log('does exist');
           // console.log(this.handleAuthToken(credential.user));
         } else {
-          console.log('does not exist');
+          //console.log('does not exist');
         }
       })
       .catch(error => {
-        console.error('Error: ', error);
+        //console.error('Error: ', error);
       });
   }
 
   private handleAuthToken(user) {
     return this.checkEmail(user.email).get().subscribe((snapshot) => {
       const redirect = this.route.snapshot.queryParams.redirectTo;
-
-      this.isConnected().then(res => {
-        if (!isNullOrUndefined(res)) {
-          this.updateLastActivity(res.uid);
-
-          this.http.put(`${environment.cloud.url}IntercomData`, { uid: res.uid }).subscribe((data: any) => {
-            window.Intercom("update", {
-              "name": `${data.firstName} ${data.lastName}`, // Full name
-              "email": user.email, // Email address
-              "created_at": res.metadata.creationTime, // Signup date as a Unix timestamp
-              "user_id": res.uid,
-              "user_hash": data.hash
-            });
-          });
-        }
-      })
 
       if (snapshot.empty) {
         if (!isUndefined(redirect)) {
@@ -195,6 +184,10 @@ export class AuthService {
           });
         }
       } else {
+        this.ipService.getIPAddress().subscribe((data: any) => {
+          this.updateLastActivity(user.uid, data.ip)
+        })
+
         if (!isUndefined(redirect)) {
           return this.ngZone.run(() => {
             return this.router.navigateByUrl(`${redirect}`);
@@ -242,9 +235,13 @@ export class AuthService {
       })
       .catch((error) => {
         console.error('Error: ', error);
-        userCred.user.delete().catch(err => {
-          console.error(err);
-        });
+
+        if (this.isEmailSignUp) {
+          userCred.user.delete().catch(err => {
+            console.error(err);
+          });
+        }
+
         return false;
       });
   }
@@ -263,7 +260,7 @@ export class AuthService {
     }
   }
 
-  public addInformationUser(firstName: string, lastName: string, username: string, password: string) {
+  public addInformationUser(firstName: string, lastName: string, username: string, password: string, userIP: string) {
     if (!isNullOrUndefined(this.afAuth.auth.currentUser)) {
       const credential = auth.EmailAuthProvider.credential(this.afAuth.auth.currentUser.email, password);
 
@@ -280,7 +277,8 @@ export class AuthService {
             ordered: 0,
             offers: 0,
             isActive: true,
-            creation_date: Date.parse(userCredential.user.metadata.creationTime)
+            creation_date: Date.parse(userCredential.user.metadata.creationTime),
+            ip_address: userIP
           };
 
           if (isPlatformBrowser(this._platformId)) {
@@ -315,9 +313,10 @@ export class AuthService {
     return this.afs.collection(`users`).doc(`${uid}`).valueChanges() as Observable<User>;
   }
 
-  updateLastActivity(userID: string) {
+  updateLastActivity(userID: string, IP: string) {
     this.afs.collection('users').doc(`${userID}`).set({
-      lastActivity: Date.now()
+      lastActivity: Date.now(),
+      ip_address: IP
     }, { merge: true });
   }
 

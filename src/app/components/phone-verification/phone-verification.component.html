@@ -1,31 +1,55 @@
 <section class="phone-verification-body">
 
   <div class="phone-verification-card">
-    <div *ngIf="!isSent">
-        <h3>Phone Verification</h3>
-        <div id="inputs">
-            <input type="text" id="areaCode" placeholder="+1" mask="+0" (keyup)="verifyAreaCode()" disabled>
-            <input type="text" id="phoneNumber" placeholder="(416) 123-4567" mask="(000) 000-0000" (keyup)="verifyNumber()">
-        </div>
+    <div id="container">
 
-        <p>Phone verification help us ensure that real people are using this platform. It also helps us fight fraud. Your phone number is securely saved by our authentication system. If our database is ever compromised, your phone number will not leak. You will receive an SMS with a code. Enter the code when prompted. Standard rates apply. <br>DO NOT REFRESH PAGE.</p>
-    
-        <div id="container">
-    
-        </div>
-    
-        <button *ngIf="!linkLoading" [className]="isValidNumber ? 'btn' : 'btn disabled'" style="outline: none" id="send-code-btn" (click)="sendCode()">Send Code</button>
-        <button *ngIf="linkLoading" class="btn"  id="send-code-btn"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
-        <button class="btn" style="outline: none" id="back-btn" (click)="back()">Back</button>
+    </div>
+
+    <div *ngIf="!isSent">
+      <h3>Phone Verification</h3>
+      <div id="inputs">
+        <input type="text" id="areaCode" placeholder="+1" mask="+0" (keyup)="verifyAreaCode()" disabled>
+        <input type="text" id="phoneNumber" placeholder="(416) 123-4567" mask="(000) 000-0000" (keyup)="verifyNumber()">
+      </div>
+
+      <p>Phone verification help us ensure that real people are using this platform. It also helps us fight fraud. Your
+        phone number is securely saved by our authentication system. If our database is ever compromised, your phone
+        number will not leak. You will receive an SMS with a code. Enter the code when prompted. Standard rates apply.
+        <br>DO NOT REFRESH PAGE.</p>
+
+      <button *ngIf="!linkLoading && !verificationError" [className]="isValidNumber ? 'btn' : 'btn disabled'" style="outline: none"
+        id="send-code-btn" (click)="sendCode()">Send Code</button>
+
+      <button *ngIf="linkLoading" class="btn" id="send-code-btn">
+        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+      </button>
+
+      <button *ngIf="verificationError" class="btn" id="send-code-btn">Error</button>
+
+      <p *ngIf="verificationError">{{ errorMessage }}</p>
+
+      <button class="btn" style="outline: none" id="back-btn" (click)="back()">Back</button>
     </div>
 
     <div *ngIf="isSent">
-        <h3>Code Verification</h3>
-        <input type="text" id="authCode" placeholder="Enter Code" (keyup)="validCode()">
-        <p>Phone verification help us ensure that real people are using this platform. It also helps us fight fraud. Your phone number is securely saved by our authentication system. If our database is ever compromised, your phone number will not leak. You will receive an SMS with a code. Enter the code when prompted. Standard rates apply. <br>DO NOT REFRESH PAGE.</p>
+      <h3>Code Verification</h3>
+      <input type="text" id="authCode" placeholder="Enter Code" (keyup)="validCode()" placeholder="123456"
+        mask="000000">
+      <p>Phone verification help us ensure that real people are using this platform. It also helps us fight fraud. Your
+        phone number is securely saved by our authentication system. If our database is ever compromised, your phone
+        number will not leak. You will receive an SMS with a code. Enter the code when prompted. Standard rates apply.
+        <br>DO NOT REFRESH PAGE.</p>
 
-        <button *ngIf="!verificationLoading" [className]="isValidCode ? 'btn' : 'btn disabled'" style="outline: none" id="send-code-btn" (click)="verifyCode()">Verify</button>
-        <button *ngIf="verificationLoading" class="btn"  id="send-code-btn"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+      <button *ngIf="!verificationLoading && !verificationError" [className]="isValidCode ? 'btn' : 'btn disabled'"
+        style="outline: none" id="send-code-btn" (click)="verifyCode()">Verify</button>
+
+      <button *ngIf="verificationLoading" class="btn" id="send-code-btn">
+        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+      </button>
+
+      <button *ngIf="verificationError" class="btn" id="send-code-btn">Error</button>
+
+      <p *ngIf="verificationError">{{ errorMessage }}</p>
     </div>
   </div>
 

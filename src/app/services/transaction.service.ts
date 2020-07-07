@@ -409,6 +409,7 @@ export class TransactionService {
 
     //update transaction doc
     batch.update(tranRef, {
+      purchaseDate: Date.now(),
       paymentID,
       shippingCost,
       shipTracking: {

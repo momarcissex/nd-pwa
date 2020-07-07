@@ -8,11 +8,14 @@ export interface User {
     isActive: boolean;
     creation_date: number;
     username: string;
+    firstName: string;
+    lastName: string;
 
     // Optional
     dob?: string
     freeShipping?: boolean;
     last_activity?: number;
+    ip_address?: string;
     last_item_in_cart?: Object;
     shippingAddress?: {
         selling?: {
@@ -36,8 +39,4 @@ export interface User {
             country: string
         }
     }
-
-    /* Payment Properties */
-    firstName: string;
-    lastName: string;
 }

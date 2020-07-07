@@ -129,7 +129,7 @@ export class CheckoutComponent implements OnInit {
           }],
           shipping: {
             name: {
-              full_name: `${this.user.shippingAddress.buying.firstName} ${this.user.shippingAddress.buying.lastName}`
+              full_name: `${this.user.shippingAddress.buying.firstName} ${this.user.shippingAddress.buying.lastName}`,
             },
             address: {
               address_line_1: this.user.shippingAddress.buying.street,
@@ -140,7 +140,10 @@ export class CheckoutComponent implements OnInit {
               country_code: 'CA'
             }
           }
-        }]
+        }],
+        payer: {
+          email_address: this.user.email
+        }
       },
       advanced: {
         commit: 'true'

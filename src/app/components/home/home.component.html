@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div class="main-container">
+<div class="main-container" id="main-container">
     <app-carousel></app-carousel>
 
     <!--<section class="how-it-works-banner" *ngIf="!connected">
@@ -15,7 +15,7 @@
         </div>
     </section>-->
 
-    <section routerLink="product/{{ lastSale.productID }}" class="last-sale-banner">
+    <section routerLink="product/{{ lastSale.productID }}" class="last-sale-banner" *ngIf="lastSale">
         <h1>Last Sale</h1>
 
         <div class="prod-description">
@@ -55,6 +55,9 @@
     <app-new-releases></app-new-releases>
 
     <app-discovery></app-discovery>
+
+    <!--<iframe id="refcandy-candyjar" data-id="hfwnr5kh34gczjg2mniumoeyp" data-height="900" data-width="100%"
+        frameborder=0></iframe>-->
 </div>
 
 <app-modal></app-modal>

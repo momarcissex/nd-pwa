@@ -6,6 +6,8 @@ import { MetaService } from './services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { isNullOrUndefined } from 'util';
+import { IpService } from './services/ip.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -26,6 +28,7 @@ export class AppComponent implements AfterViewInit {
     private auth: AuthService,
     private seo: MetaService,
     private http: HttpClient,
+    private ipService: IpService,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
@@ -37,10 +40,12 @@ export class AppComponent implements AfterViewInit {
     if (isPlatformBrowser(this._platformId)) {
       window.Intercom = window.Intercom || {};
       this.auth.isConnected().then(res => {
-        if (res != undefined) {
+        if (!isNullOrUndefined(res)) {
           gtag('set', { 'user_id': res.uid }); // Set the user ID using signed-in user_id.
           fbq('init', '247312712881625', { uid: res.uid });
-          this.auth.updateLastActivity(res.uid);
+          this.ipService.getIPAddress().subscribe((data: any) => {
+            this.auth.updateLastActivity(res.uid, data.ip);
+          })
 
           this.http.put(`${environment.cloud.url}IntercomData`, { uid: res.uid }).subscribe((data: any) => {
             //console.log(data)
@@ -73,8 +78,11 @@ export class AppComponent implements AfterViewInit {
         window.Intercom("update");
 
         this.auth.isConnected().then(res => {
-          if (res != undefined) {
-            if (res.providerData[0].providerId == 'google.com' && res.providerData.length === 1 && this.router.url != '/additional-information') {
+          if (!isNullOrUndefined(res)) {
+            const pattern = new RegExp(/^\/additional-information($|\?.*$)/gm)
+            //console.log(this.router.url)
+            //console.log(pattern.test(this.router.url))
+            if (res.providerData[0].providerId == 'google.com' && res.providerData.length === 1 && !pattern.test(this.router.url)) {
               this.auth.signOut(false)
             }
           }

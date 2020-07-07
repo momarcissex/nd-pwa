@@ -34,6 +34,8 @@ sgClient.setApiKey(SENDGRID_API_KEY);
 // Twilio Init
 const twClient = twilio(env.twilio.sid, env.twilio.token);
 
+const axios = require('axios')
+
 exports.orderCancellation = functions.https.onRequest((req, res) => {
     return cors(req, res, () => {
         if (req.method !== 'POST') {
@@ -1496,5 +1498,27 @@ exports.bidReminder = functions.pubsub.schedule('every 5 minutes from 8:00 to 18
         })
     }).catch(err => {
         console.error(err)
+    })
+})
+
+exports.forwardPurchase = functions.https.onRequest((req, res) => {
+    return cors(req, res, () => {
+        if (req.method !== 'POST') {
+            return res.status(403).send(false)
+        }
+
+        return axios.default({
+            method: 'POST',
+            url: 'https://my.referralcandy.com/api/v1/purchase.json',
+            data: req.body
+        }).then((response: any) => {
+            console.log(`Status code: ${response.status}`)
+
+            return res.status(200).send(response.data)
+        }).catch((error: any) => {
+            console.log(`Error: ${error}`)
+
+            return res.status(500).send(error)
+        })
     })
 })

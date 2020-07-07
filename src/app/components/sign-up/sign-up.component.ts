@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
+import { IpService } from 'src/app/services/ip.service';
 
 export class CustomValidators {
 
@@ -47,6 +48,10 @@ export class SignUpComponent implements OnInit {
   loading = false;
   error = false;
 
+  userIP: string;
+
+  redirectURL: string;
+
   constructor(
     public auth: AuthService,
     private fb: FormBuilder,
@@ -54,12 +59,15 @@ export class SignUpComponent implements OnInit {
     private route: ActivatedRoute,
     private meta: MetaService,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private ipService: IpService
   ) { }
 
   ngOnInit() {
     this.title.setTitle(`Sign Up | NXTDROP: Sell and Buy Sneakers in Canada`);
     this.meta.addTags('Sign Up');
+
+    this.redirectURL = this.route.snapshot.queryParams.redirectTo
 
     this.signupForm = this.fb.group({
       firstName: ['', [
@@ -87,6 +95,10 @@ export class SignUpComponent implements OnInit {
     if (!isUndefined(this.route.snapshot.queryParams.inviteCode)) {
       this.inviteCode = this.route.snapshot.queryParams.inviteCode;
     }
+
+    this.ipService.getIPAddress().subscribe((data: any) => {
+      this.userIP = data.ip
+    })
   }
 
   public signup() {
@@ -94,7 +106,7 @@ export class SignUpComponent implements OnInit {
     //console.log('signup called');
 
     if (isUndefined(this.inviteCode)) {
-      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value).then(res => {
+      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP).then(res => {
         if (!res) {
           this.loading = false;
           this.error = true;
@@ -104,7 +116,7 @@ export class SignUpComponent implements OnInit {
         }
       });
     } else {
-      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.inviteCode).then(res => {
+      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP, this.inviteCode).then(res => {
         if (!res) {
           this.loading = false;
           this.error = true;
@@ -117,16 +129,24 @@ export class SignUpComponent implements OnInit {
   }
 
   redirect() {
-    const redirect = this.route.snapshot.queryParams.redirectTo;
-
-    if (!isUndefined(redirect)) {
+    if (!isUndefined(this.redirectURL)) {
       return this.ngZone.run(() => {
-        return this.router.navigateByUrl(`${redirect}`);
+        return this.router.navigateByUrl(`${this.redirectURL}`);
       });
     } else {
       return this.ngZone.run(() => {
         return this.router.navigate(['/home']);
       });
+    }
+  }
+
+  loginRedirect() {
+    if (!isUndefined(this.redirectURL)) {
+      this.router.navigate(['/login'], {
+        queryParams: { redirectTo: this.redirectURL }
+      })
+    } else {
+      this.router.navigate(['/login']);
     }
   }
 

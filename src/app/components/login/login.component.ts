@@ -19,6 +19,8 @@ export class LoginComponent implements OnInit {
   error = false;
   usernameError = false;
 
+  redirectURL: string;
+
   constructor(
     private auth: AuthService,
     private fb: FormBuilder,
@@ -32,7 +34,7 @@ export class LoginComponent implements OnInit {
     this.title.setTitle(`Log In | NXTDROP: Buy and Sell Sneakers in Canada`);
     this.meta.addTags('Log In');
 
-    //console.log(this.route.snapshot.queryParams.redirectTo);
+    this.redirectURL = this.route.snapshot.queryParams.redirectTo
 
     this.loginForm = this.fb.group({
       email: ['', [
@@ -79,12 +81,20 @@ export class LoginComponent implements OnInit {
   }
 
   private redirect() {
-    const redirect = this.route.snapshot.queryParams.redirectTo;
-
-    if (!isUndefined(redirect)) {
-      this.router.navigateByUrl(redirect);
+    if (!isUndefined(this.redirectURL)) {
+      this.router.navigateByUrl(this.redirectURL);
     } else {
       this.router.navigate(['/home']);
+    }
+  }
+
+  signUpRedirect() {
+    if (!isUndefined(this.redirectURL)) {
+      this.router.navigate(['/signup'], {
+        queryParams: { redirectTo: this.redirectURL }
+      })
+    } else {
+      this.router.navigate(['/signup']);
     }
   }
 

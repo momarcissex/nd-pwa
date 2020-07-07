@@ -40,21 +40,7 @@ export class BidService {
     return offerRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>;
   }
 
-  async submitBid(pair: Product, condition: string, price: number, size: string, size_highest_bid: number) {
-    let UID: string;
-    await this.auth.isConnected()
-      .then(data => {
-        if (!isNullOrUndefined(data)) {
-          UID = data.uid;
-        } else {
-          this.router.navigate(['/login'], {
-            queryParams: {
-              redirectTo: this.router.url
-            }
-          })
-        }
-      })
-
+  async submitBid(UID: string, pair: Product, condition: string, price: number, size: string, size_highest_bid: number) {
     const timestamp = Date.now();
     const offerID = UID + '-' + timestamp;
 

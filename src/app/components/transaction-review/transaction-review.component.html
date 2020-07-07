@@ -42,7 +42,8 @@
         </div>
       </div>
 
-      <div class="review-action" *ngIf="!transaction.status.sellerConfirmation && transaction.sellerID == user.uid && !transaction.status.cancelled">
+      <div class="review-action"
+        *ngIf="!transaction.status.sellerConfirmation && transaction.sellerID == user.uid && !transaction.status.cancelled">
         <h3>Seller Confirmation</h3>
 
         <button class="btn" (click)="confirmCancel()" *ngIf="!confLoading && !confError">Confirm Order</button>

@@ -7,6 +7,10 @@ import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
+import * as crypto from 'crypto-js';
 
 @Component({
   selector: 'app-transaction-review',
@@ -29,18 +33,23 @@ export class TransactionReviewComponent implements OnInit {
 
   redirectTo: string;
 
+  referralScript: boolean = false
+
   constructor(
     private route: ActivatedRoute,
     private TranService: TransactionService,
     private title: Title,
     private meta: MetaService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
     this.title.setTitle(`Transaction Review | NXTDROP: Sell and Buy Sneakers in Canada`);
     this.meta.addTags('Transaction Review');
+
+    //console.log(this.referralScript)
 
     this.auth.isConnected().then(res => {
       if (isNullOrUndefined(res) || isNullOrUndefined(this.route.snapshot.queryParams.transactionID)) {
@@ -48,30 +57,93 @@ export class TransactionReviewComponent implements OnInit {
       } else {
         this.transactionID = this.route.snapshot.queryParams.transactionID;
         this.redirectTo = this.route.snapshot.queryParams.redirectTo;
-        this.getData();
-        this.getUserData(res.uid);
+        this.getData(res.uid);
       }
     });
 
     this.removeFreeShipping();
   }
 
-  getData() {
+  getData(UID: string) {
     this.TranService.checkTransaction(this.transactionID).subscribe(data => {
-      this.transaction = data;
+      if (isNullOrUndefined(data)) {
+        this.error = true
+      } else {
+        this.transaction = data;
 
-      if (this.transaction.type !== 'bought' && this.transaction.type !== 'sold') {
-        this.error = true;
+        if (this.transaction.type !== 'bought' && this.transaction.type !== 'sold') {
+          this.error = true;
+        }
+
+        this.getUserData(UID)
+        //console.log(this.transaction);
       }
-      //console.log(this.transaction);
     })
   }
 
   getUserData(UID: string) {
     //console.log(UID)
     this.auth.getUserData(UID).subscribe(userData => {
+      const date = Date.now()
       this.user = userData;
       //console.log(this.user)
+
+      if (this.user.uid === this.transaction.buyerID && !isNullOrUndefined(this.route.snapshot.queryParams.source) && date - this.transaction.purchaseDate <= 60000) {
+
+        const script = document.createElement('script')
+
+        script.innerHTML = "!function (d, s){var rc = \"//go.referralcandy.com/purchase/pdq6dcm70qh3iq8qtm4jmhb9q.js\";var js = d.createElement(s);js.src = rc;var fjs = d.getElementsByTagName(s)[0];fjs.parentNode.insertBefore(js, fjs);}(document, \"script\");"
+
+        document.body.appendChild(script)
+
+        if (!isNullOrUndefined(this.transaction.discount)) {
+          const discount = this.transaction.discount as NxtdropCC
+
+          const body = {
+            accessID: environment.referralCandy.access_id,
+            browser_ip: this.user.ip_address,
+            currency_code: 'CAD',
+            discount_code: discount.cardID,
+            email: this.user.email,
+            external_reference_id: this.transaction.id,
+            first_name: this.user.firstName,
+            invoice_amount: this.transaction.total,
+            last_name: this.user.lastName,
+            order_timestamp: this.transaction.purchaseDate,
+            timestamp: date,
+            signature: `${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.ip_address}currency_code=CADdiscount_code=${discount.cardID}email=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate}timestamp=${date}user_agent=${navigator.userAgent}`,
+            user_agent: encodeURIComponent(navigator.userAgent)
+          }
+
+          this.http.post(`${environment.cloud.url}forwardPurchase`, body)
+
+        } else {
+          const body = {
+            accessID: environment.referralCandy.access_id,
+            browser_ip: this.user.ip_address,
+            currency_code: 'CAD',
+            email: this.user.email,
+            external_reference_id: this.transaction.id,
+            first_name: this.user.firstName,
+            invoice_amount: this.transaction.total.toString(),
+            last_name: this.user.lastName,
+            order_timestamp: this.transaction.purchaseDate.toString(),
+            timestamp: date.toString(),
+            signature: crypto.MD5(`${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.ip_address}currency_code=CADemail=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total.toString()}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate.toString()}timestamp=${date.toString()}user_agent=${navigator.userAgent}`).toString(),
+            user_agent: navigator.userAgent
+          }
+
+          this.http.post(`${environment.cloud.url}forwardPurchase`, body).subscribe(
+            res => {
+              console.log(res)
+            },
+            err => {
+              console.log(err)
+            }
+          )
+        }
+        //console.log(referralCandyData)
+      }
     });
   }
 

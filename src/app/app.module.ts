@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { environment } from 'src/environments/environment';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 
 /** Components */
@@ -176,6 +176,7 @@ import { RecoverEmailComponent } from './components/recover-email/recover-email.
     FormsModule,
     NgxMaskModule.forRoot(),
     HttpClientModule,
+    HttpClientJsonpModule,
     NgxPayPalModule
   ],
   providers: [

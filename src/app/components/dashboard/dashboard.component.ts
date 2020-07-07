@@ -111,7 +111,8 @@ export class DashboardComponent implements OnInit {
     }
 
     if (status.cancelled) {
-      return 'cancelled'
+      if (status.shippedForVerification && status.deliveredForAuthentication && status.verified && !status.shipped && !status.delivered) return 'authentication failed'
+      else return 'cancelled'
     } else if (!status.shippedForVerification && status.sellerConfirmation && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
       return 'waiting for seller to ship'
     } else if (status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {

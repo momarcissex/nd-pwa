@@ -1,6 +1,6 @@
 <section class="login-body">
   <div class="login-card">
-    <a routerLink="/"><img src="../../../assets/Negativepng.png" alt="NXTDROP, Inc. Logo Negative Symbol"></a>
+    <a routerLink="/"><img src="../../../assets/Negative.png" alt="NXTDROP, Inc. Logo Negative Symbol"></a>
 
     <form [formGroup]="loginForm" (ngSubmit)="login()">
       <input type="email" placeholder="Email" formControlName="email">
@@ -34,7 +34,7 @@
       <h3>Sign in with Google</h3>
     </button>
 
-    <button class="signup-btn" routerLink="/signup">Don&apos;t have an account? Sign up</button>
+    <button class="signup-btn" (click)="signUpRedirect()">Don&apos;t have an account? Sign up</button>
   </div>
 </section>
 

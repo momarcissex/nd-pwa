@@ -1,6 +1,6 @@
 <section class="signup-body">
   <div class="signup-card">
-    <a routerLink=".."><img src="../../../assets/Negativepng.png" alt="NXTDROP, Inc. Logo Negative Symbol"></a>
+    <a routerLink=".."><img src="../../../assets/Negative.png" alt="NXTDROP, Inc. Logo Negative Symbol"></a>
 
     <!--<button class="facebook-btn" (click)="auth.facebookSignIn()">
       <fa-icon [icon]="['fab', 'facebook']"></fa-icon>
@@ -34,7 +34,7 @@
 
     <p>By signing up, you agree to our <a routerLink="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.</p>
 
-    <button routerLink="/login" class="login-btn">Have an account? Log in</button>
+    <button (click)="loginRedirect()" class="login-btn">Have an account? Log in</button>
   </div>
 </section>
 

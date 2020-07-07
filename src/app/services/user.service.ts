@@ -10,8 +10,7 @@ import { User } from '../models/user';
 export class UserService {
 
   constructor(
-    private afs: AngularFirestore,
-    private auth: AuthService
+    private afs: AngularFirestore
   ) { }
 
   getUserInfo(userId: string): Observable<User> {
