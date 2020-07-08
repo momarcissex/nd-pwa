@@ -1,6 +1,12 @@
 <app-navbar></app-navbar>
 
 <div class="main-container">
+  <a routerLink="/referral" class="discounts">
+    <img
+      src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/Referral%20Banner%20v1.00.png?alt=media&token=e20ad8d2-54f3-44a0-a506-ead1a217e12c  "
+      alt="Get Discounts For Your Next Orders">
+  </a>
+
   <section class="product-container">
     <div class="product-info">
       <div class="product-btns">
@@ -29,8 +35,9 @@
             <a *ngIf="sizeSelected && currentOffer.LowestAsk" [routerLink]="['/checkout']"
               [queryParams]="{ product: currentOffer.LowestAsk.listingID, sell: false }">Buy Now</a>
             <a *ngIf="sizeSelected && !currentOffer.LowestAsk" class="disabled">Buy Now</a>
-            <a *ngIf="!sizeSelected && (currentOffer.LowestAsk || !currentOffer.LowestAsk)" (click)="sizeAlert()" class="disabled">Buy Now</a>
-            
+            <a *ngIf="!sizeSelected && (currentOffer.LowestAsk || !currentOffer.LowestAsk)" (click)="sizeAlert()"
+              class="disabled">Buy Now</a>
+
             <a *ngIf="!sizeSelected" [routerLink]="['/make-an-offer']"
               [queryParams]="{ sneaker: productInfo | json }">Place Bid</a>
             <a *ngIf=sizeSelected [routerLink]="['/make-an-offer']"
@@ -63,7 +70,8 @@
             <a *ngIf="sizeSelected && currentOffer.HighestBid" [routerLink]="['/checkout']"
               [queryParams]="{ product: currentOffer.HighestBid.offerID, sell: true }">Sell Now</a>
             <a *ngIf="sizeSelected && !currentOffer.HighestBid" class="disabled">Sell Now</a>
-            <a *ngIf="!sizeSelected && (currentOffer.HighestBid || !currentOffer.HighestBid)" (click)="sizeAlert()" class="disabled">Sell Now</a>
+            <a *ngIf="!sizeSelected && (currentOffer.HighestBid || !currentOffer.HighestBid)" (click)="sizeAlert()"
+              class="disabled">Sell Now</a>
 
 
             <a *ngIf="!sizeSelected" [routerLink]="['/sell']" [queryParams]="{ sneaker: productInfo | json }">Place
@@ -113,9 +121,12 @@
     <div class="product-offers">
       <div class="accessibility">
         <h2>Select Size</h2>
-        <h3 *ngIf="sizeSuffix == ''">U.S. Men Size | <span id="l_a">Lowest Ask</span> | <span id="h_b">Highest Bid</span></h3>
-        <h3 *ngIf="sizeSuffix == 'Y'">U.S. Youth Size | <span id="l_a">Lowest Ask</span> | <span id="h_b">Highest Bid</span></h3>
-        <h3 *ngIf="sizeSuffix == 'W'">U.S. Women Size | <span id="l_a">Lowest Ask</span> | <span id="h_b">Highest Bid</span></h3>
+        <h3 *ngIf="sizeSuffix == ''">U.S. Men Size | <span id="l_a">Lowest Ask</span> | <span id="h_b">Highest
+            Bid</span></h3>
+        <h3 *ngIf="sizeSuffix == 'Y'">U.S. Youth Size | <span id="l_a">Lowest Ask</span> | <span id="h_b">Highest
+            Bid</span></h3>
+        <h3 *ngIf="sizeSuffix == 'W'">U.S. Women Size | <span id="l_a">Lowest Ask</span> | <span id="h_b">Highest
+            Bid</span></h3>
       </div>
 
       <div class="product-offer" id="{{ offer.size }}" *ngFor="let offer of offers" (click)="selectSize(offer.size)">

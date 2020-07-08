@@ -2,7 +2,13 @@
 
 <section class="main-container">
 
-    <h1>News</h1>
+  <a routerLink="/referral" class="discounts">
+    <img
+      src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/Referral%20Banner%20v1.00.png?alt=media&token=e20ad8d2-54f3-44a0-a506-ead1a217e12c  "
+      alt="Get Discounts For Your Next Orders">
+  </a>
+
+  <h1>News</h1>
 
   <section class="blog-posts">
 
@@ -15,7 +21,9 @@
       <div class="post-info">
         <h6 class="post-category">{{ post.category }}</h6>
         <p class="post-title" [innerHtml]="post.title | safeHtml"></p>
-        <p class="date"><fa-icon [icon]="['far', 'clock']"></fa-icon> {{ post.date }}</p>
+        <p class="date">
+          <fa-icon [icon]="['far', 'clock']"></fa-icon> {{ post.date }}
+        </p>
       </div>
 
     </a>

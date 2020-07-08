@@ -96,6 +96,7 @@ import { SafeHtmlPipe } from './pipes/safeHtml.pipes';
 import { NewsletterComponent } from './components/newsletter/newsletter.component';
 import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
+import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
 
 @NgModule({
   declarations: [
@@ -161,7 +162,8 @@ import { RecoverEmailComponent } from './components/recover-email/recover-email.
     TrustboxComponent,
     NewsletterComponent,
     SettingsEmailComponent,
-    RecoverEmailComponent
+    RecoverEmailComponent,
+    ReferralProgramComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

@@ -49,6 +49,7 @@ import { FaqCategoryComponent } from './components/faq/faq-category/faq-category
 import { SaleConfirmationComponent } from './components/sale-confirmation/sale-confirmation.component';
 import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
+import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -103,6 +104,7 @@ const routes: Routes = [
   { path: 'confirmation/:id/:seller', component: SaleConfirmationComponent },
   { path: 'settings/email', component: SettingsEmailComponent },
   { path: 'recover-email', component: RecoverEmailComponent },
+  { path: 'referral', component: ReferralProgramComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
