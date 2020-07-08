@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthService } from 'src/app/services/auth.service';
@@ -7,7 +7,6 @@ import { MetaService } from 'src/app/services/meta.service';
 import { UserService } from 'src/app/services/user.service';
 import { SlackService } from 'src/app/services/slack.service';
 import { User } from 'src/app/models/user';
-import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -30,9 +29,7 @@ export class HomeComponent implements OnInit {
     private auth: AuthService,
     private seo: MetaService,
     private userService: UserService,
-    private slackService: SlackService,
-    private renderer2: Renderer2,
-    @Inject(DOCUMENT) private _document
+    private slackService: SlackService
   ) { }
 
   ngOnInit() {
@@ -45,34 +42,15 @@ export class HomeComponent implements OnInit {
 
         this.userService.getUserInfo(res.uid).subscribe(
           data => {
-
             this.userInfo = data
-
-            if (!isNullOrUndefined(this.userInfo.email)) {
-              // initialize iframe
-              const iframe = document.createElement('iframe')
-              iframe.setAttribute('height', '900')
-              iframe.setAttribute('width', '100%')
-              iframe.setAttribute('src', `//portal.referralcandy.com/embed/hfwnr5kh34gczjg2mniumoeyp-candyjar/?&email=${this.userInfo.email}&fname=${this.userInfo.firstName}&lname=${this.userInfo.lastName}`)
-              iframe.setAttribute('frameborder', '0')
-              this.renderer2.appendChild(this._document.getElementById('main-container'), iframe)
-            }
           },
           err => {
-            console.error(err)
+            //console.error(err)
             this.slackService.sendAlert('bugreport', err)
           }
         )
       } else {
-        this.connected = false;
-
-        // initialize iframe
-        const iframe = document.createElement('iframe')
-        iframe.setAttribute('height', '900')
-        iframe.setAttribute('width', '100%')
-        iframe.setAttribute('src', `//portal.referralcandy.com/embed/hfwnr5kh34gczjg2mniumoeyp-candyjar/`)
-        iframe.setAttribute('frameborder', '0')
-        this.renderer2.appendChild(this._document.getElementById('main-container'), iframe)
+        this.connected = false
       }
     });
 

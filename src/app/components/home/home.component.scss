@@ -42,6 +42,19 @@
   }
 }
 
+.discounts {
+  width: 100vw;
+  height: 100%;
+  max-width: 100%;
+  height: auto;
+
+  img {
+    margin-top: 1rem;
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .stat-banner {
   margin: $spacing-xlarge 0 0 0;
   display: grid;

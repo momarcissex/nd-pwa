@@ -7,6 +7,19 @@
     margin: $spacing-normal;
   }
 
+  .discounts {
+    display: block;
+    width: 80%;
+    height: 100%;
+    margin: auto;
+
+    img {
+      margin-top: .5rem;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
   .blog-posts {
     display: grid;
     margin: 0 auto;
@@ -268,7 +281,7 @@
 
       .post-info {
         padding: $spacing-normal !important;
-        
+
         .post-category {
           font-size: $font-small;
         }
