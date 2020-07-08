@@ -22,8 +22,11 @@ export class PhoneVerificationComponent implements OnInit, AfterViewInit {
   verificationLoading = false
   isValidCode = false
 
+  sendError: boolean = false
+  sendErrorMessage: string
+
   verificationError: boolean = false
-  errorMessage: string
+  verificationErrorMessage: string
 
   areaCode = '';
   number = '';
@@ -108,33 +111,39 @@ export class PhoneVerificationComponent implements OnInit, AfterViewInit {
         this.confirmationResult = res;
         this.linkLoading = false;
       }).catch(err => {
+        this.linkLoading = false;
+        alert(err.code)
+
         console.log(err)
-        this.linkLoading = false
+        console.log(`linkLoading: ${this.linkLoading} and sendError: ${this.sendError}`)
         this.slack.sendAlert('bugreport', `sendCode() err: ${err}`).catch(err => {
           console.error(`sendCode() this.slack.sendAlert(): ${err}`)
         })
-  
-        this.verificationError = true
 
         if (err.code == 'auth/too-many-requests') {
-          this.errorMessage = 'We have blocked all requests from this device due to unusual activity. Try again later.'
+          this.sendErrorMessage = 'We have blocked all requests from this device due to unusual activity. Try again later.'
+          this.sendError = true;
         } else if (err.code == 'auth/credential-already-in-use') {
-          this.errorMessage = 'Phone number associated to another account. Use another phone number.'
+          this.sendErrorMessage = 'Phone number associated to another account. Use another phone number.'
+          this.sendError = true;
         } else if (err.code == 'auth/user-disabled') {
-          this.errorMessage = 'Contact our support team for help. Thanks.'
+          this.sendErrorMessage = 'Contact our support team for help. Thanks.'
+          this.sendError = true;
         } else if (err.code == 'auth/missing-phone-number' || err.code == 'auth/invalid-phone-number') {
-          this.errorMessage = 'Phone number is invalid.'
+          this.sendErrorMessage = 'Phone number is invalid.'
+          this.sendError = true;
         } else if (err.code == 'auth/captcha-check-failed') {
-          this.errorMessage = 'Error. Refresh page and try again.'
+          this.sendErrorMessage = 'Error. Refresh page and try again.'
+          this.sendError = true;
         } else if (err.code == 'auth/provider-already-linked') {
-          this.errorMessage = 'Phone number already linked to your account.'
+          this.sendErrorMessage = 'Phone number already linked to your account.'
+          this.sendError = true;
         }
 
         setTimeout(() => {
-          this.linkLoading = false;
           this.isSent = false;
-          this.verificationError = false
-        }, 3000);
+          this.sendError = false
+        }, 500);
       });
     }
   }
@@ -154,12 +163,12 @@ export class PhoneVerificationComponent implements OnInit, AfterViewInit {
         this.verificationError = true
 
         if (err.code == 'auth/invalid-verification-code') {
-          this.errorMessage = 'Code Invalid.'
+          this.verificationErrorMessage = 'Code Invalid.'
         } else if (err.code == 'auth/code-expired') {
-          this.errorMessage = 'Code Expired. Sending new code.'
+          this.verificationErrorMessage = 'Code Expired. Sending new code.'
           this.sendCode()
         } else if (err.code = 'auth/credential-already-in-use') {
-          this.errorMessage = 'Phone number associated to another account. Use another phone number.'
+          this.verificationErrorMessage = 'Phone number associated to another account. Use another phone number.'
           setTimeout(() => {
             this.isSent = false
           }, 6000);

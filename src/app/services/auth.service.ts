@@ -49,8 +49,8 @@ export class AuthService {
   async signOut(redirect: boolean) {
     await this.afAuth.auth.signOut()
       .then(() => {
-        console.log('Signed Out');
-        alert('signed out')
+        //console.log('Signed Out')
+        //alert('signed out')
         window.Intercom('shutdown')
         window.Intercom("boot", {
           app_id: "w1p7ooc8"

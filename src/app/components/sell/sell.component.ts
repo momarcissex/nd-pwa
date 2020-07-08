@@ -135,6 +135,13 @@ export class SellComponent implements OnInit {
     if (isNaN(this.pairPrice) || !this.isDeadstock || !this.willShip) {
       this.addError();
       return;
+    } else if (isNullOrUndefined(this.user)) {
+      this.router.navigate(['/login'], {
+        queryParams: {
+          redirectTo: this.router.url
+        }
+      })
+      return;
     }
 
     this.askService.submitAsk(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentAsk.price)

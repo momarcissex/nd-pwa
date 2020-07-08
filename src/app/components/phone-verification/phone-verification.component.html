@@ -17,16 +17,18 @@
         number will not leak. You will receive an SMS with a code. Enter the code when prompted. Standard rates apply.
         <br>DO NOT REFRESH PAGE.</p>
 
-      <button *ngIf="!linkLoading && !verificationError" [className]="isValidNumber ? 'btn' : 'btn disabled'" style="outline: none"
+      <button *ngIf="!linkLoading && !sendError" [className]="isValidNumber ? 'btn' : 'btn disabled'" style="outline: none"
         id="send-code-btn" (click)="sendCode()">Send Code</button>
 
       <button *ngIf="linkLoading" class="btn" id="send-code-btn">
         <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
       </button>
 
-      <button *ngIf="verificationError" class="btn" id="send-code-btn">Error</button>
+      <button *ngIf="sendError" class="btn" id="send-code-btn-error">Error</button>
 
-      <p *ngIf="verificationError">{{ errorMessage }}</p>
+      <p *ngIf="sendError">{{ sendErrorMessage }}</p>
+
+      <p *ngIf="!sendError"></p>
 
       <button class="btn" style="outline: none" id="back-btn" (click)="back()">Back</button>
     </div>
@@ -47,9 +49,9 @@
         <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
       </button>
 
-      <button *ngIf="verificationError" class="btn" id="send-code-btn">Error</button>
+      <button *ngIf="verificationError" class="btn" id="send-code-btn-error">Error</button>
 
-      <p *ngIf="verificationError">{{ errorMessage }}</p>
+      <p *ngIf="verificationError">{{ verificationErrorMessage }}</p>
     </div>
   </div>
 

@@ -17,9 +17,13 @@ export class SlackService {
         const endpoint = environment.slack.offers;
         const payload = { "text": msg };
 
-        this.http.post(endpoint, JSON.stringify(payload)).subscribe(res => {
-          //console.log(res);
-        });
+        this.http.post(endpoint, JSON.stringify(payload)).subscribe(
+          res => {
+            //console.log(res);
+          },
+          err => {
+            //console.error(err)
+          });
         break;
       }
       case 'listings': {
@@ -27,9 +31,13 @@ export class SlackService {
 
         const payload = { "text": msg };
 
-        this.http.post(endpoint, JSON.stringify(payload)).subscribe(res => {
-          //console.log(res);
-        });
+        this.http.post(endpoint, JSON.stringify(payload)).subscribe(
+          res => {
+            //console.log(res);
+          },
+          err => {
+            //console.error(err)
+          });
         break;
       }
       case 'others': {
@@ -37,9 +45,13 @@ export class SlackService {
 
         const payload = { "text": msg };
 
-        this.http.post(endpoint, JSON.stringify(payload)).subscribe(res => {
-          //console.log(res);
-        });
+        this.http.post(endpoint, JSON.stringify(payload)).subscribe(
+          res => {
+            //console.log(res);
+          },
+          err => {
+            //console.error(err)
+          });
         break;
       }
       case 'sales': {
@@ -47,9 +59,13 @@ export class SlackService {
 
         const payload = { "text": msg };
 
-        this.http.post(endpoint, JSON.stringify(payload)).subscribe(res => {
-          //console.log(res);
-        });
+        this.http.post(endpoint, JSON.stringify(payload)).subscribe(
+          res => {
+            //console.log(res);
+          },
+          err => {
+            //console.error(err)
+          });
         break;
       }
       case 'requests': {
@@ -57,26 +73,36 @@ export class SlackService {
 
         const payload = { "text": msg };
 
-        return this.http.post(endpoint, JSON.stringify(payload)).subscribe((res: any) => {
-          if (res.status === 200) {
-            return true;
-          }
+        return this.http.post(endpoint, JSON.stringify(payload)).subscribe(
+          (res: any) => {
+            if (res.status === 200) {
+              return true;
+            }
 
-          return false;
-        });
+            return false;
+          },
+          err => {
+            //console.error(err)
+            return false
+          });
       }
       case 'bugreport': {
         const endpoint = environment.slack.bugreport;
 
         const payload = { "text": msg };
 
-        return this.http.post(endpoint, JSON.stringify(payload)).subscribe((res: any) => {
-          if (res.status === 200) {
-            return true;
-          }
+        return this.http.post(endpoint, JSON.stringify(payload)).subscribe(
+          (res: any) => {
+            if (res.status === 200) {
+              return true;
+            }
 
-          return false;
-        });
+            return false;
+          },
+          err => {
+            //console.error(err)
+            return false
+          });
       }
     }
   }
