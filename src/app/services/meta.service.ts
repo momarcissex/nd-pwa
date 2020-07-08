@@ -36,28 +36,63 @@ export class MetaService {
         { name: 'title', content: `${product.model} | NXTDROP` },
         { name: 'description', content: `Buy and sell authentic ${product.model} and other ${product.brand} sneakers in Canada. No duty fees and all the items are 100% verified authentic or you get 100% refund.` },
         { name: 'keywords', content: `${product.model}, ${product.brand}, colorway ${product.colorway}, sneakers canada` },
-        { property: 'og:title', content: `${product.model} | NXTDROP` },
+        { property: 'og:title', content: `${product.model}` },
         { property: 'og:url', content: `https://nxtdropcom/product/${product.productID}` },
         { property: 'og:image', content: `${product.assetURL}` },
         { property: 'og:description', content: `Buy and sell authentic ${product.model} and other ${product.brand} sneakers in Canada. No duty fees and all the items are 100% verified authentic or you get 100% refund.` },
         { property: 'twitter:title', content: `${product.model} | NXTDROP` },
         { property: 'twitter:card', content: 'summary_large_image' },
         { property: 'twitter:image', content: `${product.assetURL}` },
-        { property: 'twitter:description', content: `Buy and sell authentic ${product.model} and other ${product.brand} sneakers in Canada. No duty fees and all the items are 100% verified authentic or you get 100% refund.` }
+        { property: 'twitter:description', content: `Buy and sell authentic ${product.model} and other ${product.brand} sneakers in Canada. No duty fees and all the items are 100% verified authentic or you get 100% refund.` },
+        { property: 'product:brand', content: `${product.brand}` },
+        { property: 'product:condition', content: 'new' },
+        { property: 'product:item_group_id', content: `${product.line}` },
+        { property: 'product:price:currency', content: 'CAD' },
+        { property: 'og:price:currency', content: 'CAD' },
+        { property: 'product:retailer_item_id', content: `${product.productID}` },
+        { property: 'product:catalog_id', content: `${product.productID}` },
+        { property: 'product:category', content: `187` }
       ], true);
 
       if (!isNullOrUndefined(product.lowestPrice)) {
         this.meta.addTags([
-          { property: 'product:brand', content: `${product.brand}` },
-          { property: 'product:availability', content: 'in stock' },
-          { property: 'product:condition', content: 'new' },
+          { property: 'og:price:amount', content: `${product.lowestPrice}` },
           { property: 'product:price:amount', content: `${product.lowestPrice}` },
-          { property: 'product:price:currency', content: 'CAD' },
-          { property: 'product:retailer_item_id', content: `${product.productID}` },
-          { property: 'product:item_group_id', content: `${product.type}` }
+          { property: 'product:availability', content: 'in stock' }
+        ])
+      } else {
+        this.meta.addTags([
+          { property: 'og:price:amount', content: `0` },
+          { property: 'product:price:amount', content: `0` },
+          { property: 'product:availability', content: 'out of stock' }
         ])
       }
     }
+  }
+
+  removeTags() {
+    this.meta.removeTag("name='title'")
+    this.meta.removeTag("name='description'")
+    this.meta.removeTag("name='keywords'")
+    this.meta.removeTag("property='og:title'")
+    this.meta.removeTag("property='og:url'")
+    this.meta.removeTag("property='og:image'")
+    this.meta.removeTag("property='og:description'")
+    this.meta.removeTag("property='twitter:title'")
+    this.meta.removeTag("property='twitter:card'")
+    this.meta.removeTag("property='twitter:image'")
+    this.meta.removeTag("property='twitter:description'")
+    this.meta.removeTag("property='product:brand'")
+    this.meta.removeTag("property='product:condition'")
+    this.meta.removeTag("property='product:item_group_id'")
+    this.meta.removeTag("property='product:price:currency'")
+    this.meta.removeTag("property='og:price:currency'")
+    this.meta.removeTag("property='product:retailer_item_id'")
+    this.meta.removeTag("property='product:catalog_id'")
+    this.meta.removeTag("property='product:category'")
+    this.meta.removeTag("property='og:pric:amount'")
+    this.meta.removeTag("property='product:price:amount'")
+    this.meta.removeTag("property='product:availability'")
   }
 
   createCanonicalLink() {

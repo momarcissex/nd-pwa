@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, NgZone, PLATFORM_ID, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 import { ProductService } from 'src/app/services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -97,21 +97,26 @@ export class ProductComponent implements OnInit {
   async getItemInformation() {
     //console.log('getItemInformation start')
     this.productService.getProductInfo(this.productID).subscribe(data => {
-      //console.log('getProductInfo start')
+      console.log('getProductInfo start')
+      console.log(data)
       if (isNullOrUndefined(data)) {
         this.router.navigate([`page-not-found`]);
       } else {
-        this.productInfo = data;
-        this.title.setTitle(`${this.productInfo.model} - ${this.productInfo.brand} | NXTDROP`);
-        this.seo.addTags('Product', this.productInfo);
+        if (this.productInfo.assetURL === '') {
+          console.log('seo etc')
+          this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
+          this.seo.addTags('Product', data);
 
-        fbq('track', 'ViewContent', {
-          content_ids: [`${this.productID}`],
-          content_category: 'sneaker',
-          content_name: `${this.productInfo.model}`,
-          content_type: 'product',
-          contents: [{'id':`${this.productID}`,'quantity':'1'}],
-        })
+          fbq('track', 'ViewContent', {
+            content_ids: [`${this.productID}`],
+            content_category: 'sneaker',
+            content_name: `${data.model}`,
+            content_type: 'product',
+            contents: [{ 'id': `${this.productID}`, 'quantity': '1' }],
+          })
+        }
+
+        this.productInfo = data;
       }
 
       if (this.offers.length === 0) {
@@ -312,7 +317,7 @@ export class ProductComponent implements OnInit {
   }
 
   sizeAlert() {
-    const  w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    const w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
 
     if (w >= 800) {
       alert('Please select a size')

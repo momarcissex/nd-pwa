@@ -89,6 +89,7 @@ export class AppComponent implements AfterViewInit {
         })
       }
       this.seo.createCanonicalLink();
+      this.seo.removeTags()
     });
   }
 

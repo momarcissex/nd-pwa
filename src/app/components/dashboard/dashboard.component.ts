@@ -5,7 +5,6 @@ import { isNullOrUndefined } from 'util';
 import { User } from 'src/app/models/user';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { MetaService } from 'src/app/services/meta.service';
 import { Transaction } from 'src/app/models/transaction';
 
 @Component({
