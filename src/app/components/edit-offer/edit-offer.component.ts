@@ -152,7 +152,7 @@ export class EditOfferComponent implements OnInit {
         return;
       }
 
-      this.bidService.updateBid(this.offerInfo.offerID, this.offerInfo.productID, this.offerInfo.price, condition, price, size, this.expiration_date).then(res => {
+      this.bidService.updateBid(this.offerInfo, price, this.expiration_date).then(res => {
         if (res) {
           this.udpateSuccessful();
         } else {

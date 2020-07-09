@@ -169,7 +169,7 @@ export class EditListingComponent implements OnInit {
         return;
       }
 
-      this.askService.updateAsk(this.offerInfo.listingID, this.offerInfo.productID, this.offerInfo.price, condition, price, size, this.expiration_date).then((res) => {
+      this.askService.updateAsk(this.offerInfo, price, this.expiration_date).then((res) => {
         if (res) {
           this.udpateSuccessful();
         } else {

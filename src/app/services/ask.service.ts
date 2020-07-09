@@ -101,6 +101,8 @@ export class AskService {
             }).subscribe()
           }
 
+          this.http.post(`${environment.cloud.url}askNotification`, this.ask_data).subscribe()
+
           return true;
         })
         .catch((err) => {
@@ -117,6 +119,7 @@ export class AskService {
     const prodAskRef = this.afs.firestore.collection('products').doc(`${ask.productID}`).collection('listings').doc(`${ask.listingID}`); //ask in prod doc ref
     const userRef = this.afs.firestore.collection('users').doc(`${ask.sellerID}`); //user doc ref
     const askRef = this.afs.firestore.collection(`asks`).doc(`${ask.listingID}`); //ask in asks collection ref
+    this.ask_data = ask
 
     batch.delete(userAskRef); //remove ask in user doc
     batch.delete(prodAskRef); //remove ask in prod doc
@@ -175,6 +178,8 @@ export class AskService {
           }).subscribe()
         }
 
+        this.http.put(`${environment.cloud.url}askNotification`, this.ask_data).subscribe()
+
         return true;
       })
       .catch((err) => {
@@ -183,7 +188,7 @@ export class AskService {
       })
   }
 
-  public async updateAsk(listing_id: string, product_id: string, old_price: number, condition: string, price: number, size: string, expiration_date: number): Promise<boolean> {
+  public async updateAsk(ask: Ask, price: number, expiration_date: number): Promise<boolean> {
     let UID: string;
     await this.auth.isConnected().then(data => {
       UID = data.uid
@@ -192,11 +197,11 @@ export class AskService {
     const batch = this.afs.firestore.batch()
     const last_updated = Date.now()
 
-    const userAskRef = this.afs.firestore.collection('users').doc(`${UID}`).collection('listings').doc(`${listing_id}`) //ask in user doc ref
-    const prodAskRef = this.afs.firestore.collection('products').doc(`${product_id}`).collection('listings').doc(`${listing_id}`) //ask in prod doc ref
-    const askRef = this.afs.firestore.collection(`asks`).doc(`${listing_id}`) //ask in asks collection ref
+    const userAskRef = this.afs.firestore.collection('users').doc(`${UID}`).collection('listings').doc(`${ask.listingID}`) //ask in user doc ref
+    const prodAskRef = this.afs.firestore.collection('products').doc(`${ask.productID}`).collection('listings').doc(`${ask.listingID}`) //ask in prod doc ref
+    const askRef = this.afs.firestore.collection(`asks`).doc(`${ask.listingID}`) //ask in asks collection ref
 
-    const prodRef = this.afs.firestore.collection(`products`).doc(`${product_id}`) //prod ref in prod document
+    const prodRef = this.afs.firestore.collection(`products`).doc(`${ask.productID}`) //prod ref in prod document
     let prices: Ask[] = [] //lowest prices
     let size_prices: Ask[] = [] //size lowest prices
 
@@ -208,7 +213,7 @@ export class AskService {
     });
 
     //get the two lowest prices in specific size
-    await prodRef.collection(`listings`).where('size', '==', `${size}`).where('condition', '==', `${condition}`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
+    await prodRef.collection(`listings`).where('size', '==', `${ask.size}`).where('condition', '==', `${ask.condition}`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
       snap.forEach(ele => {
         size_prices.push(ele.data() as Ask)
       })
@@ -220,7 +225,7 @@ export class AskService {
         batch.update(prodRef, {
           lowestPrice: price
         })
-      } else if (old_price === snap.data().lowestPrice) {
+      } else if (ask.price === snap.data().lowestPrice) {
         //console.log(`${prices[0]} and ${prices[1]}`)
         if (price < prices[1].price) {
           batch.update(prodRef, {
@@ -236,27 +241,27 @@ export class AskService {
 
     // update ask in asks collection
     batch.update(askRef, {
-      condition: condition,
+      condition: ask.condition,
       price: price,
-      size: size,
+      size: ask.price,
       last_updated,
       expiration_date
     })
 
     // update ask in user doc
     batch.update(userAskRef, {
-      condition: condition,
+      condition: ask.condition,
       price: price,
-      size: size,
+      size: ask.size,
       last_updated,
       expiration_date
     })
 
     // update ask in prod doc
     batch.update(prodAskRef, {
-      condition: condition,
+      condition: ask.condition,
       price: price,
-      size: size,
+      size: ask.size,
       last_updated,
       expiration_date
     })
@@ -265,7 +270,22 @@ export class AskService {
     return batch.commit()
       .then(() => {
         //console.log('Listing updated');
-        this.sendLowestAskNotification(price, condition, size, UID, product_id, listing_id, size_prices) //send new lowest ask notification if necessary
+        this.sendLowestAskNotification(price, ask.condition, ask.size, UID, ask.productID, ask.listingID, size_prices) //send new lowest ask notification if necessary
+
+        this.ask_data = {
+          assetURL: ask.assetURL,
+          condition: ask.condition,
+          listingID: ask.listingID,
+          model: ask.model,
+          productID: ask.productID,
+          price: ask.price,
+          sellerID: ask.sellerID,
+          size: ask.size,
+          created_at: ask.created_at
+        }
+
+        this.http.patch(`${environment.cloud.url}askNotification`, this.ask_data).subscribe()
+
         return true
       })
       .catch((err) => {

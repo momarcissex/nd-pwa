@@ -99,6 +99,8 @@ export class BidService {
             }).subscribe()
           }
 
+          this.http.post(`${environment.cloud.url}bidNotification`, this.bid_data).subscribe()
+
           return true;
         })
         .catch((err) => {
@@ -115,6 +117,7 @@ export class BidService {
     const prodBidRef = this.afs.firestore.collection('products').doc(`${bid.productID}`).collection('offers').doc(`${bid.offerID}`);
     const userRef = this.afs.firestore.collection('users').doc(`${bid.buyerID}`);
     const bidRef = this.afs.firestore.collection(`bids`).doc(`${bid.offerID}`);
+    this.bid_data = bid
 
     batch.delete(userBidRef) //remove bid in user document
     batch.delete(prodBidRef) //remove bid in prod document
@@ -167,6 +170,8 @@ export class BidService {
           }).subscribe()
         }
 
+        this.http.put(`${environment.cloud.url}bidNotification`, this.bid_data).subscribe()
+
         return true;
       })
       .catch((err) => {
@@ -175,7 +180,7 @@ export class BidService {
       })
   }
 
-  public async updateBid(offer_id: string, product_id: string, old_price: number, condition: string, price: number, size: string, expiration_date: number): Promise<boolean> {
+  public async updateBid(bid: Bid, price: number, expiration_date: number): Promise<boolean> {
     let UID: string;
     await this.auth.isConnected().then(data => {
       UID = data.uid
@@ -184,11 +189,11 @@ export class BidService {
     const batch = this.afs.firestore.batch();
     const last_updated = Date.now()
 
-    const userBidRef = this.afs.firestore.collection('users').doc(`${UID}`).collection('offers').doc(`${offer_id}`);
-    const prodBidRef = this.afs.firestore.collection('products').doc(`${product_id}`).collection('offers').doc(`${offer_id}`);
-    const bidRef = this.afs.firestore.collection(`bids`).doc(`${offer_id}`);
+    const userBidRef = this.afs.firestore.collection('users').doc(`${UID}`).collection('offers').doc(`${bid.offerID}`);
+    const prodBidRef = this.afs.firestore.collection('products').doc(`${bid.productID}`).collection('offers').doc(`${bid.offerID}`);
+    const bidRef = this.afs.firestore.collection(`bids`).doc(`${bid.offerID}`);
 
-    const prodRef = this.afs.firestore.collection(`products`).doc(`${product_id}`);
+    const prodRef = this.afs.firestore.collection(`products`).doc(`${bid.productID}`);
     let prices: Bid[] = []
     let size_prices: Bid[] = []
 
@@ -198,7 +203,7 @@ export class BidService {
       })
     })
 
-    await prodRef.collection(`offers`).where('size', '==', `${size}`).where('condition', '==', `${condition}`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
+    await prodRef.collection(`offers`).where('size', '==', `${bid.size}`).where('condition', '==', `${bid.condition}`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
       snap.forEach(ele => {
         size_prices.push(ele.data() as Bid)
       })
@@ -214,11 +219,11 @@ export class BidService {
         batch.update(prodRef, {
           highest_bid: price
         })
-      } else if (old_price === prices[0].price && price <= prices[1].price) {
+      } else if (bid.price === prices[0].price && price <= prices[1].price) {
         batch.update(prodRef, {
           highest_bid: prices[1].price
         })
-      } else if (old_price === prices[0].price && price > prices[1].price) {
+      } else if (bid.price === prices[0].price && price > prices[1].price) {
         batch.update(prodRef, {
           highest_bid: price
         })
@@ -226,25 +231,25 @@ export class BidService {
     }
 
     batch.update(bidRef, {
-      condition: condition,
+      condition: bid.condition,
       price: price,
-      size: size,
+      size: bid.size,
       last_updated,
       expiration_date
     })
 
     batch.update(userBidRef, {
-      condition: condition,
+      condition: bid.condition,
       price: price,
-      size: size,
+      size: bid.size,
       last_updated,
       expiration_date
     })
 
     batch.update(prodBidRef, {
-      condition: condition,
+      condition: bid.condition,
       price: price,
-      size: size,
+      size: bid.size,
       last_updated,
       expiration_date
     })
@@ -252,7 +257,22 @@ export class BidService {
     return batch.commit()
       .then(() => {
         //console.log('Offer updated');
-        this.sendHighestBidNotification(price, condition, size, UID, product_id, offer_id, size_prices)
+        this.sendHighestBidNotification(price, bid.condition, bid.size, UID, bid.productID, bid.offerID, size_prices)
+
+        this.bid_data = {
+          assetURL: bid.assetURL,
+          condition: bid.condition,
+          offerID: bid.offerID,
+          model: bid.model,
+          productID: bid.productID,
+          price: bid.price,
+          buyerID: bid.buyerID,
+          size: bid.size,
+          created_at: bid.created_at
+        }
+
+        this.http.patch(`${environment.cloud.url}bidNotification`, this.bid_data).subscribe()
+
         return true;
       })
       .catch((err) => {

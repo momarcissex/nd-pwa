@@ -1400,107 +1400,6 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
     })
 })
 
-exports.askReminder = functions.pubsub.schedule('every 5 minutes from 8:00 to 18:00').timeZone('America/Edmonton').onRun((context) => {
-    const date = Date.now() - 604800000
-
-    return admin.firestore().collection('asks').where('last_reminder', '<=', date).limit(20).get().then(res => {
-        res.docs.forEach(ele => {
-            const ask_data = ele.data();
-
-            admin.firestore().collection('users').doc(ask_data.sellerID).get().then(response => {
-                const user_data = response.data()
-
-                if (!isNullOrUndefined(user_data)) {
-                    const msg: any = {
-                        to: user_data.email,
-                        from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
-                        templateId: 'd-d0caee4fa00a44299dedfee11e23f07d',
-                        dynamic_template_data: {
-                            model: ask_data.model,
-                            size: ask_data.size,
-                            condition: ask_data.condition,
-                            ask_amount: ask_data.price,
-                            payment_processing: ask_data.price * .03,
-                            seller_fee: ask_data.price * .095,
-                            payout: ask_data.price * .875,
-                            assetURL: ask_data.assetURL,
-                            update_ask: `https://nxtdrop.com/edit-listing/${ask_data.listingID}`
-                        }
-                    }
-
-                    sgMail.send(msg).then((content: any) => {
-                        console.log(`email sent to seller ${user_data.username}`)
-
-                        admin.firestore().collection('asks').doc(ele.id).set({
-                            last_reminder: Date.now()
-                        }, { merge: true }).then(() => {
-                            console.log('updated last_reminder')
-                        }).catch(err => {
-                            console.error(err)
-                        })
-                    }).catch((err: any) => {
-                        console.error(err)
-                    })
-                }
-            }).catch(err => {
-                console.error(err)
-            })
-        })
-    }).catch(err => {
-        console.error(err)
-    })
-})
-
-exports.bidReminder = functions.pubsub.schedule('every 5 minutes from 8:00 to 18:00').timeZone('America/Edmonton').onRun((context) => {
-    const date = Date.now() - 604800000
-
-    return admin.firestore().collection('bids').where('last_reminder', '<=', date).limit(20).get().then(res => {
-        res.docs.forEach(ele => {
-            const bid_data = ele.data();
-
-            admin.firestore().collection('users').doc(bid_data.buyerID).get().then(response => {
-                const user_data = response.data()
-
-                if (!isNullOrUndefined(user_data)) {
-                    const msg: any = {
-                        to: user_data.email,
-                        from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
-                        templateId: 'd-b94b8c957f90497b97824f849b415471',
-                        dynamic_template_data: {
-                            model: bid_data.model,
-                            size: bid_data.size,
-                            condition: bid_data.condition,
-                            bid_amount: bid_data.price,
-                            shipping: 15,
-                            total: bid_data.price + 15,
-                            assetURL: bid_data.assetURL,
-                            update_bid: `https://nxtdrop.com/edit-offer/${bid_data.offerID}`
-                        }
-                    }
-
-                    sgMail.send(msg).then((content: any) => {
-                        console.log(`email sent to buyer ${user_data.username}`)
-
-                        admin.firestore().collection('bids').doc(ele.id).set({
-                            last_reminder: Date.now()
-                        }, { merge: true }).then(() => {
-                            console.log('last_reminder updated')
-                        }).catch(err => {
-                            console.error(err)
-                        })
-                    }).catch((err: any) => {
-                        console.error(err)
-                    })
-                }
-            }).catch(err => {
-                console.error(err)
-            })
-        })
-    }).catch(err => {
-        console.error(err)
-    })
-})
-
 exports.forwardPurchase = functions.https.onRequest((req, res) => {
     return cors(req, res, () => {
         if (req.method !== 'POST') {
@@ -1519,6 +1418,95 @@ exports.forwardPurchase = functions.https.onRequest((req, res) => {
             console.log(`Error: ${error}`)
 
             return res.status(500).send(error)
+        })
+    })
+})
+
+exports.askNotification = functions.https.onRequest((req, res) => {
+    return cors(req, res, () => {
+        const askData = req.body
+
+        return admin.firestore().collection('users').doc(askData.sellerID).get().then(response => {
+            const userData = response.data()
+
+            if (!isNullOrUndefined(userData)) {
+                const msg: any = {
+                    to: userData.email,
+                    from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
+                    templateId: '',
+                    dynamic_template_data: {
+                        model: askData.model,
+                        size: askData.size,
+                        condition: askData.condition,
+                        ask_amount: askData.price,
+                        payment_processing: askData.price * .03,
+                        seller_fee: askData.price * .095,
+                        payout: askData.price * .875,
+                        assetURL: askData.assetURL
+                    }
+                }
+
+                if (req.method === 'POST') {
+                    msg.templateId = 'd-97c460f321244bd0afbcaf7373a66d22'
+                } else if (req.method === 'PATCH') {
+                    msg.templateId = 'd-badbe4a324e444cba3a43b598903e907'
+                } else if (req.method === 'PUT') {
+                    msg.templateId = 'd-6b7583d4eab94968a164b7b5fbe2270f'
+                } else {
+                    console.error('Cannot send email. Wrong method.')
+                    return res.status(200).send(false)
+                }
+
+                return sgMail.send(msg).then((content: any) => {
+                    console.log(`email sent to seller ${userData.username}`)
+                }).catch((err: any) => {
+                    console.error(err)
+                })
+            }
+        })
+    })
+})
+
+exports.bidNotification = functions.https.onRequest((req, res) => {
+    return cors(req, res, () => {
+        const bidData = req.body
+
+        return admin.firestore().collection('users').doc(bidData.buyerID).get().then(response => {
+            const userData = response.data()
+
+            if (!isNullOrUndefined(userData)) {
+                const msg: any = {
+                    to: userData.email,
+                    from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
+                    templateId: 'd-1a41c84bde3f4908b5c9478a8d2827fa',
+                    dynamic_template_data: {
+                        model: bidData.model,
+                        size: bidData.size,
+                        condition: bidData.condition,
+                        bid_amount: bidData.price,
+                        shipping: 15,
+                        total: bidData.price + 15,
+                        assetURL: bidData.assetURL
+                    }
+                }
+
+                if (req.method === 'POST') {
+                    msg.templateId = 'd-38407b824d7047edada7bbc909c029d8'
+                } else if (req.method === 'PATCH') {
+                    msg.templateId = 'd-10484ff3ef174315aa876bc8cd8aa585'
+                } else if (req.method === 'PUT') {
+                    msg.templateId = 'd-0ecdd8499214420fa2d78e7941ba6e51'
+                } else {
+                    console.error('Cannot send email. Wrong method.')
+                    return res.status(200).send(false)
+                }
+
+                return sgMail.send(msg).then((content: any) => {
+                    console.log(`email sent to buyer ${userData.username}`)
+                }).catch((err: any) => {
+                    console.error(err)
+                })
+            }
         })
     })
 })
