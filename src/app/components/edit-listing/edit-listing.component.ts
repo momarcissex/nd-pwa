@@ -44,6 +44,8 @@ export class EditListingComponent implements OnInit {
 
   source: string = '../../';
 
+  expiration_date: number = Date.now() + (86400000 * 30) //ask's expiration date
+
   constructor(
     private route: ActivatedRoute,
     private ngZone: NgZone,
@@ -167,7 +169,7 @@ export class EditListingComponent implements OnInit {
         return;
       }
 
-      this.askService.updateAsk(this.offerInfo.listingID, this.offerInfo.productID, this.offerInfo.price, condition, price, size).then((res) => {
+      this.askService.updateAsk(this.offerInfo.listingID, this.offerInfo.productID, this.offerInfo.price, condition, price, size, this.expiration_date).then((res) => {
         if (res) {
           this.udpateSuccessful();
         } else {

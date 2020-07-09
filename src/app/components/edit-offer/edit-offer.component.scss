@@ -34,7 +34,8 @@
     margin: $spacing-large auto;
   }
 
-  .condition, .size {
+  .condition,
+  .size {
     text-align: center;
     font-weight: $weight-black;
     font-size: 1.1rem;
@@ -109,13 +110,17 @@
         }
       }
 
-      &:last-child:hover {
-        background: $matteblue;
+      &:last-child {
+        background: $prodBtnPrimary2;
+
+        &:hover {
+          background: $prodBtnSecondary2;
+        }
       }
     }
 
     .disabled-btn {
-      background: $lightgrey;
+      background: $lightgrey!important;
       cursor: not-allowed;
 
       &:hover {
@@ -158,6 +163,36 @@
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+
+  .breakdown {
+    display: grid;
+
+    .total,
+    .shipping,
+    .expiration {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: $spacing-small;
+
+      p {
+        color: $matteblack;
+
+        &:last-child {
+          justify-self: end;
+          font-weight: $weight-black;
+        }
+      }
+    }
+
+    .expiration {
+      border-bottom: 3px solid $matteblack;
+
+      p {
+        color: $matteblack !important;
+        font-weight: $weight-black;
+      }
     }
   }
 }

@@ -38,12 +38,14 @@ export class ProfileService {
 
     let userRef: AngularFirestoreCollection<any>;
 
+    console.log(UID)
+
     if (isUndefined(startAfter)) {
       // tslint:disable-next-line: max-line-length
-      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('timestamp', 'desc').limit(60));
+      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').limit(60));
     } else {
       // tslint:disable-next-line: max-line-length
-      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('timestamp', 'desc').startAfter(startAfter).limit(60));
+      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter).limit(60));
     }
 
     return userRef.valueChanges();
@@ -59,10 +61,10 @@ export class ProfileService {
 
     if (isUndefined(startAfter)) {
       // tslint:disable-next-line: max-line-length
-      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('timestamp', 'desc').limit(60));
+      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').limit(60));
     } else {
       // tslint:disable-next-line: max-line-length
-      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('timestamp', 'desc').startAfter(startAfter).limit(60));
+      userRef = this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter).limit(60));
     }
 
     return userRef.valueChanges();

@@ -7,8 +7,8 @@ export class Bid {
     productID?: string;
     buyerID: string;
     size: string;
-    timestamp: number;
     last_updated?: number;
     created_at?: number;
     last_reminder?: number;
+    expiration_date?: number;
 }

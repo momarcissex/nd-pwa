@@ -90,7 +90,7 @@ export class ProfileComponent implements OnInit {
       this.profileService.getUserListings().then(val => {
         val.subscribe(data => {
           this.listings = data;
-          // console.log(this.listings);
+          console.log(data);
         });
       });
     }
@@ -120,7 +120,7 @@ export class ProfileComponent implements OnInit {
       this.profileService.getUserOffers().then(val => {
         val.subscribe(data => {
           this.offers = data;
-          // console.log(this.offers);
+          console.log(this.offers);
         });
       });
     }

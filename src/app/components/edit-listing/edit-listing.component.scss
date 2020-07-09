@@ -105,13 +105,17 @@
         }
       }
 
-      &:last-child:hover {
-        background: $matteblue;
+      &:last-child {
+        background: $prodBtnPrimary;
+
+        &:hover {
+          background: $prodBtnSecondary;
+        }
       }
     }
 
     .disabled-btn {
-      background: $lightgrey;
+      background: $lightgrey!important;
       cursor: not-allowed;
 
       &:hover {
@@ -163,7 +167,8 @@
     .consignment,
     .payment-processing,
     .total-payout,
-    .shipping {
+    .shipping,
+    .expiration {
       display: grid;
       grid-template-columns: 1fr 1fr;
       padding: $spacing-small;
@@ -172,7 +177,7 @@
         color: $matteblack;
 
         &:last-child {
-          color: #e93e2f;
+          color: $googleRed;
           justify-self: end;
           font-weight: $weight-black;
         }
@@ -180,7 +185,16 @@
     }
 
     .total-payout p:last-child {
-      color: #09dd09;
+      color: $green;
+    }
+
+    .expiration {
+      border-bottom: 3px solid $matteblack;
+
+      p {
+        color: $matteblack!important;
+        font-weight: $weight-black;
+      }
     }
   }
 }

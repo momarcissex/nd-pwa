@@ -34,7 +34,7 @@ export class AskService {
     return listingRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>
   }
 
-  async submitAsk(pair: Product, condition: string, price: number, size: string, size_lowest_ask: number) {
+  async submitAsk(pair: Product, condition: string, price: number, size: string, size_lowest_ask: number, expiration_date: number) {
     let UID: string
 
     await this.auth.isConnected()
@@ -42,8 +42,8 @@ export class AskService {
         UID = data.uid
       })
 
-    const timestamp = Date.now();
-    const listingID = UID + '-' + timestamp;
+    const created_at = Date.now();
+    const listingID = UID + '-' + created_at;
 
     this.ask_data = {
       assetURL: pair.assetURL,
@@ -53,10 +53,10 @@ export class AskService {
       size,
       productID: pair.productID,
       listingID,
-      timestamp,
       sellerID: UID,
-      created_at: timestamp,
-      last_updated: timestamp
+      created_at,
+      last_updated: created_at,
+      expiration_date
     }
 
     const batch = this.afs.firestore.batch()
@@ -183,7 +183,7 @@ export class AskService {
       })
   }
 
-  public async updateAsk(listing_id: string, product_id: string, old_price: number, condition: string, price: number, size: string): Promise<boolean> {
+  public async updateAsk(listing_id: string, product_id: string, old_price: number, condition: string, price: number, size: string, expiration_date: number): Promise<boolean> {
     let UID: string;
     await this.auth.isConnected().then(data => {
       UID = data.uid
@@ -239,7 +239,8 @@ export class AskService {
       condition: condition,
       price: price,
       size: size,
-      last_updated
+      last_updated,
+      expiration_date
     })
 
     // update ask in user doc
@@ -247,7 +248,8 @@ export class AskService {
       condition: condition,
       price: price,
       size: size,
-      last_updated
+      last_updated,
+      expiration_date
     })
 
     // update ask in prod doc
@@ -255,7 +257,8 @@ export class AskService {
       condition: condition,
       price: price,
       size: size,
-      last_updated
+      last_updated,
+      expiration_date
     })
 
     // commit the updates

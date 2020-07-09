@@ -39,6 +39,10 @@ export class EditOfferComponent implements OnInit {
 
   source: string = '../../';
 
+  shipping_cost: number = 15
+
+  expiration_date: number = Date.now() + (86400000 * 30) //bid expiration date
+
   constructor(
     private route: ActivatedRoute,
     private bidService: BidService,
@@ -148,7 +152,7 @@ export class EditOfferComponent implements OnInit {
         return;
       }
 
-      this.bidService.updateBid(this.offerInfo.offerID, this.offerInfo.productID, this.offerInfo.price, condition, price, size).then(res => {
+      this.bidService.updateBid(this.offerInfo.offerID, this.offerInfo.productID, this.offerInfo.price, condition, price, size, this.expiration_date).then(res => {
         if (res) {
           this.udpateSuccessful();
         } else {

@@ -60,7 +60,7 @@ export class TransactionService {
       sellerID: product.sellerID,
       buyerID: UID,
       size: product.size,
-      listedAt: product.timestamp,
+      listedAt: product.created_at,
       purchaseDate: boughtAt,
       shipTracking: {
         address: {
@@ -252,7 +252,7 @@ export class TransactionService {
       sellerID: UID,
       buyerID: product.buyerID,
       size: product.size,
-      listedAt: product.timestamp,
+      listedAt: product.created_at,
       purchaseDate,
       shipTracking: {
         address: {

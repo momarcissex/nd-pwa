@@ -40,9 +40,9 @@ export class BidService {
     return offerRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>;
   }
 
-  async submitBid(UID: string, pair: Product, condition: string, price: number, size: string, size_highest_bid: number) {
-    const timestamp = Date.now();
-    const offerID = UID + '-' + timestamp;
+  async submitBid(UID: string, pair: Product, condition: string, price: number, size: string, size_highest_bid: number, expiration_date: number) {
+    const created_at = Date.now();
+    const offerID = UID + '-' + created_at;
 
     this.bid_data = {
       assetURL: pair.assetURL,
@@ -52,10 +52,10 @@ export class BidService {
       size,
       productID: pair.productID,
       offerID,
-      timestamp,
       buyerID: UID,
-      last_updated: timestamp,
-      created_at: timestamp
+      last_updated: created_at,
+      created_at,
+      expiration_date
     };
 
     const batch = this.afs.firestore.batch();
@@ -175,7 +175,7 @@ export class BidService {
       })
   }
 
-  public async updateBid(offer_id: string, product_id: string, old_price: number, condition: string, price: number, size: string): Promise<boolean> {
+  public async updateBid(offer_id: string, product_id: string, old_price: number, condition: string, price: number, size: string, expiration_date: number): Promise<boolean> {
     let UID: string;
     await this.auth.isConnected().then(data => {
       UID = data.uid
@@ -229,21 +229,24 @@ export class BidService {
       condition: condition,
       price: price,
       size: size,
-      last_updated
+      last_updated,
+      expiration_date
     })
 
     batch.update(userBidRef, {
       condition: condition,
       price: price,
       size: size,
-      last_updated
+      last_updated,
+      expiration_date
     })
 
     batch.update(prodBidRef, {
       condition: condition,
       price: price,
       size: size,
-      last_updated
+      last_updated,
+      expiration_date
     })
 
     return batch.commit()

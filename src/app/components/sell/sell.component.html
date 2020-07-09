@@ -102,6 +102,11 @@
 
           <div class="fee-calculator">
             <div class="fee">
+              <p>Expiration Date</p>
+              <p>{{ expiration_date | date:'mediumDate' }}</p>
+            </div>
+
+            <div class="fee">
               <p>Transaction Fee (9.5%)</p>
               <p *ngIf="consignmentFee > 0">-{{ consignmentFee | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
               <p *ngIf="consignmentFee === 0">--</p>
@@ -202,6 +207,11 @@
           <div class="payout">
             <p>Total Payout</p>
             <p>{{  payout | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+
+          <div class="payout">
+            <p>Expiration Date</p>
+            <p>{{  expiration_date | date }}</p>
           </div>
         </div>
 

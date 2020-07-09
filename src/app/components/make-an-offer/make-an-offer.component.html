@@ -102,6 +102,11 @@
 
           <div class="fee-calculator">
             <div class="shipping">
+              <p>Expiration Date</p>
+              <p>{{ expiration_date | date }}</p>
+            </div>
+
+            <div class="shipping">
               <p>Estimated Shipping</p>
               <p *ngIf="total > 0">{{ shippingCost | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
               <p *ngIf="total === 0">--</p>
@@ -173,6 +178,11 @@
           <div class="payout">
             <p>Total</p>
             <p>{{  total | currency: 'CAD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+
+          <div class="payout">
+            <p>Expiration Date</p>
+            <p>{{  expiration_date | date }}</p>
           </div>
         </div>
 

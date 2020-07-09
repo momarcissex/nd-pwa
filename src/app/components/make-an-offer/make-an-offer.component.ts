@@ -74,7 +74,10 @@ export class MakeAnOfferComponent implements OnInit {
 
   userBid: Bid
 
+  // user check agreement
   willCheckout: boolean = false
+
+  expiration_date: number = Date.now() + (86400000 * 30) //bid expiration date
 
   constructor(
     private askService: AskService,
@@ -260,7 +263,7 @@ export class MakeAnOfferComponent implements OnInit {
     }
 
     if (isNullOrUndefined(this.userBid)) {
-      this.bidService.submitBid(this.user.uid, this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price).then(res => {
+      this.bidService.submitBid(this.user.uid, this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price, this.expiration_date).then(res => {
         if (res) {
           if (isPlatformBrowser(this._platformId)) {
             gtag('event', 'bid', {
@@ -279,7 +282,7 @@ export class MakeAnOfferComponent implements OnInit {
         }
       })
     } else {
-      this.bidService.updateBid(this.userBid.offerID, this.userBid.productID, this.userBid.price, this.userBid.condition, this.pairPrice, this.pairSize)
+      this.bidService.updateBid(this.userBid.offerID, this.userBid.productID, this.userBid.price, this.userBid.condition, this.pairPrice, this.pairSize, this.expiration_date)
         .then(response => {
           if (response) {
             this.addListed()

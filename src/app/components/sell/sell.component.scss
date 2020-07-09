@@ -27,6 +27,7 @@
 }
 
 #sell-page-3 {
+  min-height: $productContainerHeight;
   display: grid;
   column-gap: 0;
 
@@ -905,7 +906,6 @@
 
   #sell-page-3 {
     grid-template-columns: 1fr 1fr;
-    height: $productContainerHeight;
     width: 100vw;
     margin: 0vw;
 
@@ -1153,7 +1153,6 @@
 
   #sell-page-3 {
     grid-template-columns: 1fr 1fr;
-    height: $productContainerHeight;
     width: 95vw;
     margin: 0 2.5vw;
 

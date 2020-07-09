@@ -39,16 +39,16 @@ export class SellComponent implements OnInit {
     "M": [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 18],
     "W": [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5],
     "GS": [3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7]
-  }
-  sizeType: string = 'M'
-  sizeSuffix: string = ''
+  } //default size display
+  sizeType: string = 'M' //M, W or Y
+  sizeSuffix: string = '' //size suffix (M, W or Y)
 
-  offers = []
+  offers = [] //list of bids
 
   inputLength = 0 // Length of search box input
 
   selectedPair: Product // Listing Product object
-  selectedSize: string = ''
+  selectedSize: string = '' //size selected to place an ask on
 
   HighestBid: any = NaN
   LowestAsk: any = NaN
@@ -69,12 +69,16 @@ export class SellComponent implements OnInit {
 
   user: User;
 
+  // seller fees and payout
   consignmentFee = 0
   paymentProcessingFee = 0
   payout = 0
 
+  // boolean seller agreement
   isDeadstock = false
   willShip = false
+
+  expiration_date: number = Date.now() + (86400000 * 30) //ask's expiration date
 
   constructor(
     private askService: AskService,
@@ -144,7 +148,7 @@ export class SellComponent implements OnInit {
       return;
     }
 
-    this.askService.submitAsk(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentAsk.price)
+    this.askService.submitAsk(this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentAsk.price, this.expiration_date)
       .then((res) => {
         if (isPlatformBrowser(this._platformId)) {
           gtag('event', 'ask', {

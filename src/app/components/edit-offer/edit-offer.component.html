@@ -17,76 +17,31 @@
 
     <p class="min">The minimum bid is CA$40</p>
 
-    <!--<select *ngIf="!isWomen && !isGS" name="men-size" id="item-size" (change)="sizeChanges($event)">
-      <option value="none" selected>Select Size</option>
-      <option value="US4">US 4</option>
-      <option value="US4.5">US 4.5</option>
-      <option value="US5">US 5</option>
-      <option value="US5.5">US 5.5</option>
-      <option value="US6">US 6</option>
-      <option value="US6.5">US 6.5</option>
-      <option value="US7">US 7</option>
-      <option value="US7.5">US 7.5</option>
-      <option value="US8">US 8</option>
-      <option value="US8.5">US 8.5</option>
-      <option value="US9">US 9</option>
-      <option value="US9.5">US 9.5</option>
-      <option value="US10">US 10</option>
-      <option value="US10.5">US 10.5</option>
-      <option value="US11">US 11</option>
-      <option value="US11.5">US 11.5</option>
-      <option value="US12">US 12</option>
-      <option value="US12.5">US 12.5</option>
-      <option value="US13">US 13</option>
-      <option value="US13.5">US 13.5</option>
-      <option value="US14">US 14</option>
-      <option value="US14.5">US 14.5</option>
-      <option value="US15">US 15</option>
-      <option value="US15.5">US 15.5</option>
-      <option value="US16">US 16</option>
-      <option value="US16.5">US 16.5</option>
-      <option value="US17">US 17</option>
-    </select>
+    <div class="breakdown">
+      <div class="expiration">
+        <p>Expiration Date</p>
+        <p>{{ expiration_date | date }}</p>
+      </div>
 
-    <select *ngIf="isWomen" name="size" id="item-size-women" (change)="sizeChanges($event)">
-      <option value="none" selected>Select Size</option>
-      <option value="US4W">US 4W</option>
-      <option value="US4.5W">US 4.5W</option>
-      <option value="US5W">US 5W</option>
-      <option value="US5.5W">US 5.5W</option>
-      <option value="US6W">US 6W</option>
-      <option value="US6.5W">US 6.5W</option>
-      <option value="US7W">US 7W</option>
-      <option value="US7.5W">US 7.5W</option>
-      <option value="US8W">US 8W</option>
-      <option value="US8.5W">US 8.5W</option>
-      <option value="US9W">US 9W</option>
-      <option value="US9.5W">US 9.5W</option>
-      <option value="US10W">US 10W</option>
-      <option value="US10.5W">US 10.5W</option>
-      <option value="US11W">US 11W</option>
-      <option value="US11.5W">US 11.5W</option>
-      <option value="US12W">US 12W</option>
-    </select>
+      <div class="shipping">
+        <p>Shipping</p>
+        <p *ngIf="shipping_cost > 0">{{ shipping_cost | currency: 'CAD' }}</p>
+        <p *ngIf="shipping_cost == 0">CA$ --</p>
+      </div>
 
-    <select *ngIf="isGS" name="gs-size" id="item-size-gs" (change)="sizeChanges($event)">
-      <option value="none" selected>Select Size</option>
-      <option value="US3.5Y">US 3.5Y</option>
-      <option value="US4Y">US 4Y</option>
-      <option value="US4.5Y">US 4.5Y</option>
-      <option value="US5Y">US 5Y</option>
-      <option value="US5.5Y">US 5.5Y</option>
-      <option value="US6Y">US 6Y</option>
-      <option value="US6.5Y">US 6.5Y</option>
-      <option value="US7Y">US 7Y</option>
-    </select>-->
+      <div class="total">
+        <p>Total</p>
+        <p *ngIf="curPrice > 0">{{ curPrice + shipping_cost | currency: 'CAD' }}</p>
+        <p *ngIf="curPrice == 0">CA$ --</p>
+      </div>
+    </div>
 
     <div class="edit-btns">
       <button class="btn" (click)="back()">Back</button>
 
       <button id="save-changes-btn" *ngIf="!loading && !error && !updated && showSaveChanges"
-        [className]="priceChanged || sizeChanged ? 'btn' : 'disabled-btn btn'"
-        (click)="updateOffer()">Update Bid</button>
+        [className]="priceChanged || sizeChanged ? 'btn' : 'disabled-btn btn'" (click)="updateOffer()">Update
+        Bid</button>
 
       <button id="save-changes-btn" *ngIf="!loading && !error && !updated && !showSaveChanges" class="btn"
         (click)="buyNow()">Buy at {{ lowest_ask.price | currency: 'CAD' }}</button>
@@ -97,7 +52,9 @@
 
       <button id="save-changes-btn" class="btn error-btn" *ngIf="error">Error</button>
 
-      <button id="save-changes-btn" class="btn updated-btn" *ngIf="updated"><fa-icon [icon]="['fas', 'check']"></fa-icon></button>
+      <button id="save-changes-btn" class="btn updated-btn" *ngIf="updated">
+        <fa-icon [icon]="['fas', 'check']"></fa-icon>
+      </button>
     </div>
 
     <button id="delete-btn" (click)="deleteOffer()">Delete</button>

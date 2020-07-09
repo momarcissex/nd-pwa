@@ -4,11 +4,11 @@ export class Ask {
     listingID: string;
     model: string;
     price: number;
-    productID?: string;
+    productID: string;
     sellerID: string;
     size: string;
-    timestamp: number;
     last_updated?: number;
-    created_at?: number;
+    created_at: number;
     last_reminder?: number;
+    expiration_date?: number;
 }
