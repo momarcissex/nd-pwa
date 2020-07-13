@@ -38,11 +38,11 @@ export class HomeService {
   }
 
   public getLatestAsk() {
-    return this.afs.collection(`listings`, ref => ref.orderBy('timestamp', 'desc').limit(30)).valueChanges();
+    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(30)).valueChanges();
   }
 
   public getLatestBid() {
-    return this.afs.collection(`offers`, ref => ref.orderBy('timestamp', 'desc').limit(30)).valueChanges();
+    return this.afs.collection(`bids`, ref => ref.orderBy('created_at', 'desc').limit(30)).valueChanges();
   }
 
 }
