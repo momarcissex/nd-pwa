@@ -109,7 +109,7 @@ export class ProductComponent implements OnInit {
 
           fbq('track', 'ViewContent', {
             content_ids: [`${this.productID}`],
-            content_category: 'sneaker',
+            content_category: '187',
             content_name: `${data.model}`,
             content_type: 'product',
             contents: [{ 'id': `${this.productID}`, 'quantity': '1' }],

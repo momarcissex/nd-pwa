@@ -40,30 +40,31 @@ export class MetaService {
         { property: 'og:url', content: `https://nxtdropcom/product/${product.productID}` },
         { property: 'og:image', content: `${product.assetURL}` },
         { property: 'og:description', content: `Buy and sell authentic ${product.model} and other ${product.brand} sneakers in Canada. No duty fees and all the items are 100% verified authentic or you get 100% refund.` },
+        { property: 'og:locale', content: `en_CA` },
         { property: 'twitter:title', content: `${product.model} | NXTDROP` },
         { property: 'twitter:card', content: 'summary_large_image' },
         { property: 'twitter:image', content: `${product.assetURL}` },
         { property: 'twitter:description', content: `Buy and sell authentic ${product.model} and other ${product.brand} sneakers in Canada. No duty fees and all the items are 100% verified authentic or you get 100% refund.` },
         { property: 'product:brand', content: `${product.brand}` },
         { property: 'product:condition', content: 'new' },
-        { property: 'product:item_group_id', content: `${product.line}` },
         { property: 'product:price:currency', content: 'CAD' },
         { property: 'og:price:currency', content: 'CAD' },
         { property: 'product:retailer_item_id', content: `${product.productID}` },
         { property: 'product:catalog_id', content: `${product.productID}` },
-        { property: 'product:category', content: `187` }
+        { property: 'product:category', content: `187` },
+        { property: 'product:locale', content: `en_CA` },
       ], true);
 
       if (!isNullOrUndefined(product.lowestPrice)) {
         this.meta.addTags([
-          { property: 'og:price:amount', content: `${product.lowestPrice}` },
-          { property: 'product:price:amount', content: `${product.lowestPrice}` },
+          { property: 'og:price:amount', content: `${product.lowestPrice}.00` },
+          { property: 'product:price:amount', content: `${product.lowestPrice}.00` },
           { property: 'product:availability', content: 'in stock' }
         ])
       } else {
         this.meta.addTags([
-          { property: 'og:price:amount', content: `0` },
-          { property: 'product:price:amount', content: `0` },
+          { property: 'og:price:amount', content: `0.00` },
+          { property: 'product:price:amount', content: `0.00` },
           { property: 'product:availability', content: 'out of stock' }
         ])
       }
