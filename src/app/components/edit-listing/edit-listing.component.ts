@@ -151,7 +151,7 @@ export class EditListingComponent implements OnInit {
   }
 
   private calculateSellerFees() {
-    this.consignmentFee = this.curPrice * 0.095;
+    this.consignmentFee = this.curPrice * 0.085;
     this.paymentProcessingFee = this.curPrice * 0.03;
     this.payout = this.curPrice - this.consignmentFee - this.paymentProcessingFee;
   }

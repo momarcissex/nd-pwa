@@ -184,7 +184,7 @@ export class SellComponent implements OnInit {
   }
 
   private calculateSellerFees() {
-    this.consignmentFee = this.pairPrice * 0.095;
+    this.consignmentFee = this.pairPrice * 0.085;
     this.paymentProcessingFee = this.pairPrice * 0.03;
     this.payout = this.pairPrice - this.consignmentFee - this.paymentProcessingFee;
   }

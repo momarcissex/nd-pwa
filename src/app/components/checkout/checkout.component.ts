@@ -458,7 +458,7 @@ export class CheckoutComponent implements OnInit {
   fee() {
     let subtotal = this.subtotal;
 
-    return subtotal * 0.095;
+    return subtotal * 0.085;
   }
 
   processing() {
