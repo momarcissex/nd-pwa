@@ -243,7 +243,7 @@ export class AskService {
     batch.update(askRef, {
       condition: ask.condition,
       price: price,
-      size: ask.price,
+      size: ask.size,
       last_updated,
       expiration_date
     })

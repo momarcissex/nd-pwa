@@ -14,8 +14,8 @@ export interface User {
     // Optional
     dob?: string
     freeShipping?: boolean;
-    last_activity?: number;
-    ip_address?: string;
+    last_login?: number;
+    last_known_ip_address?: string;
     last_item_in_cart?: Object;
     shippingAddress?: {
         selling?: {

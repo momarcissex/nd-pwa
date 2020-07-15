@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { isUndefined } from 'util';
+import { Observable } from 'rxjs';
+import { Ask } from '../models/ask';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +40,7 @@ export class HomeService {
   }
 
   public getLatestAsk() {
-    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(30)).valueChanges();
+    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(200)).valueChanges() as Observable<Ask[]>;
   }
 
   public getLatestBid() {

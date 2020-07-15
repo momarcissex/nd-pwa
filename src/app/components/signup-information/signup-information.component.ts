@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { debounceTime, take, map } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
-import { isUndefined } from 'util';
+import { isUndefined, isNullOrUndefined } from 'util';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IpService } from 'src/app/services/ip.service';
 import { SlackService } from 'src/app/services/slack.service';
@@ -64,6 +64,15 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     this.title.setTitle(`Sign Up | NXTDROP: Sell and Buy Sneakers in Canada`);
     this.meta.addTags('Sign Up');
 
+    this.auth.isConnected().then(res => {
+      //alert(res)
+      if (isNullOrUndefined(res)) {
+        this.router.navigate(['/signup'])
+      } else if (res.providerData[0].providerId != 'google.com' || res.providerData.length > 1) {
+        this.router.navigate(['/home'])
+      }
+    })
+
     this.signupForm = this.fb.group({
       firstName: ['', [
         Validators.required,
@@ -91,10 +100,12 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     //console.log(this.accountCreated);
     if (!this.accountCreated) {
-      console.log('ngOnDestroy')
-      console.log(this.accountCreated)
+      //console.log('ngOnDestroy')
+      //console.log(this.accountCreated)
       this.auth.isConnected().then(res => {
-        res.delete();
+        if (res.providerData.length <= 1) {
+          res.delete();
+        }
       });
     }
   }

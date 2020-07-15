@@ -16,7 +16,14 @@ export class ListingsComponent implements OnInit {
 
   ngOnInit() {
     this.homeService.getLatestAsk().subscribe(asks => {
-      this.latestAsks = asks;
+      asks.forEach(ask => {
+        if (ask.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && ask.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && this.latestAsks.length < 50) {
+          this.latestAsks.push(ask)
+        }
+      })
+    },
+    err => {
+      console.error(err)
     })
   }
 

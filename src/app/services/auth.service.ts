@@ -94,7 +94,8 @@ export class AuthService {
             offers: 0,
             isActive: false,
             creation_date: Date.parse(user.user.metadata.creationTime),
-            ip_address: userIP
+            last_known_ip_address: userIP,
+            last_login: Date.parse(user.user.metadata.creationTime)
           };
 
           if (!isUndefined(inviteCode)) {
@@ -278,7 +279,8 @@ export class AuthService {
             offers: 0,
             isActive: true,
             creation_date: Date.parse(userCredential.user.metadata.creationTime),
-            ip_address: userIP
+            last_known_ip_address: userIP,
+            last_login: Date.parse(userCredential.user.metadata.creationTime)
           };
 
           if (isPlatformBrowser(this._platformId)) {
@@ -314,9 +316,10 @@ export class AuthService {
   }
 
   updateLastActivity(userID: string, IP: string) {
+    const date = Date.now()
     this.afs.collection('users').doc(`${userID}`).set({
-      lastActivity: Date.now(),
-      ip_address: IP
+      last_login: date,
+      last_known_ip_address: IP
     }, { merge: true });
   }
 

@@ -101,7 +101,7 @@ export class TransactionReviewComponent implements OnInit {
 
           const body = {
             accessID: environment.referralCandy.access_id,
-            browser_ip: this.user.ip_address,
+            browser_ip: this.user.last_known_ip_address,
             currency_code: 'CAD',
             discount_code: discount.cardID,
             email: this.user.email,
@@ -111,7 +111,7 @@ export class TransactionReviewComponent implements OnInit {
             last_name: this.user.lastName,
             order_timestamp: this.transaction.purchaseDate,
             timestamp: date,
-            signature: `${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.ip_address}currency_code=CADdiscount_code=${discount.cardID}email=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate}timestamp=${date}user_agent=${navigator.userAgent}`,
+            signature: `${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.last_known_ip_address}currency_code=CADdiscount_code=${discount.cardID}email=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate}timestamp=${date}user_agent=${navigator.userAgent}`,
             user_agent: encodeURIComponent(navigator.userAgent)
           }
 
@@ -120,7 +120,7 @@ export class TransactionReviewComponent implements OnInit {
         } else {
           const body = {
             accessID: environment.referralCandy.access_id,
-            browser_ip: this.user.ip_address,
+            browser_ip: this.user.last_known_ip_address,
             currency_code: 'CAD',
             email: this.user.email,
             external_reference_id: this.transaction.id,
@@ -129,7 +129,7 @@ export class TransactionReviewComponent implements OnInit {
             last_name: this.user.lastName,
             order_timestamp: this.transaction.purchaseDate.toString(),
             timestamp: date.toString(),
-            signature: crypto.MD5(`${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.ip_address}currency_code=CADemail=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total.toString()}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate.toString()}timestamp=${date.toString()}user_agent=${navigator.userAgent}`).toString(),
+            signature: crypto.MD5(`${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.last_known_ip_address}currency_code=CADemail=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total.toString()}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate.toString()}timestamp=${date.toString()}user_agent=${navigator.userAgent}`).toString(),
             user_agent: navigator.userAgent
           }
 

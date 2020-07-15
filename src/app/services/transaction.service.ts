@@ -200,6 +200,8 @@ export class TransactionService {
           //console.error(err)
         }) //send notification to slack
 
+        this.http.post(`${environment.cloud.url}orderConfirmation`, transactionData).subscribe() //send email notification
+
         if (product.listingID === size_prices[0].listingID && !isNullOrUndefined(size_prices[1])) {
           this.http.put(`${environment.cloud.url}lowestAskNotification`, {
             product_id: size_prices[1].productID,
@@ -210,8 +212,6 @@ export class TransactionService {
             price: size_prices[1].price
           }).subscribe()
         }
-
-        this.http.post(`${environment.cloud.url}orderConfirmation`, transactionData).subscribe() //send email notification
 
         return transactionID //return transaction_id
       })
@@ -360,7 +360,7 @@ export class TransactionService {
       batch.delete(prodRef.collection('listings').doc(`${userAsk.listingID}`))
       batch.delete(this.afs.firestore.collection(`asks`).doc(`${userAsk.listingID}`))
       batch.update(sellerRef, {
-        listings: firebase.firestore.FieldValue.increment(-1)
+        listed: firebase.firestore.FieldValue.increment(-1)
       })
     }
 
