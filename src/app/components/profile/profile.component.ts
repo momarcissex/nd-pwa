@@ -97,7 +97,7 @@ export class ProfileComponent implements OnInit {
   }
 
   moreListings() {
-    this.profileService.getUserListings(this.listings[this.listings.length - 1].timestamp)
+    this.profileService.getUserListings(this.listings[this.listings.length - 1].created_at)
       .then(val => {
         val.subscribe(data => {
           data.forEach(element => {
@@ -127,7 +127,7 @@ export class ProfileComponent implements OnInit {
   }
 
   moreOffers() {
-    this.profileService.getUserListings(this.offers[this.offers.length - 1].timestamp)
+    this.profileService.getUserListings(this.offers[this.offers.length - 1].created_at)
       .then(val => {
         val.subscribe(data => {
           data.forEach(element => {
