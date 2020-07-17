@@ -691,38 +691,39 @@ exports.accountCreated = functions.https.onRequest((req, res) => {
             return res.status(403).send('Forbidden!');
         }
 
-        console.log(`To: ${req.body.toEmail}, Name: ${req.body.toFirstName + ' ' + req.body.toLastName}`);
+        console.log(`To: ${req.body.email}, Name: ${req.body.first_name + ' ' + req.body.last_name}`);
 
         const msg = {
-            to: req.body.toEmail,
+            to: req.body.email,
             from: { email: 'notifications@nxtdrop.com', name: 'NXTDROP' },
             templateId: 'd-35761f77395f4395bf843c0d9d2352d8',
             dynamic_template_data: {
-                name: req.body.toFirstName + ' ' + req.body.toLastName,
-                uid: req.body.toUid
+                name: req.body.first_name + ' ' + req.body.last_name,
+                uid: req.body.uid
             }
-        };
+        }
 
         const firstRequest = {
             method: 'POST',
-            url: '/v3/contactdb/recipients',
-            body: [{
-                "email": req.body.toEmail,
-                "first_name": req.body.toFirstName,
-                "last_name": req.body.toLastName
-            }]
-        };
+            url: '/v3/marketing/contacts',
+            body: {
+                "list_ids": ["8773202d-7de5-4d53-93b0-f6d7f85b0fa0"],
+                "contacts": [{
+                    "email": req.body.email,
+                    "first_name": req.body.first_name,
+                    "last_name": req.body.last_name,
+                    "custom_fields": {
+                        "account_created": req.body.creation_date,
+                        "has_purchased": "no",
+                        "last_login": req.body.last_login
+                    }
+                }]
+            }
+        }
 
         sgClient.request(firstRequest).then(([firstResponse, firstBody]: any) => {
             console.log(firstBody.persisted_recipients[0])
-            const r = {
-                method: 'POST',
-                url: `/v3/contactdb/lists/9601603/recipients/${firstBody.persisted_recipients[0]}`,
-            }
-
-            sgClient.request(r).then(([secondResponse, secondBody]: any) => {
-                console.log(`Added to NXTDROP list: ${secondResponse.statusCode}`);
-            });
+            console.log(`Added to NXTDROP list: ${firstResponse.statusCode}`)
         }).catch((err: any) => {
             console.error(err);
         })
@@ -1097,24 +1098,19 @@ exports.addToNewsletter = functions.https.onRequest((req, res) => {
         }
 
         const firstRequest = {
-            method: 'POST',
-            url: '/v3/contactdb/recipients',
-            body: [{
-                "email": req.body.email
-            }]
-        };
+            method: 'PUT',
+            url: '/v3/marketing/contacts',
+            body: {
+                "list_ids": ["0af827b1-be5e-425a-97ec-5d2b78d28d83"],
+                "contacts": [{
+                    "email": req.body.email
+                }]
+            }
+        }
 
         return sgClient.request(firstRequest).then(([firstResponse, firstBody]: any) => {
-            console.log(firstBody.persisted_recipients[0])
-            const r = {
-                method: 'POST',
-                url: `/v3/contactdb/lists/11551126/recipients/${firstBody.persisted_recipients[0]}`,
-            }
-
-            return sgClient.request(r).then(([secondResponse, secondBody]: any) => {
-                console.log(`Added to Newsletter list: ${secondResponse.statusCode}`);
-                return res.status(200).send(true)
-            });
+            console.log(`Added to Newsletter list: ${firstResponse.statusCode}`);
+            return res.status(200).send(true)
         }).catch((err: any) => {
             console.error(err);
             return res.status(200).send(false)

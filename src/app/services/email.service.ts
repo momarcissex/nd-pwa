@@ -67,10 +67,12 @@ export class EmailService {
       const email = res.data().email;
 
       const data = {
-        toEmail: email,
-        toFirstName: res.data().firstName,
-        toLastName: res.data().lastName,
-        toUid: res.data().uid
+        email: email,
+        first_name: res.data().firstName,
+        last_name: res.data().lastName,
+        uid: res.data().uid,
+        last_login: res.data().last_login,
+        creation_date: res.data().creation_date
       };
 
       this.http.post(endpoint, data).subscribe();
