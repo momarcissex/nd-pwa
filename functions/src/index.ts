@@ -87,7 +87,7 @@ exports.orderCancellation = functions.https.onRequest((req, res) => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.095;
+                const fee = req.body.price * 0.085;
                 const processing = req.body.price * 0.03;
                 const payout = req.body.price - fee - processing;
 
@@ -137,7 +137,7 @@ exports.sendShippingLabel = functions.https.onRequest((req, res) => {
             if (data) {
                 //const email = data.email;
                 const email = data.email;
-                const fee = req.body.price * 0.095;
+                const fee = req.body.price * 0.085;
                 const processing = req.body.price * 0.03;
                 const payout = req.body.price - fee - processing;
 
@@ -337,7 +337,7 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.095;
+                const fee = req.body.price * 0.085;
                 const processing = req.body.price * 0.03;
                 const payout = req.body.price - fee - processing;
 
@@ -423,7 +423,7 @@ exports.verifiedFailed = functions.https.onRequest((req, res) => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.095;
+                const fee = req.body.price * 0.085;
                 const processing = req.body.price * 0.03;
                 const payout = req.body.price - fee - processing;
 
@@ -518,7 +518,7 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.095;
+                const fee = req.body.price * 0.085;
                 const processing = req.body.price * 0.03;
                 const payout = req.body.price - fee - processing;
                 const transactionID = `${req.body.buyerID}-${req.body.sellerID}-${req.body.purchaseDate}`;
@@ -1003,7 +1003,7 @@ exports.deliveredForVerification = functions.https.onRequest((req, res) => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.095;
+                const fee = req.body.price * 0.085;
                 const processing = req.body.price * 0.03;
                 const payout = req.body.price - fee - processing;
 
@@ -1253,8 +1253,8 @@ exports.lowestAskNotification = functions.https.onRequest((req, res) => {
                                         condition: ask.data().condition,
                                         ask_amount: ask.data().price,
                                         payment_processing: ask.data().price * .03,
-                                        seller_fee: ask.data().price * .095,
-                                        payout: ask.data().price * .875,
+                                        seller_fee: ask.data().price * .085,
+                                        payout: ask.data().price * .885,
                                         assetURL: ask.data().assetURL,
                                         lowest_ask: req.body.price,
                                         update_ask: `https://nxtdrop.com/edit-listing/${ask.data().listingID}`,
@@ -1320,8 +1320,8 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
                                         condition: ask.data().condition,
                                         ask_amount: ask.data().price,
                                         payment_processing: ask.data().price * .03,
-                                        seller_fee: ask.data().price * .095,
-                                        payout: ask.data().price * .875,
+                                        seller_fee: ask.data().price * .085,
+                                        payout: ask.data().price * .885,
                                         assetURL: ask.data().assetURL,
                                         highest_bid: req.body.price,
                                         update_ask: `https://nxtdrop.com/edit-listing/${ask.data().listingID}`,
@@ -1436,8 +1436,8 @@ exports.askNotification = functions.https.onRequest((req, res) => {
                         condition: askData.condition,
                         ask_amount: askData.price,
                         payment_processing: askData.price * .03,
-                        seller_fee: askData.price * .095,
-                        payout: askData.price * .875,
+                        seller_fee: askData.price * .085,
+                        payout: askData.price * .885,
                         assetURL: askData.assetURL
                     }
                 }
