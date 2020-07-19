@@ -50,6 +50,7 @@ import { SaleConfirmationComponent } from './components/sale-confirmation/sale-c
 import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
 import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
+import { ContestComponent } from './components/contest/contest.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -105,6 +106,7 @@ const routes: Routes = [
   { path: 'settings/email', component: SettingsEmailComponent },
   { path: 'recover-email', component: RecoverEmailComponent },
   { path: 'referral', component: ReferralProgramComponent },
+  { path: 'contest', component: ContestComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

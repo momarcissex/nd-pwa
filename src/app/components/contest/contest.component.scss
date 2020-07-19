@@ -1,0 +1,386 @@
+@import "../../base_styles/base";
+
+.main-container {
+    margin: 1rem;
+
+    h1 {
+        text-align: center;
+    }
+
+    img {
+        display: block;
+    }
+
+    .details {
+        h3 {
+            text-align: center;
+            margin: 0.5rem auto;
+        }
+
+        ul {
+            margin: 0.5rem auto;
+            li {
+                list-style-type: decimal;
+                text-align: center;
+                margin: 0.5rem auto;
+            }
+        }
+
+        p {
+            text-align: center;
+            font-weight: $weight-black;
+        }
+    }
+
+    .entry-form {
+        display: grid;
+        align-items: center;
+
+        label {
+            font-weight: $weight-black;
+            text-transform: uppercase;
+            margin: 0.5rem;
+        }
+
+        input {
+            padding: 0.8rem;
+            border: 1px solid $lightgrey;
+            margin: 0.5rem 0;
+            border-radius: 0.2rem;
+        }
+
+        button {
+            padding: 0.8rem;
+            background: $black;
+            margin: 0.5rem auto;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 30%;
+
+            &:hover {
+                background: $matteblack;
+            }
+        }
+
+        .disabled {
+            background: $lightgrey;
+            cursor: not-allowed;
+
+            &:hover {
+                background: $lightgrey;
+            }
+        }
+
+        .submitted {
+            background: $green;
+
+            &:hover {
+                background: $green;
+            }
+        }
+
+        .error {
+            background: $googleRed;
+
+            &:hover {
+                background: $googleRed;
+            }
+        }
+
+        p {
+            text-align: center;
+            font-weight: $weight-black;
+            color: $googleRed;
+        }
+    }
+}
+
+// MEDIA QUERIES
+
+@media only screen and (min-width: 0px) and (max-width: 399.9px) {
+    h1 {
+        font-size: 1.2rem;
+        margin: 0.6rem;
+    }
+
+    img {
+        width: 60%;
+        margin: 0.5rem auto;
+    }
+
+    .details {
+        width: 90%;
+        margin: 0.5rem auto;
+
+        h3 {
+            font-size: 1rem;
+        }
+
+        ul {
+            li {
+                font-size: 0.7rem;
+            }
+        }
+
+        p {
+            font-size: 0.7rem;
+        }
+    }
+
+    .entry-form {
+        width: 100%;
+        margin: 0.8rem auto;
+
+        label {
+            font-size: 0.7rem;
+        }
+
+        input {
+            font-size: 0.7rem;
+        }
+
+        p {
+            font-size: 0.7rem;
+        }
+    }
+}
+
+@media only screen and (min-width: 400px) and (max-width: 799.9px) {
+    h1 {
+        font-size: 1.2rem;
+        margin: 0.6rem;
+    }
+
+    img {
+        width: 55%;
+        margin: 0.5rem auto;
+    }
+
+    .details {
+        width: 85%;
+        margin: 0.5rem auto;
+
+        h3 {
+            font-size: 1rem;
+        }
+
+        ul {
+            li {
+                font-size: 0.7rem;
+            }
+        }
+
+        p {
+            font-size: 0.7rem;
+        }
+    }
+
+    .entry-form {
+        width: 95%;
+        margin: 0.8rem auto;
+
+        label {
+            font-size: 0.7rem;
+        }
+
+        input {
+            font-size: 0.7rem;
+        }
+
+        p {
+            font-size: 0.7rem;
+        }
+    }
+}
+
+@media only screen and (min-width: 800px) and (max-width: 1199.9px) {
+    h1 {
+        font-size: 1.4rem;
+        margin: 0.6rem;
+    }
+
+    img {
+        width: 40%;
+        margin: 0.5rem auto;
+    }
+
+    .details {
+        width: 75%;
+        margin: 0.5rem auto;
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        ul {
+            li {
+                font-size: 0.8rem;
+            }
+        }
+
+        p {
+            font-size: 0.8rem;
+        }
+    }
+
+    .entry-form {
+        width: 75%;
+        margin: 0.8rem auto;
+
+        label {
+            font-size: 0.8rem;
+        }
+
+        input {
+            font-size: 0.8rem;
+        }
+
+        p {
+            font-size: 0.8rem;
+        }
+    }
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1799.9px) {
+    h1 {
+        font-size: 1.4rem;
+        margin: 0.6rem;
+    }
+
+    img {
+        width: 30%;
+        margin: 0.5rem auto;
+    }
+
+    .details {
+        width: 75%;
+        margin: 0.5rem auto;
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        ul {
+            li {
+                font-size: 0.9rem;
+            }
+        }
+
+        p {
+            font-size: 0.9rem;
+        }
+    }
+
+    .entry-form {
+        width: 50%;
+        margin: 0.8rem auto;
+
+        label {
+            font-size: 0.9rem;
+        }
+
+        input {
+            font-size: 0.9rem;
+        }
+
+        p {
+            font-size: 0.9rem;
+        }
+    }
+}
+
+@media only screen and (min-width: 1800px) and (max-width: 1999.9px) {
+    h1 {
+        font-size: 1.4rem;
+        margin: 0.6rem;
+    }
+
+    img {
+        width: 30%;
+        margin: 0.5rem auto;
+    }
+
+    .details {
+        width: 75%;
+        margin: 0.7rem auto;
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        ul {
+            li {
+                font-size: 1rem;
+            }
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+
+    .entry-form {
+        width: 50%;
+        margin: 0.9rem auto;
+
+        label {
+            font-size: 0.9rem;
+        }
+
+        input {
+            font-size: 0.9rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+}
+
+@media only screen and (min-width: 2000px) {
+    h1 {
+        font-size: 1.4rem;
+        margin: 0.6rem;
+    }
+
+    img {
+        width: 30%;
+        margin: 0.5rem auto;
+    }
+
+    .details {
+        width: 75%;
+        margin: 0.7rem auto;
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        ul {
+            li {
+                font-size: 1rem;
+            }
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+
+    .entry-form {
+        width: 50%;
+        margin: 0.9rem auto;
+
+        label {
+            font-size: 0.9rem;
+        }
+
+        input {
+            font-size: 0.9rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+}

@@ -1,0 +1,43 @@
+<app-navbar></app-navbar>
+
+<section class="main-container">
+    <h1>Jordan 1 High Retro Turbo Green Giveaway</h1>
+
+    <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/products%2FJordan-1-Retro-High-Turbo-Green.jpg?alt=media&token=036b7e6a-1b02-4980-8228-10386ad31b38"
+        alt="Jordan 1 Retro High Turbo Green">
+
+    <div class="details">
+        <h3>How to participate:</h3>
+        <ul>
+            <li>Follow our IG account (@nxtdrop)</li>
+            <li>Tag 3 of your friends in our post comments</li>
+            <li>Fill the form below</li>
+        </ul>
+        <p>Winner will be announced on Wednesday, July 22nd, 2020 at 4PM EST.</p>
+    </div>
+
+    <div class="entry-form">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="admin@nxtdrop.com" (keyup)="emailChanges()" required>
+
+        <label for="handle">IG Handle</label>
+        <input type="text" name="handle" id="handle" placeholder="@nxtdrop" maxlength="40" (keyup)="handleChanges()" required>
+
+        <label for="size">Shoe Size</label>
+        <input type="text" name="size" id="size" placeholder="US9" maxlength="6" (keyup)="sizeChanges()" required>
+
+        <button class="btn ripple" *ngIf="validEntry && !entrySubmitError && !entrySubmitted && !entrySubmitting" (click)="submitEntry()">Submit Entry</button>
+
+        <button class="btn disabled ripple" *ngIf="!validEntry && !entrySubmitError && !entrySubmitted && !entrySubmitting">Submit Entry</button>
+
+        <button class="btn ripple" *ngIf="entrySubmitting"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+
+        <button class="btn submitted ripple" *ngIf="entrySubmitted">Entry Submitted</button>
+
+        <button class="btn error ripple" *ngIf="entrySubmitError"></button>
+
+        <p *ngIf="entrySubmitError">{{ errorMessage }}</p>
+    </div>
+</section>
+
+<app-footer></app-footer>
