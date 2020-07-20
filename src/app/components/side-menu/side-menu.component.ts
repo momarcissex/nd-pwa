@@ -24,5 +24,6 @@ export class SideMenuComponent implements OnInit {
     // console.log('work');
     const element = document.getElementById('slide-menu');
     element.style.width = '0vw';
+    document.body.style.overflow = 'auto'
   }
 }

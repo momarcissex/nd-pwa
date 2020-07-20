@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { ModalService } from 'src/app/services/modal.service';
-import { SlackService } from 'src/app/services/slack.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { isNullOrUndefined } from 'util';
+import { isPlatformBrowser } from '@angular/common';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-modal',
@@ -10,90 +12,100 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class ModalComponent implements OnInit {
 
-  isOpen = true;
-  productInfo;
-  isFreeShipping = false;
-  isMakeOffer = false;
-  validEmail = false;
-  loading = false;
-  sent = false;
-  error = false;
+  isOpen: boolean = false
+
+  subscribeLoading: boolean = false
+  subscribeError: boolean = false
+  subscribed: boolean = false
+  errorMessage: string = ''
 
   constructor(
     private modalService: ModalService,
-    private slack: SlackService,
-    private auth: AuthService
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
   ngOnInit() {
-    this.modalService.product.subscribe(info => {
-      this.productInfo = info;
-    });
-
     this.modalService.open.subscribe(res => {
-      if (res === 'freeShipping') {
-        this.isFreeShipping = true;
-        const element = document.getElementById('modal');
-        element.style.height = '100vh';
-        // console.log(this.isFreeShipping);
-      } else if (res === 'makeOffer') {
-        this.isMakeOffer = true;
-        const element = document.getElementById('modal');
-        element.style.height = '100vh';
+      if (isNullOrUndefined(res)) {
+        this.close()
       } else {
-        this.close();
+        this.open()
       }
     })
   }
 
   close() {
     if (this.isOpen) {
+      document.getElementById('modal').style.background = 'transparent'
       document.getElementById('modal').style.top = '100%';
+      this.isOpen = false
+      document.body.style.overflow = 'auto'
     }
   }
 
   open() {
+    (document.getElementById('email') as HTMLInputElement).value = ''
+    this.subscribed = false
+    this.subscribeError = false
+    this.subscribeLoading = false
+    
+
+    document.body.style.overflow = 'hidden'
+    document.getElementById('modal').style.background = 'transparent'
     const element = document.getElementById('modal');
     element.style.height = '100vh';
+    this.isOpen = true
+
+    setTimeout(() => {
+      document.getElementById('modal').style.background = 'rgba(56, 54, 55, 0.5)'
+    }, 1000);
   }
 
-  emailChanges($event) {
-    const email = $event.target.value;
-    const pattern = new RegExp(/^.+@.+\.[a-zA-Z]{2,}$/gm);
+  subscribe() {
+    this.subscribeLoading = true;
+    this.subscribeError = false;
 
-    if (pattern.test(email)) {
-      this.validEmail = true;
-    } else {
-      this.validEmail = false;
-    }
-  }
+    if (isPlatformBrowser(this._platformId)) {
+      const email = (document.getElementById('email') as HTMLInputElement).value;
+      const regex = RegExp('^.+@.+\.[a-z]{2,5}$');
 
-  sendInvite() {
-    if (this.validEmail) {
-      this.loading = true;
-      const email = (document.getElementById('input-email') as HTMLInputElement).value;
-      this.modalService.sendInviteEmail(email).then(res => {
-        res.subscribe(data => {
-          this.loading = false;
-          if (data) {
-            this.sent = true;
-
-            this.auth.isConnected().then(res => {
-              this.slack.sendAlert('others', `${res.email} send an invitation to ${email}`);
-            });
+      if (regex.test(email)) {
+        this.http.put(`${environment.cloud.url}addToNewsletter`, { email: email }).subscribe(res => {
+          if (res) {
+            this.subscribeLoading = false;
+            this.subscribed = true;
 
             setTimeout(() => {
-              this.modalService.closeModal();
-            }, 2000);
+              this.close()
+            }, 2000)
           } else {
-            this.error = true;
+            this.subscribeLoading = false;
+            this.subscribeError = true;
 
             setTimeout(() => {
-              this.error = false;
-            }, 1500)
+              this.subscribeError = false
+              this.subscribeLoading = false
+            }, 3000);
           }
-        })
-      })
+        });
+      } else {
+        this.subscribeError = true;
+        this.subscribeLoading = false;
+
+        setTimeout(() => {
+          this.subscribeError = false
+          this.subscribeLoading = false
+        }, 3000);
+      }
+    } else {
+      this.subscribeError = true;
+      this.subscribeLoading = false;
+
+      setTimeout(() => {
+        this.subscribeError = false
+        this.subscribeLoading = false
+      }, 3000);
     }
   }
 

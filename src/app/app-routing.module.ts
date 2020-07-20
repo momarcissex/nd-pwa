@@ -106,7 +106,7 @@ const routes: Routes = [
   { path: 'settings/email', component: SettingsEmailComponent },
   { path: 'recover-email', component: RecoverEmailComponent },
   { path: 'referral', component: ReferralProgramComponent },
-  { path: 'contest', component: ContestComponent },
+  { path: 'giveaway', component: ContestComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

@@ -1,26 +1,32 @@
 @import "../../base_styles/base";
 
 .modal {
-  @include vendor(transition, all 0.5s);
+  transition: top 1s, height 1s !important;
+  -moz-transition: top 1s, height 1s !important;
+  -webkit-transition: top 1s, height 1s !important;
+  -moz-transition: top 1s, height 1s !important;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 0%;
   z-index: 10000;
-  overflow-x: hidden;
-  //background: rgba(56, 54, 55, 0.5);
+  overflow: hidden;
+  background: rgba(56, 54, 55, 0.5);
   display: grid;
 
   .one-grid {
-    grid-template-columns: 1fr!important;
+    grid-template-columns: 1fr !important;
   }
 
   .dark {
-    background: $black!important;
-    color: $white!important;
-    
-    p, h3, h2, h1 {
+    background: $black !important;
+    color: $white !important;
+
+    p,
+    h3,
+    h2,
+    h1 {
       color: $white;
     }
   }
@@ -30,28 +36,18 @@
     cursor: not-allowed;
 
     &:hover {
-      background: $lightgrey!important;
-    }
-  }
-
-  .error {
-    background: $inputError;
-    cursor: not-allowed;
-
-    &:hover {
-      background: $inputError!important;
+      background: $lightgrey !important;
     }
   }
 
   .modal-card {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     background: $white;
     align-self: center;
     justify-self: center;
-    border-radius: $spacing-small;
+    border-radius: $spacing-xsmall;
     color: $matteblack;
-    max-height: 60vh;
+    height: 60vh;
 
     img {
       object-fit: cover;
@@ -68,10 +64,11 @@
       input {
         width: 80%;
         padding: $spacing-small;
-        border: none;
+        border: 1px solid $lightgrey;
         border-radius: $spacing-xsmall;
         display: block;
         margin: 0 auto;
+        font-size: 1;
       }
 
       img {
@@ -88,13 +85,34 @@
         color: $matteblack;
 
         &:hover {
-          background: $lightgrey!important;
+          background: $lightgrey !important;
         }
       }
 
       button {
+        background: $black;
+        text-transform: uppercase;
+
         &:hover {
-          background: $matteblue;
+          background: $matteblack;
+        }
+      }
+
+      .error {
+        background: $googleRed;
+        cursor: not-allowed;
+
+        &:hover {
+          background: $googleRed !important;
+        }
+      }
+
+      .subscribed {
+        background: $green;
+        cursor: not-allowed;
+
+        &:hover {
+          background: $green !important;
         }
       }
     }
@@ -116,7 +134,7 @@
       grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
 
       input {
-        font-size: $font-xsmall;
+        font-size: 0.6rem;
       }
 
       img {
@@ -133,7 +151,7 @@
       }
 
       button {
-        font-size: $font-xsmall!important;
+        font-size: $font-xsmall !important;
         padding: $spacing-normal $spacing-xxsmall;
       }
     }
@@ -151,6 +169,10 @@
 
     div {
       grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      input {
+        font-size: 0.6rem;
+      }
 
       img {
         width: 40px;
@@ -185,6 +207,10 @@
     div {
       grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
 
+      input {
+        font-size: 0.7rem;
+      }
+
       img {
         width: 40px;
         height: 40px;
@@ -208,7 +234,7 @@
 
 @media only screen and (min-width: 1200px) and (max-width: 1800px) {
   .modal-card {
-    width: 50%;
+    width: 40%;
 
     img {
       width: 100%;
@@ -218,9 +244,13 @@
     div {
       grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
 
+      input {
+        font-size: 0.8rem;
+      }
+
       fa-icon {
         font-size: $font-large;
-    }
+      }
 
       img {
         width: 40px;
@@ -255,6 +285,10 @@
     div {
       grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
 
+      input {
+        font-size: 0.9rem;
+      }
+
       img {
         width: 40px;
         height: 40px;
@@ -288,8 +322,12 @@
     div {
       grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
 
+      input {
+        font-size: 1rem;
+      }
+
       fa-icon {
-          font-size: $font-xxlarge;
+        font-size: $font-xxlarge;
       }
 
       img {

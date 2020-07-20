@@ -37,7 +37,6 @@ export class NavbarComponent implements OnInit {
   constructor(
     private notification: NotificationsComponent,
     private auth: AuthService,
-    private navbarService: NavbarService,
     private afs: AngularFirestore,
     private route: ActivatedRoute,
     private router: Router,
@@ -82,6 +81,7 @@ export class NavbarComponent implements OnInit {
     // console.log('open');
     const element = document.getElementById('slide-menu');
     element.style.width = '100vw';
+    document.body.style.overflow = 'hidden'
   }
 
   checkUser() {
