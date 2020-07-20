@@ -1506,3 +1506,19 @@ exports.bidNotification = functions.https.onRequest((req, res) => {
         })
     })
 })
+
+exports.enterGiveaway = functions.https.onRequest((req, res) => {
+    return cors(req, res, () => {
+        const msg: any = {
+            to: req.body.email,
+            from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
+            templateId: 'd-db38c30c1d1a4f0a8ab0917134e54805',
+        }
+
+        return sgMail.send(msg).then((content: any) => {
+            console.log(`email sent to participant ${req.body.email}`)
+        }).catch((err: any) => {
+            console.error(err)
+        })
+    })
+})

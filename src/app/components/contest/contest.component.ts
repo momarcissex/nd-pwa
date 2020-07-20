@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { IpService } from 'src/app/services/ip.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-contest',
@@ -26,7 +28,8 @@ export class ContestComponent implements OnInit {
 
   constructor(
     private afs: AngularFirestore,
-    private ipService: IpService
+    private ipService: IpService,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -93,6 +96,10 @@ export class ContestComponent implements OnInit {
       .then(response => {
         this.entrySubmitting = false
         this.entrySubmitted = true
+
+        this.http.post(`${environment.cloud.url}enterGiveaway`, {
+          email: this.email
+        }).subscribe()
       })
       .catch(err => {
         console.error(err)
