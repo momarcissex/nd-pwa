@@ -44,7 +44,7 @@ export class ContestComponent implements OnInit {
     )
   }
 
-  private emailChanges() {
+  emailChanges() {
     this.email = (document.getElementById('email') as HTMLInputElement).value
     const pattern = new RegExp(/.+@.+\.[a-zA-Z]{2,}/gm)
 
@@ -57,7 +57,7 @@ export class ContestComponent implements OnInit {
     this.validEmail && this.validHandle && this.validSize ? this.validEntry = true : this.validEntry = false
   }
 
-  private handleChanges() {
+  handleChanges() {
     this.handle = (document.getElementById('handle') as HTMLInputElement).value
 
     if (this.handle.length > 2) {
@@ -69,7 +69,7 @@ export class ContestComponent implements OnInit {
     this.validEmail && this.validHandle && this.validSize ? this.validEntry = true : this.validEntry = false
   }
 
-  private sizeChanges() {
+  sizeChanges() {
     this.size = (document.getElementById('size') as HTMLInputElement).value
 
     if (this.size.length > 2) {
@@ -81,7 +81,7 @@ export class ContestComponent implements OnInit {
     this.validEmail && this.validHandle && this.validSize ? this.validEntry = true : this.validEntry = false
   }
 
-  private submitEntry() {
+  submitEntry() {
     const id = this.makeid(10)
     this.entrySubmitting = true
 
