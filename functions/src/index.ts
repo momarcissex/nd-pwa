@@ -704,7 +704,7 @@ exports.accountCreated = functions.https.onRequest((req, res) => {
         }
 
         const firstRequest = {
-            method: 'POST',
+            method: 'PUT',
             url: '/v3/marketing/contacts',
             body: {
                 "list_ids": ["8773202d-7de5-4d53-93b0-f6d7f85b0fa0"],
