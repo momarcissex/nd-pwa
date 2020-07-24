@@ -1522,3 +1522,222 @@ exports.enterGiveaway = functions.https.onRequest((req, res) => {
         })
     })
 })
+
+exports.expiredAsk = functions.pubsub.schedule('every 5 minutes').timeZone('America/Edmonton').onRun((context: any) => {
+    const date = Date.now()
+
+    return admin.firestore().collection('asks').where('expiration_date', '<=', date).limit(100).get()
+        .then(response => {
+            response.forEach(data => {
+                admin.firestore().collection('products').doc(data.get('productID')).collection('listings').doc(data.id).delete()
+                    .then(() => {
+                        admin.firestore().collection('users').doc(data.get('sellerID')).get()
+                            .then(user_response => {
+                                const user_data = user_response.data()
+
+                                if (!isNullOrUndefined(user_data)) {
+                                    const msg: any = {
+                                        to: user_data.email,
+                                        from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
+                                        templateId: 'd-d0caee4fa00a44299dedfee11e23f07d',
+                                        dynamic_template_data: {
+                                            assetURL: data.data().assetURL,
+                                            model: data.data().model,
+                                            size: data.data().size,
+                                            condition: data.data().condition,
+                                            amount: data.data().price,
+                                            fee: data.data().price * .085,
+                                            payment_processing: data.data().price * .03,
+                                            payout: data.data().price * .885,
+                                            id: data.data().listingID
+                                        }
+                                    }
+
+                                    sgMail.send(msg)
+                                        .then(() => {
+                                            console.log('email sent to seller')
+                                            admin.firestore().collection('asks').doc(data.id)
+                                                .update({
+                                                    expiration_date: admin.firestore.FieldValue.delete()
+                                                })
+                                                .catch(err => {
+                                                    console.error(err)
+                                                })
+                                        })
+                                        .catch((err: any) => {
+                                            console.error(err)
+                                        })
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err)
+                            })
+                    })
+                    .catch(err => {
+                        console.error(err)
+                    })
+            })
+
+            return null
+        })
+        .catch(err => {
+            console.error(err)
+            return null
+        })
+})
+
+exports.expiredBid = functions.pubsub.schedule('every 5 minutes').timeZone('America/Edmonton').onRun((context: any) => {
+    const date = Date.now()
+
+    return admin.firestore().collection('bids').where('expiration_date', '<=', date).limit(100).get()
+        .then(response => {
+            response.forEach(data => {
+                admin.firestore().collection('products').doc(data.get('productID')).collection('offers').doc(data.id).delete()
+                    .then(() => {
+                        admin.firestore().collection('users').doc(data.get('buyerID')).get()
+                            .then(user_response => {
+                                const user_data = user_response.data()
+
+                                if (!isNullOrUndefined(user_data)) {
+                                    const msg: any = {
+                                        to: user_data.email,
+                                        from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
+                                        templateId: 'd-b94b8c957f90497b97824f849b415471',
+                                        dynamic_template_data: {
+                                            assetURL: data.data().assetURL,
+                                            model: data.data().model,
+                                            size: data.data().size,
+                                            condition: data.data().condition,
+                                            amount: data.data().price,
+                                            shipping: 15,
+                                            total: data.data().price + 15,
+                                            id: data.data().offerID
+                                        }
+                                    }
+
+                                    sgMail.send(msg)
+                                        .then(() => {
+                                            console.log('email sent to buyer')
+                                            admin.firestore().collection('bids').doc(data.id)
+                                                .update({
+                                                    expiration_date: admin.firestore.FieldValue.delete()
+                                                })
+                                                .catch(err => {
+                                                    console.error(err)
+                                                })
+                                        })
+                                        .catch((err: any) => {
+                                            console.error(err)
+                                        })
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err)
+                            })
+                    })
+                    .catch(err => {
+                        console.error(err)
+                    })
+            })
+
+            return null
+        })
+        .catch(err => {
+            console.error(err)
+            return null
+        })
+})
+
+exports.extendAskBid = functions.https.onRequest((req, res) => {
+    return cors(req, res, () => {
+        if (req.method !== 'PATCH') {
+            return res.status(200).send(false)
+        }
+
+        const batch = admin.firestore().batch()
+
+        if (req.body.mode === 'ask') {
+            return admin.firestore().collection('users').doc(req.body.user_id).collection('listings').doc(req.body.id)
+                .get()
+                .then(response => {
+                    const new_date = Date.now()
+
+                    const data = {
+                        assetURL: response.get('assetURL'),
+                        condition: response.get('condition'),
+                        created_at: response.get('created_at'),
+                        expiration_date: new_date + (86400000 * 30),
+                        last_updated: new_date,
+                        listingID: response.get('listingID'),
+                        model: response.get('model'),
+                        price: response.get('price'),
+                        productID: response.get('productID'),
+                        sellerID: response.get('sellerID'),
+                        size: response.get('size')
+                    }
+
+                    if (response.exists) {
+                        batch.set(admin.firestore().collection('products').doc(response.get('productID')).collection('listings').doc(response.id), data)
+                        batch.update(admin.firestore().collection('asks').doc(response.id), data)
+
+                        return batch.commit()
+                            .then(() => {
+                                return res.status(200).send(true)
+                            })
+                            .catch(err => {
+                                console.error(err)
+                                return res.status(200).send(false)
+                            })
+                    } else {
+                        return res.status(200).send(false)
+                    }
+                })
+                .catch(err => {
+                    console.error(err)
+                    return res.status(200).send(false)
+                })
+        } else if (req.body.mode === 'bid') {
+            return admin.firestore().collection('users').doc(req.body.user_id).collection('offers').doc(req.body.id)
+                .get()
+                .then(response => {
+                    const new_date = Date.now()
+
+                    const data = {
+                        assetURL: response.get('assetURL'),
+                        buyerID: response.get('buyerID'),
+                        condition: response.get('condition'),
+                        created_at: response.get('created_at'),
+                        expiration_date: new_date + (86400000 * 30),
+                        last_updated: new_date,
+                        model: response.get('model'),
+                        offerID: response.get('offerID'),
+                        price: response.get('price'),
+                        productID: response.get('productID'),
+                        size: response.get('size')
+                    }
+
+                    if (response.exists) {
+                        batch.set(admin.firestore().collection('products').doc(response.get('productID')).collection('offers').doc(response.id), data)
+                        batch.update(admin.firestore().collection('bids').doc(response.id), data)
+
+                        return batch.commit()
+                            .then(() => {
+                                return res.status(200).send(true)
+                            })
+                            .catch(err => {
+                                console.error(err)
+                                return res.status(200).send(false)
+                            })
+                    } else {
+                        return res.status(200).send(false)
+                    }
+                })
+                .catch(err => {
+                    console.error(err)
+                    return res.status(200).send(false)
+                })
+        } else {
+            return res.status(200).send(false)
+        }
+    })
+})

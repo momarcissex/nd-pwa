@@ -51,6 +51,7 @@ import { SettingsEmailComponent } from './components/settings-email/settings-ema
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
 import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
 import { ContestComponent } from './components/contest/contest.component';
+import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -107,6 +108,7 @@ const routes: Routes = [
   { path: 'recover-email', component: RecoverEmailComponent },
   { path: 'referral', component: ReferralProgramComponent },
   { path: 'giveaway', component: ContestComponent },
+  { path: 'extend/:mode/:id', component: ExtendAskBidComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 

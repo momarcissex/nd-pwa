@@ -98,6 +98,7 @@ import { SettingsEmailComponent } from './components/settings-email/settings-ema
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
 import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
 import { ContestComponent } from './components/contest/contest.component';
+import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
 @NgModule({
   declarations: [
@@ -165,7 +166,8 @@ import { ContestComponent } from './components/contest/contest.component';
     SettingsEmailComponent,
     RecoverEmailComponent,
     ReferralProgramComponent,
-    ContestComponent
+    ContestComponent,
+    ExtendAskBidComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
