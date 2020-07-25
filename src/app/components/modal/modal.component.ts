@@ -45,7 +45,7 @@ export class ModalComponent implements OnInit {
   }
 
   open() {
-    (document.getElementById('email') as HTMLInputElement).value = ''
+    (document.getElementById('subscription-email') as HTMLInputElement).value = ''
     this.subscribed = false
     this.subscribeError = false
     this.subscribeLoading = false
@@ -67,8 +67,8 @@ export class ModalComponent implements OnInit {
     this.subscribeError = false;
 
     if (isPlatformBrowser(this._platformId)) {
-      const email = (document.getElementById('email') as HTMLInputElement).value;
-      const regex = RegExp('^.+@.+\.[a-z]{2,5}$');
+      const email = (document.getElementById('subscription-email') as HTMLInputElement).value;
+      const regex = RegExp(/^.+@.+\.[a-z]{2,5}$/gm);
 
       if (regex.test(email)) {
         this.http.put(`${environment.cloud.url}addToNewsletter`, { email: email }).subscribe(res => {

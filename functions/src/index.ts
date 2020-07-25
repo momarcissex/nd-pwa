@@ -713,23 +713,26 @@ exports.accountCreated = functions.https.onRequest((req, res) => {
                     "first_name": req.body.first_name,
                     "last_name": req.body.last_name,
                     "custom_fields": {
-                        "account_created": req.body.creation_date,
-                        "has_purchased": "no",
-                        "last_login": req.body.last_login
+                        "w2_D": `${new Date(req.body.creation_date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}`,
+                        "w4_T": "no",
+                        "w7_D": `${new Date(req.body.last_login).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}`
                     }
                 }]
             }
         }
 
+        console.log(firstRequest)
+
         sgClient.request(firstRequest).then(([firstResponse, firstBody]: any) => {
-            console.log(firstBody.persisted_recipients[0])
+            //console.log(firstBody.persisted_recipients[0])
             console.log(`Added to NXTDROP list: ${firstResponse.statusCode}`)
         }).catch((err: any) => {
             console.error(err);
         })
 
         return sgMail.send(msg).then((content: any) => {
-            console.log(content);
+            //console.log(content);
+            console.log('email sent')
             return res.status(200).send(true);
         }).catch((err: any) => {
             console.error(err);

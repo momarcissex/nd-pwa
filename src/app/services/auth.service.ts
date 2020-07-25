@@ -22,6 +22,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { IpService } from './ip.service';
+import { SlackService } from './slack.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -43,6 +44,7 @@ export class AuthService {
     private emailService: EmailService,
     private http: HttpClient,
     private ipService: IpService,
+    private slack: SlackService,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
@@ -237,6 +239,8 @@ export class AuthService {
       .catch((error) => {
         console.error('Error: ', error);
 
+        this.slack.sendAlert('bugreport', `Error: ${error}\n Data: ${user}`)
+
         if (this.isEmailSignUp) {
           userCred.user.delete().catch(err => {
             console.error(err);
@@ -294,6 +298,7 @@ export class AuthService {
         })
         .catch((error) => {
           console.error('Account linking error', error);
+          this.slack.sendAlert('bugreport', `Account linking: ${error}, Data: ${this.afAuth.auth.currentUser.email}`)
           return false;
         });
     } else {
