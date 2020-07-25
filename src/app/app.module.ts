@@ -97,6 +97,8 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
 import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
 import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
+import { ContestComponent } from './components/contest/contest.component';
+import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
 @NgModule({
   declarations: [
@@ -163,7 +165,9 @@ import { ReferralProgramComponent } from './components/referral-program/referral
     NewsletterComponent,
     SettingsEmailComponent,
     RecoverEmailComponent,
-    ReferralProgramComponent
+    ReferralProgramComponent,
+    ContestComponent,
+    ExtendAskBidComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

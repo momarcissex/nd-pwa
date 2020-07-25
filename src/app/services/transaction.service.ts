@@ -421,7 +421,11 @@ export class TransactionService {
           province: shippingInfo.province,
           postalCode: shippingInfo.postalCode,
           country: shippingInfo.country
-        }
+        },
+        label: '',
+        carrier: '',
+        trackingID: ''
+
       }
     });
 

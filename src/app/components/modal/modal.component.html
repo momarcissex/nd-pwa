@@ -1,27 +1,22 @@
 <section class="modal" id="modal">
 
-    <div class="modal-card" *ngIf="isMakeOffer">
-        <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/products%2Fvirgil-off-white-chicago.jpg?alt=media&token=2c3b2ee0-3faa-4df2-b572-89c1c814267e" alt="Virgil x Jordan 1 OFF-WHITE Chicago">
-
+    <div class="modal-card">
         <div>
             <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
-            <img src="../../../assets/Colorpng.png" alt="NXTDROP Logo">
-            <h3>Can't find the right price or size?</h3>
-            <p>Place an offer now and wait for a seller to match it!</p>
-            <button class="btn" routerLink="/make-an-offer" [queryParams]="{ sneaker: productInfo | json }">Place an offer now</button>
-        </div>
-    </div>
+            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59" alt="NXTDROP Logo">
+            <h3>Never miss promotions, good deals and new releases again!</h3>
+            <p>Subscribe to our newsletter.</p>
+            <input type="text" name="email" id="subscription-email" placeholder="Email Address">
 
-    <div class="modal-card one-grid dark" *ngIf="isFreeShipping">
-        <div>
-            <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
-            <img src="../../../assets/Negativepng.png" alt="NXTDROP Logo">
-            <h3>Invite a Friend and Both Get Free Shipping</h3>
-            <input type="email" id="input-email" placeholder="Email Address" (keyup)="emailChanges($event)">
-            <button *ngIf="!loading && !error && !sent" [className]="validEmail ? 'btn dark-btn' : 'btn disabled'" (click)="sendInvite()">Send Invite</button>
-            <button *ngIf="loading" class="btn dark-btn"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
-            <button *ngIf="error" class="btn error">Error</button>
-            <button *ngIf="sent" class="btn dark-btn">Sent</button>
+            <button class="btn" *ngIf="!subscribeLoading && !subscribeError && !subscribed" (click)="subscribe()">Subscribe</button>
+
+            <button class="btn" *ngIf="subscribeLoading">Subscribing...</button>
+
+            <button class="btn error" *ngIf="subscribeError">Error</button>
+
+            <button class="btn subscribed" *ngIf="subscribed">Subscribed</button>
+
+            <p>{{ errorMessage }}</p>
         </div>
     </div>
 

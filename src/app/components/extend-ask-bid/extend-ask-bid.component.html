@@ -1,0 +1,17 @@
+<app-navbar></app-navbar>
+
+<div class="main-container">
+    <section class="content-container">
+        <fa-icon *ngIf="loading" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        
+        <fa-icon *ngIf="good" [icon]="['fas', 'check-circle']"></fa-icon>
+        <h3 *ngIf="good">Perfect</h3>
+        <h6 *ngIf="good">Your {{ mode }} is extended for 30 days.</h6>
+
+        <fa-icon *ngIf="error" class="error-icon" [icon]="['fas', 'exclamation-circle']"></fa-icon>
+        <h3 *ngIf="error">Error</h3>
+        <h6 *ngIf="error">Try again.</h6>
+    </section>
+</div>
+
+<app-footer></app-footer>

@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { isNullOrUndefined } from 'util';
 import { IpService } from './services/ip.service';
+import { ModalService } from './services/modal.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -29,6 +30,7 @@ export class AppComponent implements AfterViewInit {
     private seo: MetaService,
     private http: HttpClient,
     private ipService: IpService,
+    private modalService: ModalService,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
@@ -63,6 +65,10 @@ export class AppComponent implements AfterViewInit {
           window.Intercom("boot", {
             app_id: "w1p7ooc8"
           });
+
+          setTimeout(() => {
+            this.modalService.openModal('capture')
+          }, 10000);
         }
       }).catch(err => {
         console.error(err);

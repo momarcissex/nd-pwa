@@ -123,15 +123,14 @@
       <button class="btn edit-btn" (click)="editPayment()">Edit</button>
     </div>-->
 
-<div class="checkout-btns" *ngIf="product">
+  <div class="checkout-btns" *ngIf="product">
     <!--user viewing an ask-->
     <div *ngIf="showPaypal">
       <h2>Select Payment Method</h2>
       <ngx-paypal [config]="payPalConfig"></ngx-paypal>
     </div>
 
-    <button *ngIf="showEditAsk" class="btn"
-      [routerLink]="['/edit-ask', product.listingID]"
+    <button *ngIf="showEditAsk" class="btn" [routerLink]="['/edit-ask', product.listingID]"
       [queryParams]="{ source: 'checkout?product=' + product.listingID + '&sell=false'}">Edit Ask</button>
     <!--user viewing an ask end-->
 
@@ -147,18 +146,15 @@
     <!--user buying pair for free (when using a promo covering all expenses) end-->
 
     <!--User viewing a bid-->
-    <button *ngIf="showEditBid" class="btn"
-      [routerLink]="['/edit-bid', product.offerID]"
+    <button *ngIf="showEditBid" class="btn" [routerLink]="['/edit-bid', product.offerID]"
       [queryParams]="{ source: 'checkout?product=' + product.offerID + '&sell=true'}">Edit Bid</button>
 
-    <button *ngIf="showConfirmSale" (click)="sellNow()"
-      class="btn">Confirm
+    <button *ngIf="showConfirmSale" (click)="sellNow()" class="btn">Confirm
       Sale</button>
     <!--User viewing a bid end-->
 
     <!--Redirect to shipping details page-->
-    <button *ngIf="showContinueShipping" class="btn"
-      (click)="editShipping()">Continue to Shipping</button>
+    <button *ngIf="showContinueShipping" class="btn" (click)="editShipping()">Continue to Shipping</button>
 
 
     <!--back button-->

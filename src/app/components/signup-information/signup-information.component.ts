@@ -92,9 +92,17 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     });
 
     this.accountCreated = false;
-    this.ipService.getIPAddress().subscribe((data: any) => {
-      this.userIP = data.ip
-    })
+    this.ipService.getIPAddress().subscribe(
+      (data: any) => {
+        if (isNullOrUndefined(data.ip)) {
+          this.userIP = "null"
+        } else {
+          this.userIP = data.ip
+        }
+      },
+      err => {
+        this.userIP = "null"
+      })
   }
 
   ngOnDestroy() {
