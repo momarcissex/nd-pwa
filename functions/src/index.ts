@@ -707,7 +707,7 @@ exports.accountCreated = functions.https.onRequest((req, res) => {
             method: 'PUT',
             url: '/v3/marketing/contacts',
             body: {
-                "list_ids": ["8773202d-7de5-4d53-93b0-f6d7f85b0fa0"],
+                "list_ids": ["dfaba2ad-fe6c-4b85-9148-fa401432f5e1"],
                 "contacts": [{
                     "email": req.body.email,
                     "first_name": req.body.first_name,
@@ -721,7 +721,7 @@ exports.accountCreated = functions.https.onRequest((req, res) => {
             }
         }
 
-        console.log(firstRequest)
+        //console.log(firstRequest)
 
         sgClient.request(firstRequest).then(([firstResponse, firstBody]: any) => {
             //console.log(firstBody.persisted_recipients[0])
@@ -1104,7 +1104,7 @@ exports.addToNewsletter = functions.https.onRequest((req, res) => {
             method: 'PUT',
             url: '/v3/marketing/contacts',
             body: {
-                "list_ids": ["0af827b1-be5e-425a-97ec-5d2b78d28d83"],
+                "list_ids": ["5787e924-d559-4f52-911b-620ca0a1fc27"],
                 "contacts": [{
                     "email": req.body.email
                 }]
@@ -1741,6 +1741,161 @@ exports.extendAskBid = functions.https.onRequest((req, res) => {
                 })
         } else {
             return res.status(200).send(false)
+        }
+    })
+})
+
+exports.updateContact = functions.https.onRequest((req, res) => {
+    return cors(req, res, () => {
+        if (req.method !== 'PATCH') {
+            return res.status(200).send(false)
+        }
+
+        if (req.body.mode === 'name_change') {
+            const request = {
+                method: 'PUT',
+                url: '/v3/marketing/contacts',
+                body: {
+                    "contacts": [{
+                        "email": req.body.email,
+                        "first_name": req.body.firstName,
+                        "last_name": req.body.lastName
+                    }]
+                }
+            }
+
+            return sgClient.request(request)
+                .then(() => {
+                    console.log(`contact updated`)
+                })
+                .catch((err: any) => {
+                    console.error(err)
+                })
+        } else if (req.body.mode === 'email_change') {
+            const first_request = {
+                method: "POST",
+                url: "/v3/marketing/contacts/search",
+                body: {
+                    "query": `email LIKE '${req.body.old_email}'`
+                }
+            }
+
+            return sgClient.request(first_request)
+                .then(([responseHead, responseBody]: any) => {
+                    if (responseHead.statusCode === 200) {
+                        const second_request = {
+                            method: 'DELETE',
+                            url: `v3/marketing/contacts?ids=${responseBody.result[0].id}`
+                        }
+
+                        return sgClient.request(second_request)
+                            .then(() => {
+                                const third_request = {
+                                    method: 'PUT',
+                                    url: '/v3/marketing/contacts',
+                                    body: {
+                                        "list_ids": ["88fd12c4-81e5-4381-8249-d7977726f061"],
+                                        "contacts": [{
+                                            "email": req.body.new_email,
+                                            "first_name": req.body.first_name,
+                                            "last_name": req.body.last_name,
+                                            "custom_fields": {
+                                                "w2_D": `${new Date(req.body.creation_date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}`,
+                                                "w4_T": "no",
+                                                "w7_D": `${new Date(req.body.last_login).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}`
+                                            }
+                                        }]
+                                    }
+                                }
+
+                                return sgClient.request(third_request)
+                                    .then(() => {
+                                        console.log('contact updated')
+                                        return res.status(200).send()
+                                    })
+                                    .catch((err: any) => {
+                                        console.error(err)
+                                        return res.status(500).send()
+                                    })
+                            })
+                            .catch((err: any) => {
+                                console.error(err)
+                                return res.status(500).send()
+                            })
+                    }
+                })
+                .catch((err: any) => {
+                    console.error(err)
+                    return res.status(500).send()
+                })
+        } else if (req.body.mode === 'purchase') {
+            return admin.firestore().collection('userVerification').doc(req.body.uid).get()
+                .then(response => {
+                    const user_data = response.data()
+
+                    if (!isNullOrUndefined(user_data)) {
+                        const request = {
+                            method: 'PUT',
+                            url: '/v3/marketing/contacts',
+                            body: {
+                                "contacts": [{
+                                    "email": user_data.email,
+                                    "custom_fields": {
+                                        "w4_T": 'yes'
+                                    }
+                                }]
+                            }
+                        }
+
+                        return sgClient.request(request)
+                            .then(() => {
+                                console.log(`contact updated`)
+                                return res.status(200).send()
+                            })
+                            .catch((err: any) => {
+                                console.error(err)
+                                return res.status(500).send()
+                            })
+                    }
+                })
+                .catch(err => {
+                    console.error(err)
+                    return res.status(500).send()
+                })
+        } else if (req.body.mode === 'login') {
+            return admin.firestore().collection('userVerification').doc(req.body.uid).get()
+                .then(response => {
+                    const user_data = response.data()
+
+                    if (!isNullOrUndefined(user_data)) {
+                        const request = {
+                            method: 'PUT',
+                            url: '/v3/marketing/contacts',
+                            body: {
+                                "contacts": [{
+                                    "email": user_data.email,
+                                    "custom_fields": {
+                                        "w7_D": `${new Date(req.body.last_login).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}`
+                                    }
+                                }]
+                            }
+                        }
+
+                        return sgClient.request(request)
+                            .then(() => {
+                                console.log(`contact updated`)
+                                return res.status(200).send()
+                            })
+                            .catch((err: any) => {
+                                console.error(err)
+                                return res.status(500).send()
+                            })
+                    }
+                })
+                .catch(err => {
+                    console.error(err)
+                    return res.status(500).send()
+                })
         }
     })
 })

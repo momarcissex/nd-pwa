@@ -43,6 +43,8 @@ export class EmailService {
         }
 
         return this.http.post(endpoint, data);
+      } else {
+        return false
       }
     });
   }

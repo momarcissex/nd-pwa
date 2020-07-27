@@ -326,35 +326,11 @@ export class AuthService {
       last_login: date,
       last_known_ip_address: IP
     }, { merge: true });
-  }
 
-  updateEmail(old_email: string, new_email: string, pwd: string, current_user: firebase.User) {
-    const credentials = auth.EmailAuthProvider.credential(old_email, pwd)
-    const batch = this.afs.firestore.batch()
-    const userRef = this.afs.firestore.collection('users').doc(current_user.uid)
-    const userVerifRef = this.afs.firestore.collection('userVerification').doc(current_user.uid)
-
-    batch.update(userRef, {
-      email: new_email
-    })
-
-    batch.update(userVerifRef, {
-      email: new_email
-    })
-
-    return current_user.reauthenticateWithCredential(credentials).then(() => {
-      return current_user.updateEmail(new_email).then(() => {
-        batch.commit().catch(err => {
-          console.error(err)
-        })
-        return true
-      }).catch(err => {
-        console.error(err)
-        return false
-      })
-    }).catch(err => {
-      console.error(err)
-      return false
+    this.http.patch(`${environment.cloud.url}updateContact`, {
+      uid: userID,
+      last_login: date,
+      mode: 'login'
     })
   }
 }

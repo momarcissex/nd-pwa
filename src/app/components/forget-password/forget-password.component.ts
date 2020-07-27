@@ -15,6 +15,8 @@ export class ForgetPasswordComponent implements OnInit {
   error = false;
   sent = false;
 
+  errorMessage: string = '';
+
   constructor(
     private title: Title,
     private emailService: EmailService,
@@ -31,19 +33,26 @@ export class ForgetPasswordComponent implements OnInit {
     this.loading = true;
     if (this.validEmail) {
       this.emailService.sendResetLink(email).then(res => {
-        res.subscribe(data => {
-          this.loading = false;
-          if (data) {
-            this.sent = true;
-          } else {
-            this.error = true;
-          }
-  
-          setTimeout(() => {
-            this.error = false;
-            this.sent = false;
-          }, 10000);
-        });
+        if (typeof res === 'boolean') {
+          this.loading = false
+          this.error = true
+
+          this.errorMessage = 'Email not found.'
+
+          this.resetButtons()
+        } else {
+          res.subscribe(data => {
+            this.loading = false;
+            if (data) {
+              this.sent = true;
+            } else {
+              this.error = true;
+              this.errorMessage = 'Email Delivery Failed. Try later.'
+            }
+
+            this.resetButtons()
+          });
+        }
       });
     }
   }
@@ -57,6 +66,13 @@ export class ForgetPasswordComponent implements OnInit {
     } else {
       this.validEmail = false;
     }
+  }
+
+  private resetButtons() {
+    setTimeout(() => {
+      this.error = false;
+      this.sent = false;
+    }, 5000);
   }
 
 }

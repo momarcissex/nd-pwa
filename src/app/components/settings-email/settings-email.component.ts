@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
 import { isNullOrUndefined } from 'util';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-settings-email',
@@ -19,8 +21,10 @@ export class SettingsEmailComponent implements OnInit {
   pwd_entered: boolean = false
 
   user: firebase.User
+  user_data: User
 
   constructor(
+    private userService: UserService,
     private auth: AuthService,
     private router: Router
   ) { }
@@ -35,6 +39,14 @@ export class SettingsEmailComponent implements OnInit {
         })
       } else {
         this.user = res
+        this.userService.getUserInfo(this.user.uid).subscribe(
+          response => {
+            this.user_data = response
+          },
+          err => {
+            console.error(err)
+          }
+        )
       }
     })
   }
@@ -77,7 +89,7 @@ export class SettingsEmailComponent implements OnInit {
     const new_email = (document.getElementById('new_email') as HTMLInputElement).value
     const pwd = (document.getElementById('pwd') as HTMLInputElement).value
 
-    this.auth.updateEmail(old_email, new_email, pwd, this.user).then(res => {
+    this.userService.updateEmail(old_email, new_email, pwd, this.user, this.user_data).then(res => {
       this.loading = false
       if (res) {
         this.updated = true

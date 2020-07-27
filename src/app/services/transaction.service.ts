@@ -202,6 +202,11 @@ export class TransactionService {
 
         this.http.post(`${environment.cloud.url}orderConfirmation`, transactionData).subscribe() //send email notification
 
+        this.http.patch(`${environment.cloud.url}updateContact`, {
+          uid: transactionData.buyerID,
+          mode: 'purchase'
+        }).subscribe()
+
         if (product.listingID === size_prices[0].listingID && !isNullOrUndefined(size_prices[1])) {
           this.http.put(`${environment.cloud.url}lowestAskNotification`, {
             product_id: size_prices[1].productID,

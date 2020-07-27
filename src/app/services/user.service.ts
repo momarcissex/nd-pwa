@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { auth } from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +12,15 @@ import { User } from '../models/user';
 export class UserService {
 
   constructor(
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private http: HttpClient
   ) { }
 
   getUserInfo(userId: string): Observable<User> {
     return this.afs.collection('users').doc(`${userId}`).valueChanges() as Observable<User>
   }
 
-  updateUserProfile(userId: string, firstName: string, lastName: string, username: string, dob: string) {
+  updateUserProfile(userId: string, firstName: string, lastName: string, username: string, dob: string, email: string) {
     const batch = this.afs.firestore.batch();
 
     const userRef = this.afs.firestore.collection(`users`).doc(`${userId}`);
@@ -27,10 +30,10 @@ export class UserService {
     // console.log(date);
 
     batch.update(userRef, {
-      'firstName': firstName,
-      'lastName': lastName,
-      'username': username,
-      'dob': date
+      firstName: firstName,
+      lastName: lastName,
+      username: username,
+      dob: date
     });
 
     batch.update(userVerificationRef, {
@@ -39,11 +42,63 @@ export class UserService {
 
     return batch.commit()
       .then(() => {
+        this.http.patch(`${environment.cloud.url}updateContact`, {
+          firstName,
+          lastName,
+          username,
+          dob: date,
+          email,
+          mode: 'name_change'
+        }).subscribe()
         return true;
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.error(err);
         return false;
       });
+  }
+
+  updateEmail(old_email: string, new_email: string, pwd: string, current_user: firebase.User, user_data: User) {
+    const credentials = auth.EmailAuthProvider.credential(old_email, pwd)
+    const batch = this.afs.firestore.batch()
+    const userRef = this.afs.firestore.collection('users').doc(current_user.uid)
+    const userVerifRef = this.afs.firestore.collection('userVerification').doc(current_user.uid)
+
+    batch.update(userRef, {
+      email: new_email
+    })
+
+    batch.update(userVerifRef, {
+      email: new_email
+    })
+
+    return current_user.reauthenticateWithCredential(credentials).then(() => {
+      return current_user.updateEmail(new_email).then(() => {
+        return batch.commit()
+          .then(() => {
+            this.http.patch(`${environment.cloud.url}updateContact`, {
+              mode: 'email_change',
+              old_email,
+              new_email,
+              first_name: user_data.firstName,
+              last_name: user_data.lastName,
+              creation_date: user_data.creation_date,
+              last_login: user_data.last_login
+            }).subscribe()
+            return true
+          })
+          .catch(err => {
+            console.error(err)
+            return false
+          })
+      }).catch(err => {
+        console.error(err)
+        return false
+      })
+    }).catch(err => {
+      console.error(err)
+      return false
+    })
   }
 
   updateShippingInfo(userId: string, firstName: string, lastName: string, street: string, line: string, city: string, province: string, postalCode: string, country: string, isBuying: boolean): Promise<boolean> {

@@ -15,10 +15,11 @@ import { Router } from '@angular/router';
 export class SettingsProfileComponent implements OnInit {
 
   user: User;
-  firstName = '';
-  lastName = '';
-  username = '';
-  dob;
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  dob
 
   firstNameChanged = false;
   lastNameChanged = false;
@@ -47,12 +48,13 @@ export class SettingsProfileComponent implements OnInit {
         })
       } else {
         this.userService.getUserInfo(res.uid).subscribe(data => {
-          this.user = data;
-          this.firstName = this.user.firstName;
-          this.lastName = this.user.lastName;
-          this.username = this.user.username;
-          this.dob = this.user.dob;
-          this.getDate(this.user.dob);
+          this.user = data
+          this.firstName = this.user.firstName
+          this.lastName = this.user.lastName
+          this.username = this.user.username
+          this.dob = this.user.dob
+          this.email = this.user.email
+          this.getDate(this.user.dob)
         })
       }
     })
@@ -117,7 +119,7 @@ export class SettingsProfileComponent implements OnInit {
 
     // console.log(`Fn: ${this.nameReformat(curFn)}, Ln: ${this.nameReformat(curLn)}, Un: ${curUn.toLowerCase()}, dob: ${curDOB}`);
 
-    this.userService.updateUserProfile(this.user.uid, this.nameReformat(curFn), this.nameReformat(curLn), curUn, curDOB).then(res => {
+    this.userService.updateUserProfile(this.user.uid, this.nameReformat(curFn), this.nameReformat(curLn), curUn, curDOB, this.email).then(res => {
       if (res) {
         this.loading = false;
         this.updated = true;
@@ -138,7 +140,7 @@ export class SettingsProfileComponent implements OnInit {
         this.dobChanged = false;
 
         setTimeout(() => {
-          this.updated = false;
+          this.error = false;
         }, 2000);
       }
     });
