@@ -307,7 +307,10 @@ export class CheckoutComponent implements OnInit {
             }
 
             this.discount.amount = this.total * (this.discount.amount / 100)
-            this.total = this.total - this.discount.amount
+
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
+
+            console.log(this.total)
           } else if (this.product.price > 350 && this.product.price <= 500) {
             this.discount = {
               amount: 5,
@@ -325,7 +328,7 @@ export class CheckoutComponent implements OnInit {
               this.discount.amount = 18
             }
 
-            this.total = this.total - this.discount.amount
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
           } else if (this.product.price > 500 && this.product.price <= 750) {
             this.discount = {
               amount: 5,
@@ -343,7 +346,7 @@ export class CheckoutComponent implements OnInit {
               this.discount.amount = 22
             }
 
-            this.total = this.total - this.discount.amount
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
           } else if (this.product.price > 750 && this.product.price <= 1000) {
             this.discount = {
               amount: 5,
@@ -361,7 +364,7 @@ export class CheckoutComponent implements OnInit {
               this.discount.amount = 25
             }
 
-            this.total = this.total - this.discount.amount
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
           } else if (this.product.price > 1000) {
             this.discount = {
               amount: 5,
@@ -379,7 +382,7 @@ export class CheckoutComponent implements OnInit {
               this.discount.amount = 35
             }
 
-            this.total = this.total - this.discount.amount
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
           } else if (this.product.price > 2000) {
             this.discount = {
               amount: 5,
@@ -397,7 +400,7 @@ export class CheckoutComponent implements OnInit {
               this.discount.amount = 45
             }
 
-            this.total = this.total - this.discount.amount
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
           }
         }
 
