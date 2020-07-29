@@ -707,7 +707,7 @@ exports.accountCreated = functions.https.onRequest((req, res) => {
             method: 'PUT',
             url: '/v3/marketing/contacts',
             body: {
-                "list_ids": ["dfaba2ad-fe6c-4b85-9148-fa401432f5e1"],
+                "list_ids": ["8773202d-7de5-4d53-93b0-f6d7f85b0fa0"],
                 "contacts": [{
                     "email": req.body.email,
                     "first_name": req.body.first_name,
@@ -1104,7 +1104,7 @@ exports.addToNewsletter = functions.https.onRequest((req, res) => {
             method: 'PUT',
             url: '/v3/marketing/contacts',
             body: {
-                "list_ids": ["5787e924-d559-4f52-911b-620ca0a1fc27"],
+                "list_ids": ["0af827b1-be5e-425a-97ec-5d2b78d28d83"],
                 "contacts": [{
                     "email": req.body.email
                 }]
