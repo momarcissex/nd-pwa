@@ -823,24 +823,36 @@ exports.newPassword = functions.https.onRequest((req, res) => {
 exports.indexProducts = functions.firestore
     .document('products/{productID}')
     .onCreate((snap, context) => {
-        const data = snap.data();
-        const objectID = snap.id;
+        const data = snap.data()
+        const objectID = snap.id
 
         // Add data to the Algolia index
         return index.addObject({
             objectID,
             ...data
-        });
-    });
+        })
+    })
 
 exports.unindexProduct = functions.firestore
     .document('products/{productID}')
     .onDelete((snap, context) => {
-        const objectID = snap.id;
+        const objectID = snap.id
 
         // Delete an ID from the index
-        return index.deleteObject(objectID);
+        return index.deleteObject(objectID)
     });
+    
+exports.editProduct = functions.firestore
+    .document('products/{productID}')
+    .onUpdate((snap, context) => {
+        const data = snap.after.data()
+        const objectID = snap.after.id
+
+        return index.addObject({
+            objectID,
+            ...data
+        })
+    })
 
 exports.addFirestoreDataToAlgolia = functions.https.onRequest((req, res) => {
 
