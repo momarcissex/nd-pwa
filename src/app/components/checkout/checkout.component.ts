@@ -201,7 +201,7 @@ export class CheckoutComponent implements OnInit {
               content_ids: [`${this.product.productID}`],
               content_name: this.product.model,
               content_type: 'sneaker',
-              contents: [{'id':`${this.product.productID}`,'quantity': '1'}],
+              contents: [{ 'id': `${this.product.productID}`, 'quantity': '1' }],
               currency: 'CAD',
               num_items: 1,
               value: this.product.price + this.shippingPrice
@@ -293,6 +293,117 @@ export class CheckoutComponent implements OnInit {
         this.subtotal = this.product.price;
         this.total = this.subtotal + this.shippingPrice;
 
+        if (this.product.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && this.product.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2') {
+          this.promoApplied = true
+          if (this.product.price <= 350) {
+            this.discount = {
+              amount: 4.5,
+              cardID: '',
+              expirationDate: 0,
+              initiationDate: 0,
+              reusable: false,
+              type: 'percent',
+              used_by: []
+            }
+
+            this.discount.amount = this.total * (this.discount.amount / 100)
+
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
+
+            console.log(this.total)
+          } else if (this.product.price > 350 && this.product.price <= 500) {
+            this.discount = {
+              amount: 5,
+              cardID: '',
+              expirationDate: 0,
+              initiationDate: 0,
+              reusable: false,
+              type: 'percent',
+              used_by: []
+            }
+
+            this.discount.amount = this.total * (this.discount.amount / 100)
+
+            if (this.discount.amount > 18) {
+              this.discount.amount = 18
+            }
+
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
+          } else if (this.product.price > 500 && this.product.price <= 750) {
+            this.discount = {
+              amount: 5,
+              cardID: '',
+              expirationDate: 0,
+              initiationDate: 0,
+              reusable: false,
+              type: 'percent',
+              used_by: []
+            }
+
+            this.discount.amount = this.total * (this.discount.amount / 100)
+
+            if (this.discount.amount > 22) {
+              this.discount.amount = 22
+            }
+
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
+          } else if (this.product.price > 750 && this.product.price <= 1000) {
+            this.discount = {
+              amount: 5,
+              cardID: '',
+              expirationDate: 0,
+              initiationDate: 0,
+              reusable: false,
+              type: 'percent',
+              used_by: []
+            }
+
+            this.discount.amount = this.total * (this.discount.amount / 100)
+
+            if (this.discount.amount > 25) {
+              this.discount.amount = 25
+            }
+
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
+          } else if (this.product.price > 1000) {
+            this.discount = {
+              amount: 5,
+              cardID: '',
+              expirationDate: 0,
+              initiationDate: 0,
+              reusable: false,
+              type: 'percent',
+              used_by: []
+            }
+
+            this.discount.amount = this.total * (this.discount.amount / 100)
+
+            if (this.discount.amount > 35) {
+              this.discount.amount = 35
+            }
+
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
+          } else if (this.product.price > 2000) {
+            this.discount = {
+              amount: 5,
+              cardID: '',
+              expirationDate: 0,
+              initiationDate: 0,
+              reusable: false,
+              type: 'percent',
+              used_by: []
+            }
+
+            this.discount.amount = this.total * (this.discount.amount / 100)
+
+            if (this.discount.amount > 45) {
+              this.discount.amount = 45
+            }
+
+            this.total = Math.round((this.total - this.discount.amount + Number.EPSILON) * 100) / 100
+          }
+        }
+
         if (isPlatformBrowser(this._platformId)) {
           gtag('event', 'begin_checkout', {
             'event_category': 'ecommerce',
@@ -325,7 +436,7 @@ export class CheckoutComponent implements OnInit {
         fbq('track', 'InitiateCheckout', {
           content_category: 'sneaker',
           content_ids: [`${this.product.productID}`],
-          contents: [{'id': `${this.product.productID}`, 'quantity': '1'}],
+          contents: [{ 'id': `${this.product.productID}`, 'quantity': '1' }],
           currency: 'CAD',
           num_item: 1,
           value: this.product.price + this.shippingPrice

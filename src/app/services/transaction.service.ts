@@ -91,7 +91,7 @@ export class TransactionService {
     }
 
     //add discount to transaction data
-    if (!isNullOrUndefined(discount)) {
+    if (!isNullOrUndefined(discount) && discount.cardID != '') {
       if (discount.reusable) {
         transactionData.discount = discount
         const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discount.cardID}`)

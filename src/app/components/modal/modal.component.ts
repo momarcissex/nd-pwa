@@ -19,6 +19,8 @@ export class ModalComponent implements OnInit {
   subscribed: boolean = false
   errorMessage: string = ''
 
+  discount: boolean = false
+
   constructor(
     private modalService: ModalService,
     private http: HttpClient,
@@ -31,6 +33,10 @@ export class ModalComponent implements OnInit {
         this.close()
       } else {
         this.open()
+
+        if (res === 'discount') {
+          this.discount = true
+        }
       }
     })
   }
@@ -40,6 +46,7 @@ export class ModalComponent implements OnInit {
       document.getElementById('modal').style.background = 'transparent'
       document.getElementById('modal').style.top = '100%';
       this.isOpen = false
+      this.discount = false
       document.body.style.overflow = 'auto'
     }
   }

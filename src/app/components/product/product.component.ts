@@ -139,7 +139,7 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  async countView() {
+  /*async countView() {
     //console.log('countView start')
     if (!isNullOrUndefined(this.UID)) {
       this.productService.countView(this.productID).then(() => {
@@ -150,7 +150,7 @@ export class ProductComponent implements OnInit {
     }
 
     //console.log('countView end')
-  }
+  }*/
 
   buyNow(listing) {
     const data = JSON.stringify(listing);
@@ -287,7 +287,7 @@ export class ProductComponent implements OnInit {
           if (shoeSizes.length === this.offers.length) {
             this.currentOffer.LowestAsk = this.lowestAsk;
             this.currentOffer.HighestBid = this.highestBid;
-            this.countView()
+            //this.countView()
           }
         });
       });
