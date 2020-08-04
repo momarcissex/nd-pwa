@@ -44,6 +44,7 @@
         text-align: center;
         padding: $spacing-xxsmall 0;
         margin-bottom: $spacing-normal;
+        display: grid;
 
         &:hover {
             cursor: pointer;
@@ -53,15 +54,15 @@
             border-right: 1px solid $lightgrey;
         }
 
+        &:nth-child(4n) {
+            border-right: none;
+        }
+
         .item-specs {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             align-items: center;
-
-            h6 {
-                justify-self: left;
-                font-weight: $weight-bold;
-            }
+            padding: 0 .4rem;
 
             h5 {
                 justify-self: right;
@@ -71,8 +72,11 @@
         }
 
         img {
-            height: 75px;
             vertical-align: middle;
+            width: 125px;
+            height: 125px;
+            object-fit: contain;
+            margin: 1rem auto;
         }
 
         h5 {
@@ -137,10 +141,6 @@
                 border-right: none;
             }
 
-            img {
-                height: 100px;
-            }
-
             h5 {
                 font-size: $font-xsmall;
             }
@@ -169,10 +169,6 @@
 
             &:last-child {
                 border-right: none;
-            }
-
-            img {
-                height: 125px;
             }
 
             h5 {
@@ -205,10 +201,6 @@
                 border-right: none;
             }
 
-            img {
-                height: 125px;
-            }
-
             h5 {
                 font-size: $font-small;
             }
@@ -237,10 +229,6 @@
 
             &:last-child {
                 border-right: none;
-            }
-
-            img {
-                height: 150px;
             }
 
             h5 {

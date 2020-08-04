@@ -66,7 +66,7 @@ export class SearchComponent implements OnInit {
 
       this.index.search({
         query: term,
-        attributesToRetrieve: ['assetURL', 'model', 'productID'],
+        attributesToRetrieve: ['assetURL', 'model', 'productID', 'lowestPrice'],
         hitsPerPage: 48 * this.nbPages
 
       }, (err, hits: any = {}) => {
