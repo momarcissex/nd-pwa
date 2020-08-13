@@ -1,4 +1,4 @@
-@import '../../base_styles/base';
+@import "../../base_styles/base";
 
 h2 {
     text-align: center;
@@ -98,10 +98,13 @@ h2 {
     }
 }
 
+.container {
+    width: 100%;
+}
+
 .profile-items {
     display: grid;
     grid-column-gap: 5px;
-    padding: $spacing-normal;
 
     .profile-item {
         text-align: center;
@@ -110,16 +113,9 @@ h2 {
         @include vendor(transition, 0.25s ease-in-out);
         border-right: 1px solid $lightgrey;
 
-        &:hover {
-            cursor: pointer;
-
-            h5, h6 {
-                color: $coolgrey;
-            }
-        }
-
-        &:nth-child(4) {
-            border-right: none;
+        h5 {
+            margin-top: 0.5rem;
+            height: 20px;
         }
 
         .item-specs {
@@ -135,6 +131,36 @@ h2 {
             h5 {
                 justify-self: right;
                 font-weight: $weight-black;
+            }
+        }
+
+        .action-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 0.25rem;
+            margin-top: 0.5rem;
+
+            .btn {
+                border-radius: 2px;
+                color: white;
+                text-align: center;
+                text-transform: uppercase;
+            }
+
+            a {
+                background: $black;
+
+                &:hover {
+                    background: $matteblack;
+                }
+            }
+
+            button {
+                background: $prodBtnPrimary2;
+
+                &:hover {
+                    background: $prodBtnSecondary2;
+                }
             }
         }
 
@@ -162,7 +188,6 @@ h2 {
         background: $matteblack;
     }
 }
-
 
 // MEDIA QUERIES
 
@@ -195,10 +220,25 @@ h2 {
     }
 
     .profile-items {
+        padding: $spacing-normal 0;
         grid-template-columns: 1fr 1fr;
+        width: 100%;
+
         .profile-item {
+            &:nth-child(2n) {
+                border-right: none;
+            }
+
+            .action-btns {
+                .btn {
+                    padding: 0.6rem 0;
+                    font-size: 0.4rem;
+                }
+            }
+
             .item-specs {
-                h5, h6 {
+                h5,
+                h6 {
                     font-size: $font-xsmall;
                 }
             }
@@ -241,8 +281,20 @@ h2 {
     .profile-items {
         grid-template-columns: 1fr 1fr;
         .profile-item {
+            &:nth-child(2n) {
+                border-right: none;
+            }
+
+            .action-btns {
+                .btn {
+                    padding: 0.2rem;
+                    font-size: 0.4rem;
+                }
+            }
+
             .item-specs {
-                h5, h6 {
+                h5,
+                h6 {
                     font-size: $font-xsmall;
                 }
             }
@@ -290,8 +342,20 @@ h2 {
     .profile-items {
         grid-template-columns: 1fr 1fr 1fr;
         .profile-item {
+            &:nth-child(3n) {
+                border-right: none;
+            }
+
+            .action-btns {
+                .btn {
+                    padding: 0.6rem 0;
+                    font-size: 0.7rem;
+                }
+            }
+
             .item-specs {
-                h5, h6 {
+                h5,
+                h6 {
                     font-size: $font-normal;
                 }
             }
@@ -340,8 +404,20 @@ h2 {
     .profile-items {
         grid-template-columns: 1fr 1fr 1fr 1fr;
         .profile-item {
+            &:nth-child(4n) {
+                border-right: none;
+            }
+
+            .action-btns {
+                .btn {
+                    padding: 0.5rem 0;
+                    font-size: 0.8rem;
+                }
+            }
+
             .item-specs {
-                h5, h6 {
+                h5,
+                h6 {
                     font-size: $font-normal;
                 }
             }
@@ -390,8 +466,13 @@ h2 {
     .profile-items {
         grid-template-columns: 1fr 1fr 1fr 1fr;
         .profile-item {
+            &:nth-child(4n) {
+                border-right: none;
+            }
+
             .item-specs {
-                h5, h6 {
+                h5,
+                h6 {
                     font-size: $font-normal;
                 }
             }
@@ -440,8 +521,13 @@ h2 {
     .profile-items {
         grid-template-columns: 1fr 1fr 1fr 1fr;
         .profile-item {
+            &:nth-child(4n) {
+                border-right: none;
+            }
+
             .item-specs {
-                h5, h6 {
+                h5,
+                h6 {
                     font-size: $font-normal;
                 }
             }

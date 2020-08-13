@@ -497,7 +497,7 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                 }
 
                 if (req.body.type === 'sold') {
-                    const transactionID = `${req.body.buyerID}-${req.body.sellerID}-${req.body.purchaseDate}`;
+                    const transactionID = `${req.body.id}`;
                     msg.templateId = 'd-1ea40fbf9ad848638489561243162e97';
                     msg.dynamic_template_data.link = `https://nxtdrop.com/checkout?tID=${transactionID}`;
                 }
@@ -521,7 +521,7 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                 const fee = req.body.price * 0.085;
                 const processing = req.body.price * 0.03;
                 const payout = req.body.price - fee - processing;
-                const transactionID = `${req.body.buyerID}-${req.body.sellerID}-${req.body.purchaseDate}`;
+                const transactionID = `${req.body.id}`;
 
                 console.log(`Order Email Seller to ${email}.`);
 
@@ -1694,6 +1694,7 @@ exports.extendAskBid = functions.https.onRequest((req, res) => {
                     if (response.exists) {
                         batch.set(admin.firestore().collection('products').doc(response.get('productID')).collection('listings').doc(response.id), data)
                         batch.update(admin.firestore().collection('asks').doc(response.id), data)
+                        batch.update(admin.firestore().collection('users').doc(response.get('sellerID')).collection('listings').doc(response.id), data)
 
                         return batch.commit()
                             .then(() => {
@@ -1734,6 +1735,7 @@ exports.extendAskBid = functions.https.onRequest((req, res) => {
                     if (response.exists) {
                         batch.set(admin.firestore().collection('products').doc(response.get('productID')).collection('offers').doc(response.id), data)
                         batch.update(admin.firestore().collection('bids').doc(response.id), data)
+                        batch.update(admin.firestore().collection('users').doc(response.get('buyerID')).collection('offers').doc(response.id), data)
 
                         return batch.commit()
                             .then(() => {

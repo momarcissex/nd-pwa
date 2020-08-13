@@ -12,4 +12,6 @@ export class Product {
     views?: number;
     sizes?: Array<number>;
     SKU?: string;
+    size_category?: string;
+    product_type?: string;
 }

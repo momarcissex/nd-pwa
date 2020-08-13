@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.scss']
 })
-export class SideMenuComponent implements OnInit {
+export class SideMenuComponent implements OnInit, OnDestroy {
 
   connected: boolean;
 
@@ -18,6 +18,10 @@ export class SideMenuComponent implements OnInit {
     this.auth.checkStatus().then(value => {
       this.connected = value;
     });
+  }
+
+  ngOnDestroy() {
+    document.body.style.overflow = 'auto'
   }
 
   closeMenu() {
