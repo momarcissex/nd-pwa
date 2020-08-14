@@ -232,12 +232,16 @@ export class ProductComponent implements OnInit {
     let shoeSizes: Array<number>;
     this.offers.length = 0
 
-    if (this.sizeSuffix === 'W') {
-      suffix = this.sizeSuffix;
-    } else if (this.sizeSuffix === 'Y') {
-      suffix = this.sizeSuffix;
+    if (isNullOrUndefined(this.productInfo.size_category)) {
+      if (this.sizeSuffix === 'W') {
+        suffix = this.sizeSuffix;
+      } else if (this.sizeSuffix === 'Y') {
+        suffix = this.sizeSuffix;
+      } else {
+        suffix = 'M';
+      }
     } else {
-      suffix = 'M';
+      this.sizeSuffix = this.productInfo.size_category
     }
 
     //console.log(this.sizes[suffix]);

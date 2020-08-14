@@ -1,9 +1,13 @@
 import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
-import { ProfileService } from 'src/app/services/profile.service';
 import { User } from 'src/app/models/user';
 import { Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
+import { UserService } from 'src/app/services/user.service';
+import { Bid } from 'src/app/models/bid';
+import { BidService } from 'src/app/services/bid.service';
+import { Ask } from 'src/app/models/ask';
+import { AskService } from 'src/app/services/ask.service';
 
 @Component({
   selector: 'app-profile',
@@ -33,9 +37,13 @@ export class ProfileComponent implements OnInit {
 
   loading = false;
 
+  current_date = Date.now()
+
   constructor(
-    private profileService: ProfileService,
+    private userService: UserService,
     private title: Title,
+    private bidService: BidService,
+    private askService: AskService,
     @Inject(PLATFORM_ID) private _platoformId: Object,
     private meta: MetaService
   ) { }
@@ -45,12 +53,12 @@ export class ProfileComponent implements OnInit {
     this.meta.addTags('Profile');
 
     if (isPlatformBrowser(this._platoformId)) {
-      this.profileService.getUserData().then(val => {
+      this.userService.getUserData().then(val => {
         val.subscribe(data => {
           this.dashInfo = data;
         });
       });
-      
+
       const listingElement = document.getElementById('listingsBtn');
       const offerElement = document.getElementById('offersBtn');
 
@@ -87,21 +95,23 @@ export class ProfileComponent implements OnInit {
     this.listingNav = true;
 
     if (!this.listings.length) {
-      this.profileService.getUserListings().then(val => {
+      this.userService.getUserListings().then(val => {
         val.subscribe(data => {
-          this.listings = data;
-          console.log(data);
+          data.forEach(element => {
+            this.listings.push(element.data())
+          })
+          //console.log(data);
         });
       });
     }
   }
 
   moreListings() {
-    this.profileService.getUserListings(this.listings[this.listings.length - 1].created_at)
+    this.userService.getUserListings(this.listings[this.listings.length - 1].created_at)
       .then(val => {
         val.subscribe(data => {
           data.forEach(element => {
-            this.listings.push(element);
+            this.listings.push(element.data());
           });
           // console.log(this.listings);
         });
@@ -117,25 +127,124 @@ export class ProfileComponent implements OnInit {
     this.listingNav = false;
 
     if (!this.offers.length) {
-      this.profileService.getUserOffers().then(val => {
+      this.userService.getUserOffers().then(val => {
         val.subscribe(data => {
-          this.offers = data;
-          console.log(this.offers);
+          data.forEach(element => {
+            this.offers.push(element.data())
+          })
+          //console.log(this.offers);
         });
       });
     }
   }
 
   moreOffers() {
-    this.profileService.getUserListings(this.offers[this.offers.length - 1].created_at)
+    this.userService.getUserListings(this.offers[this.offers.length - 1].created_at)
       .then(val => {
         val.subscribe(data => {
           data.forEach(element => {
-            this.offers.push(element);
+            this.offers.push(element.data());
           });
           // console.log(this.offers);
         });
       });
+  }
+
+  removeBid(bid: Bid) {
+    document.getElementById(`remove-bid-${bid.offerID}`).innerHTML = 'Removing...'
+
+    this.bidService.deleteBid(bid)
+      .then(res => {
+        if (res) {
+          const index = this.offers.indexOf(bid)
+
+          if (index > -1) {
+            this.offers.splice(index, 1)
+          }
+        } else {
+          this.removeErrorBtn(bid.offerID)
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        this.removeErrorBtn(bid.offerID)
+      })
+  }
+
+  removeAsk(ask: Ask) {
+    document.getElementById(`remove-ask-${ask.listingID}`).innerHTML = 'Removing...'
+
+    this.askService.deleteAsk(ask)
+      .then(res => {
+        if (res) {
+          const index = this.listings.indexOf(ask)
+
+          if (index > -1) {
+            this.listings.splice(index, 1)
+          }
+        } else {
+          this.removeErrorBtn(ask.listingID)
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        this.removeErrorBtn(ask.listingID)
+      })
+  }
+
+  extendAsk(ask: Ask) {
+    document.getElementById(`extend-ask-${ask.listingID}`).innerHTML = 'Extending...'
+
+    this.askService.extendAsk(ask)
+      .then(response => {
+        if (typeof response === 'boolean') {
+          this.extendErroBtn(`extend-ask-${ask.listingID}`)
+        } else {
+          const index = this.listings.indexOf(ask)
+
+          this.listings[index] = response
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        this.extendErroBtn(`extend-ask-${ask.listingID}`)
+      })
+  }
+
+  extendBid(bid: Bid) {
+    document.getElementById(`extend-bid-${bid.offerID}`).innerHTML = 'Extending...'
+
+    this.bidService.extendBid(bid)
+      .then(response => {
+        if (typeof response === 'boolean') {
+          this.extendErroBtn(`extend-bid-${bid.offerID}`)
+        } else {
+          const index = this.offers.indexOf(bid)
+
+          this.offers[index] = response
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        this.extendErroBtn(`extend-bid-${bid.offerID}`)
+      })
+  }
+
+  removeErrorBtn(id) {
+    document.getElementById(`ask-${id}`).innerHTML = 'Error'
+
+    setTimeout(() => {
+      document.getElementById(`ask-${id}`).innerHTML = 'Remove'
+    }, 3000);
+  }
+
+  extendErroBtn(id) {
+    document.getElementById(id).innerHTML = 'Error'
+
+
+    setTimeout(() => {
+      document.getElementById(id).innerHTML = 'Extend'
+    }, 3000);
   }
 
 }

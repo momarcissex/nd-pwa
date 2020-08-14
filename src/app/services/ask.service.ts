@@ -336,4 +336,27 @@ export class AskService {
     }
   }
 
+  public extendAsk(ask: Ask): Promise<Ask|boolean> {
+    const data: Ask = ask
+    const new_date = Date.now()
+    const batch = this.afs.firestore.batch()
+
+    data.expiration_date = new_date + (86400000 * ((data.expiration_date - data.last_updated) / 86400000 - 1))
+    data.last_updated = new_date
+
+    batch.set(this.afs.firestore.collection('products').doc(data.productID).collection('listings').doc(data.listingID), data)
+    batch.update(this.afs.firestore.collection('asks').doc(data.listingID), data)
+    batch.update(this.afs.firestore.collection('users').doc(data.sellerID).collection('listings').doc(data.listingID), data)
+
+    return batch.commit()
+      .then(() => {
+        return data;
+      })
+      .catch(err => {
+        console.error(err)
+
+        return false;
+      })
+  }
+
 }

@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { auth } from 'firebase/app';
+import { isUndefined } from 'util';
+import { AuthService } from './auth.service';
+import { Bid } from '../models/bid';
+import { Ask } from '../models/ask';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +17,8 @@ export class UserService {
 
   constructor(
     private afs: AngularFirestore,
-    private http: HttpClient
+    private http: HttpClient,
+    private auth: AuthService
   ) { }
 
   getUserInfo(userId: string): Observable<User> {
@@ -152,5 +157,46 @@ export class UserService {
         timestamp: Date.now()
       }
     }, { merge: true })
+  }
+
+  public async getUserData(): Promise<Observable<User>> {
+    let UID: string;
+    await this.auth.isConnected().then(data => {
+      UID = data.uid;
+    });
+
+    return this.afs.doc(`users/${UID}`).valueChanges() as Observable<User>;
+  }
+
+  public async getUserListings(startAfter?): Promise<Observable<QuerySnapshot<DocumentData>>> {
+    let UID: string;
+    await this.auth.isConnected().then(data => {
+      UID = data.uid;
+    });
+
+    //console.log(UID)
+
+    if (isUndefined(startAfter)) {
+      // tslint:disable-next-line: max-line-length
+      return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
+    } else {
+      // tslint:disable-next-line: max-line-length
+      return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
+    }
+  }
+
+  public async getUserOffers(startAfter?): Promise<Observable<QuerySnapshot<DocumentData>>> {
+    let UID: string;
+    await this.auth.isConnected().then(data => {
+      UID = data.uid;
+    });
+
+    if (isUndefined(startAfter)) {
+      // tslint:disable-next-line: max-line-length
+      return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
+    } else {
+      // tslint:disable-next-line: max-line-length
+      return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
+    }
   }
 }

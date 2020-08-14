@@ -322,4 +322,27 @@ export class BidService {
       }).subscribe()
     }
   }
+
+  public extendBid(bid: Bid) {
+    const data: Bid = bid
+    const new_date = Date.now()
+    const batch = this.afs.firestore.batch()
+
+    data.expiration_date = new_date + (86400000 * ((data.expiration_date - data.last_updated) / 86400000 - 1))
+    data.last_updated = new_date
+
+    batch.set(this.afs.firestore.collection('products').doc(data.productID).collection('offers').doc(data.offerID), data)
+    batch.update(this.afs.firestore.collection('bids').doc(data.offerID), data)
+    batch.update(this.afs.firestore.collection('users').doc(data.buyerID).collection('offers').doc(data.offerID), data)
+
+    return batch.commit()
+      .then(() => {
+        return data;
+      })
+      .catch(err => {
+        console.error(err)
+
+        return false;
+      })
+  }
 }

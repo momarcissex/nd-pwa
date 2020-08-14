@@ -37,31 +37,51 @@
     <button class="btn" id="offersBtn" (click)="showOffers()">Buying</button>
   </div>
 
-  <div *ngIf="listingNav else showOffer">
+  <div *ngIf="listingNav else showOffer" class="container">
     <h2>Your Items For Sale</h2>
     <div class="profile-items">
-      <a class="profile-item" *ngFor="let listing of listings" [routerLink]="['/edit-listing', listing.listingID]" [queryParams]="{ source: 'profile'}">
+      <a class="profile-item" *ngFor="let listing of listings">
         <section class="item-specs">
           <h6>{{ listing.size }}</h6>
           <h5>{{ listing.price | currency: 'CAD' }}</h5>
         </section>
         <img src="{{ listing.assetURL }}" alt="{{ listing.productID }}">
-        <h5>{{ listing.model }}</h5>
+        <h5 id="model">{{ listing.model }}</h5>
+
+        <div class="action-btns">
+          <a [routerLink]="['/edit-listing', listing.listingID]" [queryParams]="{ source: 'profile'}" class="btn" *ngIf="current_date < listing.expiration_date">Edit</a>
+          <a (click)="extendAsk(listing)" class="btn" id="extend-ask-{{listing.listingID}}" *ngIf="current_date >= listing.expiration_date">Extend</a>
+
+          <button id="remove-ask-{{listing.listingID}}" class="btn" (click)="removeAsk(listing)">Remove</button>
+        </div>
+
+        <h5 *ngIf="current_date >= listing.expiration_date">Ask Expired</h5>
+        <h5 *ngIf="current_date < listing.expiration_date">Expires in {{ (listing.expiration_date - current_date) / 86400000 | number:'1.0-0' }} days</h5>
       </a>
     </div>
   </div>
 
-  <ng-template #showOffer>
-    <h2> Your Bids</h2>
+  <ng-template #showOffer class="container">
+    <h2>Your Bids</h2>
     <div class="profile-items">
-      <a class="profile-item" *ngFor="let offer of offers" [routerLink]="['/edit-offer', offer.offerID]" [queryParams]="{ source: 'profile'}">
+      <div class="profile-item" *ngFor="let offer of offers">
         <section class="item-specs">
           <h6>{{ offer.size }}</h6>
           <h5>{{ offer.price | currency: 'CAD' }}</h5>
         </section>
         <img src="{{ offer.assetURL }}" alt="{{ offer.productID }}">
-        <h5>{{ offer.model }}</h5>
-      </a>
+        <h5 id="model">{{ offer.model }}</h5>
+
+        <div class="action-btns">
+          <a [routerLink]="['/edit-offer', offer.offerID]" [queryParams]="{ source: 'profile'}" class="btn" *ngIf="current_date < offer.expiration_date">Edit</a>
+          <a (click)="extendBid(offer)" class="btn" id="extend-bid-{{offer.offerID}}" *ngIf="current_date > offer.expiration_date">Extend</a>
+
+          <button class="btn" id="remove-bid-{{offer.offerID}}" (click)="removeBid(offer)">Remove</button>
+        </div>
+
+        <h5 *ngIf="current_date >= offer.expiration_date">Bid Expired</h5>
+        <h5 *ngIf="current_date < offer.expiration_date">Expires in {{ (offer.expiration_date - current_date) / 86400000 | number:'1.0-0' }} days</h5>
+      </div>
     </div>
   </ng-template>
 
