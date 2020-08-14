@@ -241,7 +241,13 @@ export class ProductComponent implements OnInit {
         suffix = 'M';
       }
     } else {
-      this.sizeSuffix = this.productInfo.size_category
+      suffix = this.productInfo.size_category
+
+      if (this.productInfo.size_category === 'GS') {
+        this.sizeSuffix = 'Y'
+      } else if (this.productInfo.size_category === 'W') {
+        this.sizeSuffix = 'W'
+      }
     }
 
     //console.log(this.sizes[suffix]);
