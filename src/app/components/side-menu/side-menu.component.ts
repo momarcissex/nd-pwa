@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-side-menu',
@@ -11,7 +12,8 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   connected: boolean;
 
   constructor(
-    private auth: AuthService
+    private auth: AuthService,
+    @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
   ngOnInit() {
@@ -21,7 +23,9 @@ export class SideMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    document.body.style.overflow = 'auto'
+    if (isPlatformBrowser(this._platformId)) {
+      document.body.style.overflow = 'auto'
+    }
   }
 
   closeMenu() {

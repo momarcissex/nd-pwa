@@ -134,11 +134,11 @@
 
         <button id="lowestAsk"
           *ngIf="offer.LowestAsk">{{ offer.LowestAsk.price | currency: 'CAD' : 'symbol' : '1.0-0' }}</button>
-        <button id="lowestAsk" *ngIf="!offer.LowestAsk">--</button>
+        <button id="lowestAsk" *ngIf="!offer.LowestAsk" style="opacity: 0.4;">Sold Out</button>
 
         <button id="highestBid"
           *ngIf="offer.HighestBid">{{ offer.HighestBid.price | currency: 'CAD' : 'symbol' : '1.0-0' }}</button>
-        <button id="highestBid" *ngIf="!offer.HighestBid">--</button>
+        <button id="highestBid" *ngIf="!offer.HighestBid" style="opacity: 0.4;">No Bid</button>
       </div>
     </div>
   </section>

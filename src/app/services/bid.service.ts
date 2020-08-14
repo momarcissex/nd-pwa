@@ -328,7 +328,7 @@ export class BidService {
     const new_date = Date.now()
     const batch = this.afs.firestore.batch()
 
-    data.expiration_date = new_date + (86400000 * ((data.expiration_date - data.created_at) / 86400000 - 1))
+    data.expiration_date = new_date + (86400000 * ((data.expiration_date - data.last_updated) / 86400000 - 1))
     data.last_updated = new_date
 
     batch.set(this.afs.firestore.collection('products').doc(data.productID).collection('offers').doc(data.offerID), data)

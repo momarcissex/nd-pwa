@@ -52,7 +52,7 @@
           <a [routerLink]="['/edit-listing', listing.listingID]" [queryParams]="{ source: 'profile'}" class="btn" *ngIf="current_date < listing.expiration_date">Edit</a>
           <a (click)="extendAsk(listing)" class="btn" id="extend-ask-{{listing.listingID}}" *ngIf="current_date >= listing.expiration_date">Extend</a>
 
-          <button id="remove-ask-{{listing.listingID}}" class="btn">Remove</button>
+          <button id="remove-ask-{{listing.listingID}}" class="btn" (click)="removeAsk(listing)">Remove</button>
         </div>
 
         <h5 *ngIf="current_date >= listing.expiration_date">Ask Expired</h5>

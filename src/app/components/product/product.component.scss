@@ -236,7 +236,9 @@
 
       #lowestAsk,
       #highestBid,
-      #size {
+      #size,
+      #soldOut,
+      #noBid {
         background: none;
         font-weight: $weight-black;
         border: none;
@@ -708,7 +710,7 @@
     }
 
     img {
-      width: 60%;
+      width: 50%;
     }
 
     .product-specs {
@@ -825,7 +827,7 @@
     }
 
     img {
-      width: 80%;
+      width: 70%;
     }
 
     .product-specs {
@@ -942,7 +944,7 @@
     }
 
     img {
-      width: 80%;
+      width: 70%;
     }
 
     .product-specs {
