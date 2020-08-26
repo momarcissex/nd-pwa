@@ -9,11 +9,30 @@
     <div class="details">
         <h3>How to participate:</h3>
         <ul>
-            <li>Follow our IG account (@nxtdrop)</li>
-            <li>Tag 3 of your friends in our post comments</li>
+            <li>Follow @nxtdrop</li>
+            <li>Tag 3 of friends in the comment section of our IG post</li>
             <li>Fill the form below</li>
         </ul>
-        <p>Winner will be announced on Wednesday, July 22nd, 2020 at 4PM EST.</p>
+        <p>Winner will be contacted on Sunday, August 23rd, 2020 at 2PM EST.</p>
+    </div>
+
+    <div class="share-btns">
+        <a href="https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/giveaway&display=popup&ref=plugin"
+            class="fb-share-btn" (click)="share('fb')">
+            <fa-icon [icon]="['fab', 'facebook-f']"></fa-icon>
+        </a>
+        <a href="https://twitter.com/intent/tweet?text=Win a free pair of Jordan 1 Retro High Turbo Green on @nxtdrop https://nxtdrop.com/giveaway"
+            class="twitter-share-btn" (click)="share('twitter')">
+            <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
+        </a>
+        <a href="mailto:?subject=Win a free pair of Jordan 1 Retro High Turbo Green&body=Hey, you can win free pair of Jordan 1 Retro High Turbo Green by entering this giveaway. Check it out here https://nxtdrop.com/giveaway"
+            class="mail-share-btn" (click)="share('mail')">
+            <fa-icon [icon]="['fas', 'envelope']"></fa-icon>
+        </a>
+        <a class="link-share-btn" (click)="share('copy_link')">
+            <fa-icon [icon]="['fas', 'link']"></fa-icon>
+            <span class="tooltiptext" id="tooltiptext">Copied!</span>
+        </a>
     </div>
 
     <div class="entry-form">
@@ -21,16 +40,21 @@
         <input type="email" name="email" id="email" placeholder="admin@nxtdrop.com" (keyup)="emailChanges()" required>
 
         <label for="handle">IG Handle</label>
-        <input type="text" name="handle" id="handle" placeholder="@nxtdrop" maxlength="40" (keyup)="handleChanges()" required>
+        <input type="text" name="handle" id="handle" placeholder="@nxtdrop" maxlength="40" (keyup)="handleChanges()"
+            required>
 
         <label for="size">Shoe Size</label>
         <input type="text" name="size" id="size" placeholder="US9" maxlength="6" (keyup)="sizeChanges()" required>
 
-        <button class="btn ripple" *ngIf="validEntry && !entrySubmitError && !entrySubmitted && !entrySubmitting" (click)="submitEntry()">Submit Entry</button>
+        <button class="btn ripple" *ngIf="validEntry && !entrySubmitError && !entrySubmitted && !entrySubmitting"
+            (click)="submitEntry()">Submit Entry</button>
 
-        <button class="btn disabled ripple" *ngIf="!validEntry && !entrySubmitError && !entrySubmitted && !entrySubmitting">Submit Entry</button>
+        <button class="btn disabled ripple"
+            *ngIf="!validEntry && !entrySubmitError && !entrySubmitted && !entrySubmitting">Submit Entry</button>
 
-        <button class="btn ripple" *ngIf="entrySubmitting"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+        <button class="btn ripple" *ngIf="entrySubmitting">
+            <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        </button>
 
         <button class="btn submitted ripple" *ngIf="entrySubmitted">Entry Submitted</button>
 

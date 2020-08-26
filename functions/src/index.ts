@@ -841,7 +841,7 @@ exports.unindexProduct = functions.firestore
         // Delete an ID from the index
         return index.deleteObject(objectID)
     });
-    
+
 exports.editProduct = functions.firestore
     .document('products/{productID}')
     .onUpdate((snap, context) => {
@@ -1524,16 +1524,23 @@ exports.bidNotification = functions.https.onRequest((req, res) => {
 
 exports.enterGiveaway = functions.https.onRequest((req, res) => {
     return cors(req, res, () => {
-        const msg: any = {
-            to: req.body.email,
-            from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
-            templateId: 'd-db38c30c1d1a4f0a8ab0917134e54805',
+        const firstRequest = {
+            method: 'PUT',
+            url: '/v3/marketing/contacts',
+            body: {
+                "list_ids": ["bf38e85c-5811-4d75-95d4-6c2febd69863"],
+                "contacts": [{
+                    "email": req.body.email
+                }]
+            }
         }
 
-        return sgMail.send(msg).then((content: any) => {
-            console.log(`email sent to participant ${req.body.email}`)
+        return sgClient.request(firstRequest).then(([firstResponse, firstBody]: any) => {
+            console.log(`Added to list`);
+            return res.status(200).send(true)
         }).catch((err: any) => {
-            console.error(err)
+            console.error(err);
+            return res.status(200).send(false)
         })
     })
 })

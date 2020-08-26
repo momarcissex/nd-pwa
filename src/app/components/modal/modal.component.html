@@ -1,7 +1,7 @@
 <section class="modal" id="modal">
 
     <div class="modal-card">
-        <div *ngIf="!discount">
+        <div *ngIf="!giveaway">
             <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
             <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59" alt="NXTDROP Logo">
             <h3>Never miss promotions, good deals and new releases again!</h3>
@@ -19,13 +19,13 @@
             <p>{{ errorMessage }}</p>
         </div>
 
-        <div *ngIf="discount">
+        <div *ngIf="giveaway">
             <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
             <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59" alt="NXTDROP Logo">
-            <h3>🚨 Discounts Available Until August 13th 🚨</h3>
-            <p>We’re offering up to 5% OFF on all the products under the “Now Available” heading.</p>
+            <h3>🚨 Giveaway 🚨</h3>
+            <p>We’re giving away a free pair of Jordan 1 Retro High Turbo Green. Winner will be selected on August 23rd.</p>
 
-            <button class="btn" (click)="close()">Ok, Cool!</button>
+            <button class="btn" (click)="redirect()">Enter giveaway</button>
         </div>
     </div>
 

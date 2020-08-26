@@ -4,6 +4,7 @@ import { isNullOrUndefined } from 'util';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal',
@@ -19,11 +20,12 @@ export class ModalComponent implements OnInit {
   subscribed: boolean = false
   errorMessage: string = ''
 
-  discount: boolean = false
+  giveaway: boolean = false
 
   constructor(
     private modalService: ModalService,
     private http: HttpClient,
+    private router: Router,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
@@ -34,8 +36,8 @@ export class ModalComponent implements OnInit {
       } else {
         this.open()
 
-        if (res === 'discount') {
-          this.discount = true
+        if (res === 'giveaway') {
+          this.giveaway = true
         }
       }
     })
@@ -46,8 +48,20 @@ export class ModalComponent implements OnInit {
       document.getElementById('modal').style.background = 'transparent'
       document.getElementById('modal').style.top = '100%';
       this.isOpen = false
-      this.discount = false
+      this.giveaway = false
       document.body.style.overflow = 'auto'
+    }
+  }
+
+  redirect() {
+    if (this.isOpen) {
+      document.getElementById('modal').style.background = 'transparent'
+      document.getElementById('modal').style.top = '100%';
+      this.isOpen = false
+      this.giveaway = false
+      document.body.style.overflow = 'auto'
+
+      this.router.navigateByUrl('giveaway')
     }
   }
 

@@ -60,10 +60,6 @@ export class AppComponent implements AfterViewInit {
               user_hash: data.hash
             });
           });
-
-          setTimeout(() => {
-            this.modalService.openModal('discount')
-          }, 10000);
         } else {
           fbq('init', '247312712881625');
           window.Intercom("boot", {

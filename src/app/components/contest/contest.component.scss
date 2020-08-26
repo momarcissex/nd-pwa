@@ -93,6 +93,10 @@
             color: $googleRed;
         }
     }
+
+    .share-btns {
+        margin: auto;
+    }
 }
 
 // MEDIA QUERIES
@@ -191,6 +195,10 @@
             font-size: 0.7rem;
         }
     }
+
+    .share-btns {
+        width: 50%;
+    }
 }
 
 @media only screen and (min-width: 800px) and (max-width: 1199.9px) {
@@ -238,6 +246,10 @@
         p {
             font-size: 0.8rem;
         }
+    }
+
+    .share-btns {
+        width: 60%;
     }
 }
 
@@ -287,6 +299,10 @@
             font-size: 0.9rem;
         }
     }
+
+    .share-btns {
+        width: 60%;
+    }
 }
 
 @media only screen and (min-width: 1800px) and (max-width: 1999.9px) {
@@ -335,6 +351,10 @@
             font-size: 1rem;
         }
     }
+
+    .share-btns {
+        width: 50%;
+    }
 }
 
 @media only screen and (min-width: 2000px) {
@@ -382,5 +402,9 @@
         p {
             font-size: 1rem;
         }
+    }
+
+    .share-btns {
+        width: 50%;
     }
 }

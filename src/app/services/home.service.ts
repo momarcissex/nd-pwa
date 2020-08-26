@@ -40,7 +40,7 @@ export class HomeService {
   }
 
   public getLatestAsk() {
-    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(200)).valueChanges() as Observable<Ask[]>;
+    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(500)).valueChanges() as Observable<Ask[]>;
   }
 
   public getLatestBid() {
