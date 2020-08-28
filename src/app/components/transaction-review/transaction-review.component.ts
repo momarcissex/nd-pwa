@@ -185,4 +185,8 @@ export class TransactionReviewComponent implements OnInit {
     })
   }
 
+  trackOrder() {
+    window.open(`https://www.canadapost.ca/trackweb/en#/search?searchFor=${this.transaction.shipTracking.trackingID}`)
+  }
+
 }

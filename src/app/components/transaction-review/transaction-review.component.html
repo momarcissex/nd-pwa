@@ -74,6 +74,13 @@
 
         <button class="btn error-btn" *ngIf="cancelError">Error</button>
       </div>-->
+
+      <div class="review-action"
+        *ngIf="transaction.shipTracking.trackingID && transaction.buyerID == user.uid">
+        
+        <button class="btn" (click)="trackOrder()">Track</button>
+
+      </div>
     </div>
 
     <button class="btn" routerLink=".." *ngIf="!redirectTo">Back</button>

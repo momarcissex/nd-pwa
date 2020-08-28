@@ -34,10 +34,13 @@
       <td>{{ purchase.purchaseDate | date:'medium' }}</td>
       <td>{{ printOrderStatus(purchase.status, purchase.type, purchase.paymentID) }}</td>
       
-      <td [routerLink]="['/transaction']"
+      <td *ngIf="printOrderStatus(purchase.status, purchase.type, purchase.paymentID) != 'shipped to buyer'" [routerLink]="['/transaction']"
         [queryParams]="{ transactionID: purchase.id, redirectTo: 'dashboard/purchases' }">More
         Details
       </td>
+
+      <td *ngIf="printOrderStatus(purchase.status, purchase.type, purchase.paymentID) === 'shipped to buyer'" [routerLink]="['/transaction']"
+        [queryParams]="{ transactionID: purchase.id, redirectTo: 'dashboard/purchases' }">Track</td>
     </tr>
   </table>
 
