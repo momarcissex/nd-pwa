@@ -10,6 +10,11 @@
 
         <h1 class="title" [innerHtml]="post.title | safeHtml"></h1>
 
+        <app-trustbox></app-trustbox>
+
+        <br>
+        <br>
+
         <div class="share-btns">
             <a href="https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/news/{{ post.slug }}&display=popup&ref=plugin"
                 class="fb-share-btn" (click)="share('fb')">
@@ -29,14 +34,9 @@
             </a>
         </div>
 
-        <a routerLink="/referral" class="discounts">
-            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/Referral%20Banner%20v1.00.png?alt=media&token=e20ad8d2-54f3-44a0-a506-ead1a217e12c  "
-                alt="Get Discounts For Your Next Orders">
-        </a>
-
         <div class="content" [innerHTML]="post.content | safeHtml"></div>
 
-        <a class="browse btn" routerLink="/">Browse Sneakers on our Marketplace</a>
+        <a class="browse btn" routerLink="/">Browse Sneakers in our Marketplace</a>
     </section>
 
     <h1>Related Articles</h1>
