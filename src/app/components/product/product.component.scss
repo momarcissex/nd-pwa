@@ -3,19 +3,6 @@
 .main-container {
   display: grid;
   align-content: center;
-
-  .discounts {
-    width: 50%;
-    height: 100%;
-    max-width: 100%;
-    margin: auto;
-
-    img {
-      margin-top: 1rem;
-      width: 100%;
-      height: 100%;
-    }
-  }
 }
 
 .product-container {
@@ -23,7 +10,7 @@
   display: grid;
   grid-template-columns: 1fr;
   column-gap: $spacing-normal;
-  margin: $spacing-normal auto;
+  margin: 0 auto;
 
   .product-info {
     text-align: center;
@@ -37,8 +24,8 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       background: $black;
-      padding: $spacing-xsmall;
-      border-radius: $spacing-normal;
+      padding: 1rem;
+      border-radius: 1rem;
       display: block;
 
       fa-icon {
@@ -202,6 +189,13 @@
           }
         }
       }
+    }
+
+    .links {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      justify-items: center;
     }
   }
 
@@ -696,7 +690,7 @@
   .product-info {
     .auth {
       margin: $spacing-xxsmall auto;
-      font-size: $font-xsmall;
+      font-size: .6rem;
       width: 35%;
     }
 
@@ -710,7 +704,7 @@
     }
 
     img {
-      width: 50%;
+      width: 40%;
     }
 
     .product-specs {

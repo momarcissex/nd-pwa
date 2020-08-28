@@ -80,11 +80,13 @@
 
       <img src="{{ productInfo.assetURL }}" alt="{{ productInfo.model }}">
 
-      <a routerLink="/faq/buying/are-the-items-authentic" class="auth">100% authentic or 100% refund <fa-icon
-          [icon]="['fas', 'check-circle']"></fa-icon>
-      </a>
+      <div class="links">
+        <a routerLink="/faq/buying/what-does-nxtdrop-define-as-new" class="return">Condition: New</a>
 
-      <a routerLink="/faq/buying/on-what-circumstances-do-i-get-a-refund" class="return">Return Policy</a>
+        <a routerLink="/faq/buying/are-the-items-authentic" class="auth">100% Guaranteed Authentic</a>
+
+        <a routerLink="/faq/buying/on-what-circumstances-do-i-get-a-refund" class="return">Return Policy</a>
+      </div>
 
       <div class="share-btns">
         <a href="https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/{{ productID }}&display=popup&ref=plugin"
