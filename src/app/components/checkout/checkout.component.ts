@@ -468,10 +468,10 @@ export class CheckoutComponent implements OnInit {
   }
 
   goBack() {
-    const id = this.product.model.toLowerCase();
+    const id = this.product.productID;
 
     if (isNullOrUndefined(this.route.snapshot.queryParams.redirectTo)) {
-      this.router.navigate([`product/${id.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-')}`]);
+      this.router.navigate([`product/${id}`]);
     } else {
       this.router.navigateByUrl(this.route.snapshot.queryParams.redirectTo)
     }
