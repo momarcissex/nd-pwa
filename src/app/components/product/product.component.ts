@@ -22,10 +22,10 @@ export class ProductComponent implements OnInit {
 
   productID: string
 
-  default_sizes: { [key: string]: number[] } = {
-    'M': [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5, 17, 18],
-    'Y': [3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7],
-    'W': [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 14.5, 15, 15.5, 16, 16.5]
+  default_sizes: { [key: string]: string[] } = {
+    'M': ['US3', 'US3.5', 'US4', 'US4.5', 'US5', 'US5.5', 'US6', 'US6.5', 'US7', 'US7.5', 'US8', 'US8.5', 'US9', 'US9.5', 'US10', 'US10.5', 'US11', 'US11.5', 'US12', 'US12.5', 'US13', 'US13.5', 'US14', 'US14.5', 'US15', 'US15.5', 'US16', 'US16.5', 'US17', 'US18'],
+    'Y': ['US3Y', 'US3.5Y', 'US4Y', 'US4.5Y', 'US5Y', 'US5.5Y', 'US6Y', 'US6.5Y', 'US7Y'],
+    'W': ['US4W', 'US4.5', 'US5W', 'US5.5W', 'US6W', 'US6.5W', 'US7W', 'US7.5W', 'US8W', 'US8.5W', 'US9W', 'US9.5W', 'US10W', 'US10.5W', 'US11W', 'US11.5W', 'US12W', 'US12.5W', 'US13W', 'US13.5W', 'US14W', 'US14.5W', 'US15W', 'US15.5W', 'US16W', 'US16.5W']
   }
   sizeSuffix: string = ''
 
@@ -229,7 +229,7 @@ export class ProductComponent implements OnInit {
   getOffers() {
     //console.log('getOffers start')
     let suffix: string;
-    let shoeSizes: Array<number>;
+    let shoeSizes: Array<string> | Array<number>;
     this.offers.length = 0
 
     if (isNullOrUndefined(this.productInfo.size_category)) {
@@ -261,8 +261,13 @@ export class ProductComponent implements OnInit {
     shoeSizes.forEach(ele => {
       let ask: any;
       let bid: any;
+      let size;
 
-      const size = `US${ele}${this.sizeSuffix}`;
+      if (typeof ele === 'number') {
+        size = `US${ele}${this.sizeSuffix}`;
+      } else {
+        size = ele
+      }
 
       this.bidService.getHighestBid(`${this.productID}`, 'new', size).then(bidData => {
         bidData.empty ? bid = undefined : bid = bidData.docs[0].data()
