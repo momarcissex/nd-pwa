@@ -94,12 +94,15 @@ export class AskService {
         price
       });
 
+      //update sizes_lowest_ask
       let data = pair.sizes_lowest_ask
       data[size] = price
-      console.log(data)
+      //console.log(data)
 
+      //update sizes_lowest_ask and sizes_available
       batch.update(prodRef, {
-        sizes_lowest_ask: data
+        sizes_lowest_ask: data,
+        sizes_available: firebase.firestore.FieldValue.arrayUnion(size)
       })
     }
 
@@ -122,11 +125,13 @@ export class AskService {
 
   public async deleteAsk(ask: Ask): Promise<boolean> {
     const batch = this.afs.firestore.batch();
-
     const userAskRef = this.afs.firestore.collection('users').doc(`${ask.sellerID}`).collection('listings').doc(`${ask.listingID}`); //ask in user doc ref
     const prodAskRef = this.afs.firestore.collection('products').doc(`${ask.productID}`).collection('listings').doc(`${ask.listingID}`); //ask in prod doc ref
     const userRef = this.afs.firestore.collection('users').doc(`${ask.sellerID}`); //user doc ref
     const askRef = this.afs.firestore.collection(`asks`).doc(`${ask.listingID}`); //ask in asks collection ref
+    let sendLowestAskNotification: Observable<any>
+    let product: Product;
+
     this.ask_data = ask
 
     batch.delete(userAskRef); //remove ask in user doc
@@ -156,6 +161,13 @@ export class AskService {
       })
     })
 
+    //get product document
+    await prodRef.get().then(snap => {
+      if (snap.exists) {
+        product = snap.data() as Product
+      }
+    })
+
     //console.log(`length: ${prices.length}; price1: ${prices[0].price}; price2: ${prices[1].price}`);
     //console.log(prices);
 
@@ -170,23 +182,39 @@ export class AskService {
       })
     }
 
+    //lowest ask email notification and product document updates
+    if (ask.listingID === size_prices[0].listingID && !isNullOrUndefined(size_prices[1])) {
+      sendLowestAskNotification = this.http.put(`${environment.cloud.url}lowestAskNotification`, {
+        product_id: size_prices[1].productID,
+        seller_id: size_prices[1].sellerID,
+        condition: size_prices[1].condition,
+        size: size_prices[1].size,
+        listing_id: size_prices[1].listingID,
+        price: size_prices[1].price
+      })
+
+      const data = product.sizes_lowest_ask
+      data[ask.size] = size_prices[1].price
+      batch.update(prodRef, {
+        sizes_lowest_ask: data
+      })
+    } else if (ask.listingID === size_prices[0].listingID && isNullOrUndefined(size_prices[1])) {
+      const data = product.sizes_lowest_ask
+      data[ask.size] = 0
+      batch.update(prodRef, {
+        sizes_lowest_ask: data,
+        sizes_available: firebase.firestore.FieldValue.arrayRemove(ask.size)
+      })
+    }
+
     //commit the updates
     return batch.commit()
       .then(() => {
         //console.log('listing deleted');
 
-        if (ask.listingID === size_prices[0].listingID && !isNullOrUndefined(size_prices[1])) {
-          this.http.put(`${environment.cloud.url}lowestAskNotification`, {
-            product_id: size_prices[1].productID,
-            seller_id: size_prices[1].sellerID,
-            condition: size_prices[1].condition,
-            size: size_prices[1].size,
-            listing_id: size_prices[1].listingID,
-            price: size_prices[1].price
-          }).subscribe()
-        }
+        if (!isNullOrUndefined(sendLowestAskNotification)) sendLowestAskNotification.subscribe() //send lowest ask email
 
-        this.http.put(`${environment.cloud.url}askNotification`, this.ask_data).subscribe()
+        this.http.put(`${environment.cloud.url}askNotification`, this.ask_data).subscribe() //send email notification when we ask deleted
 
         return true;
       })
@@ -204,14 +232,13 @@ export class AskService {
 
     const batch = this.afs.firestore.batch()
     const last_updated = Date.now()
-
     const userAskRef = this.afs.firestore.collection('users').doc(`${UID}`).collection('listings').doc(`${ask.listingID}`) //ask in user doc ref
     const prodAskRef = this.afs.firestore.collection('products').doc(`${ask.productID}`).collection('listings').doc(`${ask.listingID}`) //ask in prod doc ref
     const askRef = this.afs.firestore.collection(`asks`).doc(`${ask.listingID}`) //ask in asks collection ref
-
     const prodRef = this.afs.firestore.collection(`products`).doc(`${ask.productID}`) //prod ref in prod document
     let prices: Ask[] = [] //lowest prices
     let size_prices: Ask[] = [] //size lowest prices
+    let product: Product;
 
     //get the two lowest prices
     await prodRef.collection(`listings`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
@@ -229,21 +256,13 @@ export class AskService {
 
     //get prod info and compare current ask price w lowest ask. update if necessary.
     await prodRef.get().then(snap => {
-      if (isUndefined(prices[1]) || price < snap.data().lowestPrice) {
-        batch.update(prodRef, {
-          lowestPrice: price
-        })
-      } else if (ask.price === snap.data().lowestPrice) {
-        //console.log(`${prices[0]} and ${prices[1]}`)
-        if (price < prices[1].price) {
-          batch.update(prodRef, {
-            lowestPrice: price
-          })
-        } else {
-          batch.update(prodRef, {
-            lowestPrice: prices[1].price
-          })
-        }
+      product = snap.data() as Product
+
+      if (isNullOrUndefined(prices[1]) || price <= product.lowestPrice) {
+        batch.update(prodRef, { lowestPrice: price })
+      } else {
+        if (price < prices[1].price) batch.update(prodRef, { lowestPrice: price })
+        else batch.update(prodRef, { lowestPrice: prices[1].price })
       }
     })
 
@@ -278,7 +297,7 @@ export class AskService {
     return batch.commit()
       .then(() => {
         //console.log('Listing updated');
-        this.sendLowestAskNotification(price, ask.condition, ask.size, UID, ask.productID, ask.listingID, size_prices) //send new lowest ask notification if necessary
+        this.sendLowestAskNotification(price, ask.condition, ask.size, UID, ask.productID, ask.listingID, size_prices, product) //send new lowest ask notification if necessary
 
         this.ask_data = {
           assetURL: ask.assetURL,
@@ -302,8 +321,8 @@ export class AskService {
       });
   }
 
-  private sendLowestAskNotification(price: number, condition: string, size: string, UID: string, product_id: string, listing_id: string, size_prices: Ask[]) {
-    if (price < size_prices[0].price) {
+  private sendLowestAskNotification(price: number, condition: string, size: string, UID: string, product_id: string, listing_id: string, size_prices: Ask[], product: Product) {
+    if (price < size_prices[0].price) { // send email notif when new ask is lower than lowest ask
       this.http.put(`${environment.cloud.url}lowestAskNotification`, {
         product_id: product_id,
         seller_id: UID,
@@ -312,8 +331,14 @@ export class AskService {
         listing_id: listing_id,
         price
       }).subscribe()
-    } else if (!isNullOrUndefined(size_prices[1]) && listing_id === size_prices[0].listingID && price > size_prices[0].price) {
-      if (price >= size_prices[1].price) {
+
+      const data = product.sizes_lowest_ask
+      data[size] = price
+      this.afs.collection('products').doc(product_id).update({
+        sizes_lowest_ask: data
+      })
+    } else if (!isNullOrUndefined(size_prices[1]) && listing_id === size_prices[0].listingID && price > size_prices[0].price) { // new ask was lowest ask and is now higher
+      if (price >= size_prices[1].price) { // send email notif when new ask is higher than second lowest ask
         this.http.put(`${environment.cloud.url}lowestAskNotification`, {
           product_id: product_id,
           seller_id: size_prices[1].sellerID,
@@ -322,7 +347,13 @@ export class AskService {
           listing_id: size_prices[1].listingID,
           price: size_prices[1].price
         }).subscribe()
-      } else if (price < size_prices[1].price) {
+
+        const data = product.sizes_lowest_ask
+        data[size] = size_prices[1].price
+        this.afs.collection('products').doc(product_id).update({
+          sizes_lowest_ask: data
+        })
+      } else if (price < size_prices[1].price) { // send email notif when new ask is lower than second lowest ask
         this.http.put(`${environment.cloud.url}lowestAskNotification`, {
           product_id: product_id,
           seller_id: UID,
@@ -331,8 +362,14 @@ export class AskService {
           listing_id: listing_id,
           price
         }).subscribe()
+
+        const data = product.sizes_lowest_ask
+        data[size] = price
+        this.afs.collection('products').doc(product_id).update({
+          sizes_lowest_ask: data
+        })
       }
-    } else if (isNullOrUndefined(size_prices[1])) {
+    } else if (isNullOrUndefined(size_prices[1])) { // send email notif when new ask is the only ask for this size
       this.http.put(`${environment.cloud.url}lowestAskNotification`, {
         product_id: product_id,
         seller_id: UID,
@@ -341,6 +378,12 @@ export class AskService {
         listing_id: listing_id,
         price
       }).subscribe()
+
+      const data = product.sizes_lowest_ask
+      data[size] = price
+      this.afs.collection('products').doc(product_id).update({
+        sizes_lowest_ask: data
+      })
     }
   }
 
