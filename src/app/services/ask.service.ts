@@ -77,7 +77,7 @@ export class AskService {
     }, { merge: true }) // increment 'listed' field by one
 
     //update lowest_price
-    if (isNullOrUndefined(pair.lowestPrice) || price < pair.lowestPrice) {
+    if (isNullOrUndefined(pair.lowest_price) || price < pair.lowest_price) {
       batch.update(prodRef, {
         lowest_price: price
       })
@@ -174,11 +174,11 @@ export class AskService {
     //udpate new lowest price
     if (prices.length === 1) {
       batch.update(prodRef, {
-        lowestPrice: firebase.firestore.FieldValue.delete()
+        lowest_price: firebase.firestore.FieldValue.delete()
       });
     } else if (ask.price === prices[0].price && prices[0].price != prices[1].price) {
       batch.update(prodRef, {
-        lowestPrice: prices[1].price
+        lowest_price: prices[1].price
       })
     }
 
@@ -258,11 +258,11 @@ export class AskService {
     await prodRef.get().then(snap => {
       product = snap.data() as Product
 
-      if (isNullOrUndefined(prices[1]) || price <= product.lowestPrice) {
-        batch.update(prodRef, { lowestPrice: price })
+      if (isNullOrUndefined(prices[1]) || price <= product.lowest_price) {
+        batch.update(prodRef, { lowest_price: price })
       } else {
-        if (price < prices[1].price) batch.update(prodRef, { lowestPrice: price })
-        else batch.update(prodRef, { lowestPrice: prices[1].price })
+        if (price < prices[1].price) batch.update(prodRef, { lowest_price: price })
+        else batch.update(prodRef, { lowest_price: prices[1].price })
       }
     })
 

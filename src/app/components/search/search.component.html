@@ -20,8 +20,8 @@
   <div class="search-items">
     <a class="search-item" *ngFor="let result of results" routerLink="/product/{{ result.productID }}">
       <section class="item-specs">
-        <h5 *ngIf="result.lowestPrice" style="color: #222021;">{{ getLowestPrice(result.sizes_lowest_ask, result.lowestPrice) | currency: 'CAD' }}</h5>
-        <h5 *ngIf="!result.lowestPrice" style="color: #8D8B8C;">SOLD OUT</h5>
+        <h5 *ngIf="result.lowest_price" style="color: #222021;">{{ getLowestPrice(result.sizes_lowest_ask, result.lowest_price) | currency: 'CAD' }}</h5>
+        <h5 *ngIf="!result.lowest_price" style="color: #8D8B8C;">SOLD OUT</h5>
       </section>
       <img src="{{ result.assetURL }}" alt="{{ result.model }}">
       <h5>{{ result.model }}</h5>

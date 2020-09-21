@@ -135,11 +135,11 @@ export class TransactionService {
     //delete or update lowest_price
     if (prices.length === 1) {
       batch.update(prodRef, {
-        lowestPrice: firebase.firestore.FieldValue.delete()
+        lowest_price: firebase.firestore.FieldValue.delete()
       });
     } else if (product.price === prices[0].price && prices[0].price != prices[1].price) {
       batch.update(prodRef, {
-        lowestPrice: prices[1].price
+        lowest_price: prices[1].price
       })
     }
 
@@ -352,11 +352,11 @@ export class TransactionService {
       //delete or update lowest_price
       if (p.length === 1) {
         batch.update(prodRef, {
-          lowestPrice: firebase.firestore.FieldValue.delete()
+          lowest_price: firebase.firestore.FieldValue.delete()
         });
       } else if (userAsk.price === p[0].price && p[0].price != p[1].price) {
         batch.update(prodRef, {
-          lowestPrice: p[1].price
+          lowest_price: p[1].price
         })
       }
 

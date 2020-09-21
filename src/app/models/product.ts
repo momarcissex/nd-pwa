@@ -6,7 +6,7 @@ export class Product {
     assetURL: string;
     colorway: string;
     yearMade: string;
-    lowestPrice?: number;
+    lowest_price?: number;
     retailPrice?: number;
     sizes: Array<string>;
     SKU?: string;

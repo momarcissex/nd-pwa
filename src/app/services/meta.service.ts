@@ -55,10 +55,10 @@ export class MetaService {
         { property: 'product:locale', content: `en_CA` },
       ], true);
 
-      if (!isNullOrUndefined(product.lowestPrice)) {
+      if (!isNullOrUndefined(product.lowest_price)) {
         this.meta.addTags([
-          { property: 'og:price:amount', content: `${product.lowestPrice}.00` },
-          { property: 'product:price:amount', content: `${product.lowestPrice}.00` },
+          { property: 'og:price:amount', content: `${product.lowest_price}.00` },
+          { property: 'product:price:amount', content: `${product.lowest_price}.00` },
           { property: 'product:availability', content: 'in stock' }
         ])
       } else {

@@ -100,7 +100,7 @@ export class SearchComponent implements OnInit {
       this.index.search({
         query: q,
         filters: this.filters,
-        attributesToRetrieve: ['assetURL', 'model', 'productID', 'lowestPrice', 'sizes_lowest_ask'],
+        attributesToRetrieve: ['assetURL', 'model', 'productID', 'lowest_price', 'sizes_lowest_ask'],
         hitsPerPage: 48 * this.nbPages
 
       }, (err, hits: any = {}) => {
@@ -197,14 +197,14 @@ export class SearchComponent implements OnInit {
     if (!isNullOrUndefined(this.sizeSelected) && this.filters == '') this.filters = `sizes_available:US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`
   }
 
-  getLowestPrice(prices, lowestPrice) {
+  getLowestPrice(prices, lowest_price) {
     let price
 
     if (!isNullOrUndefined(this.sizeSelected)) {
-      if (isNullOrUndefined(prices)) price = lowestPrice
+      if (isNullOrUndefined(prices)) price = lowest_price
       else price = prices[`US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`]
     } else {
-      price = lowestPrice
+      price = lowest_price
     }
 
     return price

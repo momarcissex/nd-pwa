@@ -3,7 +3,7 @@
 
   <div class="showcase-discovery">
     <a *ngFor="let discovery of discoveries" class="discovery-card" routerLink="/product/{{ discovery.productID }}">
-      <h6>{{ discovery.lowestPrice | currency: 'CAD' }}</h6>
+      <h6>{{ discovery.lowest_price | currency: 'CAD' }}</h6>
 
       <img src="{{ discovery.assetURL }}" alt="{{ discovery.model }}">
 
