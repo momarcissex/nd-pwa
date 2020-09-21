@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
+import { isNullOrUndefined } from 'util';
 
 declare const fbq: any;
 
@@ -26,11 +27,13 @@ export class SearchComponent implements OnInit {
   searchLimit: boolean = false
   nbHits: number = 0
 
-  categorySelected: string[] = []
-  sizeSelected: string[] = []
+  categorySelected: string
+  sizeSelected: string
 
   typingTimer;
   doneTypingInterval = 1000;
+
+  filters: string = ''
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -59,18 +62,38 @@ export class SearchComponent implements OnInit {
   search() {
     //console.log(event.target.value);
 
-    const term = (document.getElementById('search-input') as HTMLInputElement).value;
+    const q = (document.getElementById('search-input') as HTMLInputElement).value;
+    this.filters = ''
 
     clearTimeout(this.typingTimer);
     this.typingTimer = setTimeout(() => {
+      const query: any = {
+        q
+      }
+
+      console.log(this.categorySelected)
+      console.log(this.sizeSelected)
+
+      if (!isNullOrUndefined(this.categorySelected) || !isNullOrUndefined(this.sizeSelected)) {
+        if (!isNullOrUndefined(this.categorySelected)) query.category = this.categorySelected
+        if (!isNullOrUndefined(this.sizeSelected)) query.size = this.sizeSelected
+
+        this.buildFilter()
+      }
+
+      console.log(query)
+
       this.router.navigate([],
         {
-          queryParams: { q: term }
+          queryParams: query
         });
 
+      console.log(this.filters)
+
       this.index.search({
-        query: term,
-        attributesToRetrieve: ['assetURL', 'model', 'productID', 'lowestPrice'],
+        query: q,
+        filters: this.filters,
+        attributesToRetrieve: ['assetURL', 'model', 'productID', 'lowestPrice', 'sizes_lowest_price'],
         hitsPerPage: 48 * this.nbPages
 
       }, (err, hits: any = {}) => {
@@ -90,32 +113,58 @@ export class SearchComponent implements OnInit {
 
         fbq('track', 'Search', {
           content_category: 'sneaker',
-          search_string: `${term}`
+          search_string: `${q}`
         })
       });
     }, this.doneTypingInterval);
   }
 
   selectCategory($event) {
-    if (this.categorySelected.indexOf($event.target.id) != -1) {
-      this.categorySelected.splice(this.categorySelected.indexOf($event.target.id), 1);
-      (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.remove('categorySelected')
-    } else {
-      this.categorySelected.push($event.target.id);
-      (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.add('categorySelected')
+    const categories = {
+      "women": 'W',
+      "men": "M",
+      "youth": "GS"
     }
 
+    let category = categories[$event.target.id]
+
+
+    if (isNullOrUndefined(this.categorySelected)) {
+      (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.add('categorySelected')
+      this.categorySelected = category
+    } else {
+      if (Object.keys(categories).find(key => categories[key] === this.categorySelected) === $event.target.id) {
+        (document.getElementById(`${Object.keys(categories).find(key => categories[key] === this.categorySelected)}`) as HTMLInputElement).classList.remove('categorySelected')
+
+        this.categorySelected = undefined
+      } else {
+        (document.getElementById(`${Object.keys(categories).find(key => categories[key] === this.categorySelected)}`) as HTMLInputElement).classList.remove('categorySelected');
+        (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.add('categorySelected')
+
+        this.categorySelected = category
+      }
+    }
     //console.log(this.categorySelected)
   }
 
   selectSize($event) {
-    if (this.sizeSelected.indexOf($event.target.id) != -1) {
-      this.sizeSelected.splice(this.sizeSelected.indexOf($event.target.id), 1);
-      (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.remove('sizeSelected')
-    } else {
-      this.sizeSelected.push($event.target.id);
+    if (isNullOrUndefined(this.sizeSelected)) {
       (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.add('sizeSelected')
+      this.sizeSelected = $event.target.id
+    } else {
+      if (this.sizeSelected === $event.target.id) {
+        (document.getElementById(`${this.sizeSelected}`) as HTMLInputElement).classList.remove('sizeSelected')
+
+        this.sizeSelected = undefined
+      } else {
+        (document.getElementById(`${this.sizeSelected}`) as HTMLInputElement).classList.remove('sizeSelected');
+        (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.add('sizeSelected')
+
+        this.sizeSelected = $event.target.id
+      }
     }
+
+    console.log(this.sizeSelected)
 
     //console.log(this.sizeSelected)
   }
@@ -130,7 +179,27 @@ export class SearchComponent implements OnInit {
 
   applyFilters() {
     this.closeFilters()
-    console.log(`Categories: ${this.categorySelected} & Sizes: ${this.sizeSelected}`)
+    this.search()
+    //console.log(`Categories: ${this.categorySelected} & Sizes: ${this.sizeSelected}`)
+  }
+
+  buildFilter() {
+    if (!isNullOrUndefined(this.categorySelected)) this.filters = `size_category:${this.categorySelected}`
+
+    if (!isNullOrUndefined(this.sizeSelected) && this.filters != '') this.filters += ` AND sizes_available:${this.sizeSelected}`
+    if (!isNullOrUndefined(this.sizeSelected) && this.filters == '') this.filters = `sizes_available:${this.sizeSelected}`
+  }
+
+  getLowestPrice(prices, lowestPrice) {
+    let price
+
+    if (!isNullOrUndefined(this.sizeSelected)) {
+      price = prices[this.sizeSelected]
+    } else {
+      price = lowestPrice
+    }
+
+    return price
   }
 
   moreProducts() {
