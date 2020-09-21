@@ -35,6 +35,13 @@ export class SearchComponent implements OnInit {
 
   filters: string = ''
 
+  sizeSuffix = {
+    "W": 'W',
+    "M": "",
+    "GS": "Y",
+    "undefined": ""
+  }
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -186,15 +193,16 @@ export class SearchComponent implements OnInit {
   buildFilter() {
     if (!isNullOrUndefined(this.categorySelected)) this.filters = `size_category:${this.categorySelected}`
 
-    if (!isNullOrUndefined(this.sizeSelected) && this.filters != '') this.filters += ` AND sizes_available:${this.sizeSelected}`
-    if (!isNullOrUndefined(this.sizeSelected) && this.filters == '') this.filters = `sizes_available:${this.sizeSelected}`
+    if (!isNullOrUndefined(this.sizeSelected) && this.filters != '') this.filters += ` AND sizes_available:US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`
+    if (!isNullOrUndefined(this.sizeSelected) && this.filters == '') this.filters = `sizes_available:US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`
   }
 
   getLowestPrice(prices, lowestPrice) {
     let price
 
     if (!isNullOrUndefined(this.sizeSelected)) {
-      price = prices[this.sizeSelected]
+      if (isNullOrUndefined(prices)) price = lowestPrice
+      else price = prices[`US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`]
     } else {
       price = lowestPrice
     }
