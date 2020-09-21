@@ -1,14 +1,15 @@
 <section class="modal" id="modal">
-
     <div class="modal-card">
         <div *ngIf="!giveaway">
             <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
-            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59" alt="NXTDROP Logo">
+            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59"
+                alt="NXTDROP Logo">
             <h3>Never miss promotions, good deals and new releases again!</h3>
             <p>Subscribe to our newsletter.</p>
             <input type="text" name="email" id="subscription-email" placeholder="Email Address">
 
-            <button class="btn" *ngIf="!subscribeLoading && !subscribeError && !subscribed" (click)="subscribe()">Subscribe</button>
+            <button class="btn" *ngIf="!subscribeLoading && !subscribeError && !subscribed"
+                (click)="subscribe()">Subscribe</button>
 
             <button class="btn" *ngIf="subscribeLoading">Subscribing...</button>
 
@@ -21,12 +22,13 @@
 
         <div *ngIf="giveaway">
             <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
-            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59" alt="NXTDROP Logo">
+            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59"
+                alt="NXTDROP Logo">
             <h3>🚨 Giveaway 🚨</h3>
-            <p>We’re giving away a free pair of Jordan 1 Retro High Turbo Green. Winner will be selected on August 23rd.</p>
+            <p>We’re giving away a free pair of Jordan 1 Retro High Turbo Green. Winner will be selected on August 23rd.
+            </p>
 
             <button class="btn" (click)="redirect()">Enter giveaway</button>
         </div>
     </div>
-
 </section>

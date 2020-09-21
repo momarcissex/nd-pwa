@@ -34,8 +34,9 @@ export class AskService {
     return listingRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>
   }
 
-  async submitAsk(pair: Product, condition: string, price: number, size: string, size_lowest_ask: number, expiration_date: number) {
+  async submitAsk(pair: Product, condition: string, price: number, size: string, expiration_date: number) {
     let UID: string
+    let sizeLowestAskNotif: Observable<any>
 
     await this.auth.isConnected()
       .then(data => {
@@ -62,54 +63,61 @@ export class AskService {
     const batch = this.afs.firestore.batch()
     //console.log(timestamp);
 
-    const userDocRef = this.afs.firestore.collection(`users/${UID}/listings`).doc(`${listingID}`);
-    const prodDocRef = this.afs.firestore.collection(`products/${pair.productID}/listings`).doc(`${listingID}`);
-    const listedValRef = this.afs.firestore.doc(`users/${UID}`);
-    const askRef = this.afs.firestore.collection(`asks`).doc(`${listingID}`);
+    const userDocRef = this.afs.firestore.collection(`users/${UID}/listings`).doc(`${listingID}`)
+    const listingRef = this.afs.firestore.collection(`products/${pair.productID}/listings`).doc(`${listingID}`)
+    const listedValRef = this.afs.firestore.doc(`users/${UID}`)
+    const askRef = this.afs.firestore.collection(`asks`).doc(`${listingID}`)
+    const prodRef = this.afs.firestore.collection('products').doc(pair.productID)
 
     batch.set(userDocRef, this.ask_data); // add Listing to User Document
     batch.set(askRef, this.ask_data); // add listing to asks collection
-    batch.set(prodDocRef, this.ask_data); // add Listing to Products Document
+    batch.set(listingRef, this.ask_data); // add Listing to Products Document
     batch.set(listedValRef, {
       listed: firebase.firestore.FieldValue.increment(1)
     }, { merge: true }) // increment 'listed' field by one
 
-    // update lowestprice in Product Document
-    return this.afs.collection(`products`).doc(`${pair.productID}`).get().subscribe(res => {
-      const lowestPrice = res.data().lowestPrice
-      if (isUndefined(lowestPrice) || lowestPrice > price) {
-        const productRef = this.afs.firestore.collection(`products`).doc(`${pair.productID}`);
-        batch.set(productRef, {
-          lowestPrice: price
-        }, { merge: true })
-      }
+    //update lowest_price
+    if (isNullOrUndefined(pair.lowestPrice) || price < pair.lowestPrice) {
+      batch.update(prodRef, {
+        lowest_price: price
+      })
+    }
 
-      return batch.commit()
-        .then(() => {
-          //console.log('New Listing Added');
+    //send email notif and update size_lowest_price
+    if (pair.sizes_lowest_ask[size] == 0 || (pair.sizes_lowest_ask[size] > 0 && price < pair.sizes_lowest_ask[size])) {
+      sizeLowestAskNotif = this.http.put(`${environment.cloud.url}lowestAskNotification`, {
+        product_id: pair.productID,
+        seller_id: UID,
+        condition,
+        size,
+        listing_id: listingID,
+        price
+      });
 
-          console.log(`size_lowest: ${size_lowest_ask} and price: ${price}`)
+      let data = pair.sizes_lowest_ask
+      data[size] = price
+      console.log(data)
 
-          if (isNullOrUndefined(size_lowest_ask) || price < size_lowest_ask) {
-            this.http.put(`${environment.cloud.url}lowestAskNotification`, {
-              product_id: pair.productID,
-              seller_id: UID,
-              condition,
-              size,
-              listing_id: listingID,
-              price
-            }).subscribe()
-          }
+      batch.update(prodRef, {
+        sizes_lowest_ask: data
+      })
+    }
 
-          this.http.post(`${environment.cloud.url}askNotification`, this.ask_data).subscribe()
+    return batch.commit()
+      .then(() => {
+        //console.log('New Listing Added');
+        //console.log(`size_lowest: ${pair.sizes_lowest_ask[size]} and price: ${price}`)
 
-          return true;
-        })
-        .catch((err) => {
-          console.error(err)
-          return false
-        })
-    })
+        if (!isNullOrUndefined(sizeLowestAskNotif)) sizeLowestAskNotif.subscribe()
+
+        this.http.post(`${environment.cloud.url}askNotification`, this.ask_data).subscribe() //send ask email
+
+        return true;
+      })
+      .catch((err) => {
+        console.error(err)
+        return false
+      })
   }
 
   public async deleteAsk(ask: Ask): Promise<boolean> {
@@ -336,7 +344,7 @@ export class AskService {
     }
   }
 
-  public extendAsk(ask: Ask): Promise<Ask|boolean> {
+  public extendAsk(ask: Ask): Promise<Ask | boolean> {
     const data: Ask = ask
     const new_date = Date.now()
     const batch = this.afs.firestore.batch()

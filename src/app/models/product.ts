@@ -6,12 +6,12 @@ export class Product {
     assetURL: string;
     colorway: string;
     yearMade: string;
-    type: string;
     lowestPrice?: number;
     retailPrice?: number;
-    views?: number;
-    sizes?: Array<number>;
+    sizes: Array<string>;
     SKU?: string;
-    size_category?: string;
-    product_type?: string;
+    size_category: string;
+    product_type: string;
+    sizes_available?: Array<string>;
+    sizes_lowest_ask?: { [key: string]: number };
 }

@@ -1,15 +1,26 @@
 <app-navbar></app-navbar>
 
-<div class="main-container">
+<section class="main-container">
   <div class="search-bar-container">
-    <button routerLink=".."><fa-icon [icon]="['fas', 'times']"></fa-icon></button>
+    <button routerLink="..">
+      <fa-icon [icon]="['fas', 'times']"></fa-icon>
+    </button>
     <input type="text" id="search-input" placeholder="Search" autofocus (keyup)="search()">
+  </div>
+
+  <div class="search-parameters">
+    <h6 id="results">{{ nbHits }} Results</h6>
+
+    <h6 id="filters" (click)="showFilters()"><span>
+        <fa-icon [icon]="['fas', 'filter']"></fa-icon>
+        Show Filters
+      </span></h6>
   </div>
 
   <div class="search-items">
     <a class="search-item" *ngFor="let result of results" routerLink="/product/{{ result.productID }}">
       <section class="item-specs">
-        <h5 *ngIf="result.lowestPrice" style="color: #3c91e6;">{{ result.lowestPrice | currency: 'CAD' }}</h5>
+        <h5 *ngIf="result.lowestPrice" style="color: #222021;">{{ getLowestPrice(result.sizes_lowest_ask, result.lowestPrice) | currency: 'CAD' }}</h5>
         <h5 *ngIf="!result.lowestPrice" style="color: #8D8B8C;">SOLD OUT</h5>
       </section>
       <img src="{{ result.assetURL }}" alt="{{ result.model }}">
@@ -18,6 +29,165 @@
   </div>
 
   <button class="btn" (click)="moreProducts()" *ngIf="!searchLimit">More</button>
-</div>
+</section>
+
+<section class="filter-modal" id="filter-modal">
+  <div class="filter-card">
+    <h6 (click)="closeFilters()">Close <fa-icon [icon]="['fas', 'times']"></fa-icon></h6>
+
+
+    <h2>Filters</h2>
+
+    <div id="category">
+      <h3>Size Category</h3>
+
+      <div class="options">
+        <button class="option" id="men" (click)="selectCategory($event)">
+          Men
+        </button>
+
+        <button class="option" id="women" (click)="selectCategory($event)">
+          Women
+        </button>
+
+        <button class="option" id="youth" (click)="selectCategory($event)">
+          Youth
+        </button>
+      </div>
+    </div>
+
+    <div id="sizes">
+      <h3>US Sizes</h3>
+
+      <div class="options">
+        <button class="option" id="1.5" (click)="selectSize($event)">
+          1.5
+        </button>
+
+        <button class="option" id="2" (click)="selectSize($event)">
+          2
+        </button>
+
+        <button class="option" id="2.5" (click)="selectSize($event)">
+          2.5
+        </button>
+
+        <button class="option" id="3" (click)="selectSize($event)">
+          3
+        </button>
+
+        <button class="option" id="3.5" (click)="selectSize($event)">
+          3.5
+        </button>
+
+        <button class="option" id="4" (click)="selectSize($event)">
+          4
+        </button>
+
+        <button class="option" id="4.5" (click)="selectSize($event)">
+          4.5
+        </button>
+
+        <button class="option" id="5" (click)="selectSize($event)">
+          5
+        </button>
+
+        <button class="option" id="5.5" (click)="selectSize($event)">
+          5.5
+        </button>
+
+        <button class="option" id="6" (click)="selectSize($event)">
+          6
+        </button>
+
+        <button class="option" id="6.5" (click)="selectSize($event)">
+          6.5
+        </button>
+
+        <button class="option" id="7" (click)="selectSize($event)">
+          7
+        </button>
+
+        <button class="option" id="7.5" (click)="selectSize($event)">
+          7.5
+        </button>
+
+        <button class="option" id="8" (click)="selectSize($event)">
+          8
+        </button>
+
+        <button class="option" id="8.5" (click)="selectSize($event)">
+          8.5
+        </button>
+
+        <button class="option" id="9" (click)="selectSize($event)">
+          9
+        </button>
+
+        <button class="option" id="9.5" (click)="selectSize($event)">
+          9.5
+        </button>
+
+        <button class="option" id="10" (click)="selectSize($event)">
+          10
+        </button>
+
+        <button class="option" id="10.5" (click)="selectSize($event)">
+          10.5
+        </button>
+
+        <button class="option" id="11" (click)="selectSize($event)">
+          11
+        </button>
+
+        <button class="option" id="11.5" (click)="selectSize($event)">
+          11.5
+        </button>
+
+        <button class="option" id="12" (click)="selectSize($event)">
+          12
+        </button>
+
+        <button class="option" id="12.5" (click)="selectSize($event)">
+          12.5
+        </button>
+
+        <button class="option" id="13" (click)="selectSize($event)">
+          13
+        </button>
+
+        <button class="option" id="13.5" (click)="selectSize($event)">
+          13.5
+        </button>
+
+        <button class="option" id="14" (click)="selectSize($event)">
+          14
+        </button>
+
+        <button class="option" id="14.5" (click)="selectSize($event)">
+          14.5
+        </button>
+
+        <button class="option" id="15" (click)="selectSize($event)">
+          15
+        </button>
+
+        <button class="option" id="16" (click)="selectSize($event)">
+          16
+        </button>
+
+        <button class="option" id="17" (click)="selectSize($event)">
+          17
+        </button>
+
+        <button class="option" id="18" (click)="selectSize($event)">
+          18
+        </button>
+      </div>
+    </div>
+
+    <button id="apply-filter" (click)="applyFilters()">Apply</button>
+  </div>
+</section>
 
 <app-footer></app-footer>
