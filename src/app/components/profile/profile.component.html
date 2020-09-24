@@ -42,14 +42,14 @@
 
     <div class="dropdown-btn">
       
-      <button>
+      <button (click)="dropdown()">
         <div class="text">Ask Display</div>
         <div class="mode">{{ ask_filter }}</div>
         <div class="icon"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></div>
       </button>
 
 
-      <ul class="dropdown-selection">
+      <ul class="dropdown-selection" id="dropdown">
         <li (click)="changeFilter('All', true)">
           <p>All</p>
         </li>

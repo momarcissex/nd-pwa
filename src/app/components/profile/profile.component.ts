@@ -269,6 +269,16 @@ export class ProfileComponent implements OnInit {
         this.showOffers(true)
       }
     }
+
+    document.getElementById('dropdown').style.display = 'none'
+  }
+
+  dropdown() {
+    if (getComputedStyle(document.querySelector('.dropdown-selection')).display === 'none') {
+      document.getElementById('dropdown').style.display = 'block'
+    } else {
+      document.getElementById('dropdown').style.display = 'none'
+    }
   }
 
   removeErrorBtn(id) {
