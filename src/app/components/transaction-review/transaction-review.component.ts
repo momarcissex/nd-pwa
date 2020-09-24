@@ -8,9 +8,8 @@ import { MetaService } from 'src/app/services/meta.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
-import * as crypto from 'crypto-js';
+
+declare const gtag: any;
 
 @Component({
   selector: 'app-transaction-review',
@@ -89,60 +88,26 @@ export class TransactionReviewComponent implements OnInit {
       //console.log(this.user)
 
       if (this.user.uid === this.transaction.buyerID && !isNullOrUndefined(this.route.snapshot.queryParams.source) && date - this.transaction.purchaseDate <= 60000) {
+        gtag('require', 'ecommerce')
 
-        const script = document.createElement('script')
+        gtag('ecommerce:addTransaction', {
+          'id':`${this.transaction.id}`,
+          'revenue':`${this.transaction.total}`,
+          'shipping':`${this.transaction.shippingCost}`,
+          'currency':'CAD'
+        })
 
-        script.innerHTML = "!function (d, s){var rc = \"//go.referralcandy.com/purchase/pdq6dcm70qh3iq8qtm4jmhb9q.js\";var js = d.createElement(s);js.src = rc;var fjs = d.getElementsByTagName(s)[0];fjs.parentNode.insertBefore(js, fjs);}(document, \"script\");"
+        gtag('ecommerce:addItem', {
+          'id':`${this.transaction.id}`,
+          'name':`${this.transaction.model}`,
+          'sku':`${this.transaction.productID}`,
+          'category':`sneaker`,
+          'price':`${this.transaction.price}`,
+          'quantity':`1`,
+          'currency':'CAD'
+        })
 
-        document.body.appendChild(script)
-
-        if (!isNullOrUndefined(this.transaction.discount)) {
-          const discount = this.transaction.discount as NxtdropCC
-
-          const body = {
-            accessID: environment.referralCandy.access_id,
-            browser_ip: this.user.last_known_ip_address,
-            currency_code: 'CAD',
-            discount_code: discount.cardID,
-            email: this.user.email,
-            external_reference_id: this.transaction.id,
-            first_name: this.user.firstName,
-            invoice_amount: this.transaction.total,
-            last_name: this.user.lastName,
-            order_timestamp: this.transaction.purchaseDate,
-            timestamp: date,
-            signature: `${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.last_known_ip_address}currency_code=CADdiscount_code=${discount.cardID}email=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate}timestamp=${date}user_agent=${navigator.userAgent}`,
-            user_agent: encodeURIComponent(navigator.userAgent)
-          }
-
-          this.http.post(`${environment.cloud.url}forwardPurchase`, body)
-
-        } else {
-          const body = {
-            accessID: environment.referralCandy.access_id,
-            browser_ip: this.user.last_known_ip_address,
-            currency_code: 'CAD',
-            email: this.user.email,
-            external_reference_id: this.transaction.id,
-            first_name: this.user.firstName,
-            invoice_amount: this.transaction.total.toString(),
-            last_name: this.user.lastName,
-            order_timestamp: this.transaction.purchaseDate.toString(),
-            timestamp: date.toString(),
-            signature: crypto.MD5(`${environment.referralCandy.secret_key}accessID=${environment.referralCandy.access_id}browser_ip=${this.user.last_known_ip_address}currency_code=CADemail=${this.user.email}external_reference_id=${this.transaction.id}first_name=${this.user.firstName}invoice_amount=${this.transaction.total.toString()}last_name=${this.user.lastName}order_timestamp=${this.transaction.purchaseDate.toString()}timestamp=${date.toString()}user_agent=${navigator.userAgent}`).toString(),
-            user_agent: navigator.userAgent
-          }
-
-          this.http.post(`${environment.cloud.url}forwardPurchase`, body).subscribe(
-            res => {
-              console.log(res)
-            },
-            err => {
-              console.log(err)
-            }
-          )
-        }
-        //console.log(referralCandyData)
+        gtag('ecommerce:send')
       }
     });
   }
