@@ -8,6 +8,7 @@ import { Bid } from 'src/app/models/bid';
 import { BidService } from 'src/app/services/bid.service';
 import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-profile',
@@ -30,7 +31,7 @@ export class ProfileComponent implements OnInit {
     username: ''
   };
 
-  listings = [];
+  listings: Ask[] = [];
   offers = [];
 
   listingNav = true;
@@ -38,6 +39,9 @@ export class ProfileComponent implements OnInit {
   loading = false;
 
   current_date = Date.now()
+
+  ask_filter: 'All' | 'Active' | 'Expired' | 'Oldest' | 'Recent' = 'All'
+  bid_filter: 'All' | 'Active' | 'Expired' | 'Oldest' | 'Recent' = 'All'
 
   constructor(
     private userService: UserService,
@@ -86,7 +90,7 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  showListings() {
+  showListings(filterChange?: boolean) {
     if (isPlatformBrowser(this._platoformId)) {
       document.getElementById('listingsBtn').style.borderBottom = '4px solid #222021';
       document.getElementById('offersBtn').style.borderBottom = '2px solid #222021';
@@ -94,31 +98,43 @@ export class ProfileComponent implements OnInit {
 
     this.listingNav = true;
 
-    if (!this.listings.length) {
-      this.userService.getUserListings().then(val => {
+    if (!isNullOrUndefined(filterChange)) {
+      this.listings.length = 0
+      this.userService.getUserListings(this.ask_filter).then(val => {
         val.subscribe(data => {
           data.forEach(element => {
-            this.listings.push(element.data())
+            this.listings.push(element.data() as Ask)
           })
           //console.log(data);
         });
       });
+    } else {
+      if (!this.listings.length) {
+        this.userService.getUserListings(this.ask_filter).then(val => {
+          val.subscribe(data => {
+            data.forEach(element => {
+              this.listings.push(element.data() as Ask)
+            })
+            //console.log(data);
+          });
+        });
+      }
     }
   }
 
   moreListings() {
-    this.userService.getUserListings(this.listings[this.listings.length - 1].created_at)
+    this.userService.getUserListings(this.ask_filter, this.listings[this.listings.length - 1])
       .then(val => {
         val.subscribe(data => {
           data.forEach(element => {
-            this.listings.push(element.data());
+            this.listings.push(element.data() as Ask);
           });
           // console.log(this.listings);
         });
       });
   }
 
-  showOffers() {
+  showOffers(filterChange?: boolean) {
     if (isPlatformBrowser(this._platoformId)) {
       document.getElementById('offersBtn').style.borderBottom = '4px solid #222021';
       document.getElementById('listingsBtn').style.borderBottom = '2px solid #222021';
@@ -126,8 +142,8 @@ export class ProfileComponent implements OnInit {
 
     this.listingNav = false;
 
-    if (!this.offers.length) {
-      this.userService.getUserOffers().then(val => {
+    if (isNullOrUndefined(filterChange)) {
+      this.userService.getUserOffers(this.bid_filter).then(val => {
         val.subscribe(data => {
           data.forEach(element => {
             this.offers.push(element.data())
@@ -135,6 +151,17 @@ export class ProfileComponent implements OnInit {
           //console.log(this.offers);
         });
       });
+    } else {
+      if (!this.offers.length) {
+        this.userService.getUserOffers(this.bid_filter).then(val => {
+          val.subscribe(data => {
+            data.forEach(element => {
+              this.offers.push(element.data())
+            })
+            //console.log(this.offers);
+          });
+        });
+      }
     }
   }
 
@@ -228,6 +255,20 @@ export class ProfileComponent implements OnInit {
         console.error(err)
         this.extendErroBtn(`extend-bid-${bid.offerID}`)
       })
+  }
+
+  changeFilter(mode: 'All' | 'Active' | 'Expired' | 'Oldest' | 'Recent', isAsk: boolean) {
+    if (isAsk) {
+      if (this.ask_filter != mode) {
+        this.ask_filter = mode
+        this.showListings(true)
+      }
+    } else {
+      if (this.bid_filter != mode) {
+        this.bid_filter = mode
+        this.showOffers(true)
+      }
+    }
   }
 
   removeErrorBtn(id) {

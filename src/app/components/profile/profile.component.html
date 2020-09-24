@@ -39,7 +39,42 @@
 
   <div *ngIf="listingNav else showOffer" class="container">
     <h2>Your Items For Sale</h2>
-    <div class="profile-items">
+
+    <div class="dropdown-btn">
+      
+      <button>
+        <div class="text">Ask Display</div>
+        <div class="mode">{{ ask_filter }}</div>
+        <div class="icon"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></div>
+      </button>
+
+
+      <ul class="dropdown-selection">
+        <li (click)="changeFilter('All', true)">
+          <p>All</p>
+        </li>
+
+        <li (click)="changeFilter('Active', true)">
+          <p>Active</p>
+        </li>
+
+        <li (click)="changeFilter('Expired', true)">
+          <p>Expired</p>
+        </li>
+
+        <li (click)="changeFilter('Oldest', true)">
+          <p>Oldest</p>
+        </li>
+
+        <li (click)="changeFilter('Recent', true)">
+          <p>Recent</p>
+        </li>
+      </ul>
+
+
+    </div>
+
+    <div class="profile-items" *ngIf="listings.length > 0">
       <a class="profile-item" *ngFor="let listing of listings">
         <section class="item-specs">
           <h6>{{ listing.size }}</h6>
@@ -59,11 +94,56 @@
         <h5 *ngIf="current_date < listing.expiration_date">Expires in {{ (listing.expiration_date - current_date) / 86400000 | number:'1.0-0' }} days</h5>
       </a>
     </div>
+
+    <!--<div class="profile-items" *ngIf="listings.length < 1">
+      <p style="font-size: 1.5rem; justify-self: center; align-self: center; text-align: center; grid-column: 1/5;">You have no items for sale</p>
+    </div>-->
+
+    <button *ngIf="dashInfo.listed > listings.length && !loading && listings.length > 0" class="btn show-more-btn"
+      (click)="moreListings()">More</button>
+    <button *ngIf="loading" class="btn show-more-btn">
+      <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+    </button>
   </div>
 
   <ng-template #showOffer class="container">
     <h2>Your Bids</h2>
-    <div class="profile-items">
+
+    <div class="dropdown-btn">
+      
+      <button>
+        <div class="text">Bid Display</div>
+        <div class="mode">{{ bid_filter }}</div>
+        <div class="icon"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></div>
+      </button>
+
+
+      <ul class="dropdown-selection">
+        <li>
+          <p>All</p>
+        </li>
+
+        <li>
+          <p>Active</p>
+        </li>
+
+        <li>
+          <p>Expired</p>
+        </li>
+
+        <li>
+          <p>Oldest</p>
+        </li>
+
+        <li>
+          <p>Recent</p>
+        </li>
+      </ul>
+
+
+    </div>
+
+    <div class="profile-items" *ngIf="offers">
       <div class="profile-item" *ngFor="let offer of offers">
         <section class="item-specs">
           <h6>{{ offer.size }}</h6>
@@ -83,13 +163,13 @@
         <h5 *ngIf="current_date < offer.expiration_date">Expires in {{ (offer.expiration_date - current_date) / 86400000 | number:'1.0-0' }} days</h5>
       </div>
     </div>
-  </ng-template>
 
-  <button *ngIf="dashInfo.listed > listings.length && !loading" class="btn show-more-btn"
-    (click)="moreListings()">More</button>
-  <button *ngIf="loading" class="btn show-more-btn">
-    <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
-  </button>
+    <button *ngIf="dashInfo.offers > offers.length && !loading && offers.length > 0" class="btn show-more-btn"
+      (click)="moreOffers()">More</button>
+    <button *ngIf="loading" class="btn show-more-btn">
+      <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+    </button>
+  </ng-template>
 </div>
 
 <app-footer></app-footer>

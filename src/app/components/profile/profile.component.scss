@@ -2,6 +2,92 @@
 
 h2 {
     text-align: center;
+    margin: 1.5rem;
+}
+
+.dropdown-btn {
+    background: none;
+    width: 20%;
+    margin: 1rem auto 2rem auto;
+
+    &:hover {
+        button {
+            .icon {
+                rotate: 180deg;
+            }
+        }
+
+        .dropdown-selection {
+            display: block;
+        }
+    }
+
+    button {
+        cursor: pointer;
+        background: none;
+        width: 100%;
+        border: 1px solid $lightgrey;
+        border-radius: 0.4rem;
+        padding: 0.8rem;
+        display: grid;
+        grid-template-columns: 2fr 6fr 1fr;
+        align-items: center;
+        justify-items: center;
+
+        .text {
+            font-size: 0.8rem;
+            color: $coolgrey;
+        }
+
+        .mode {
+            color: $black;
+            font-size: 0.9rem;
+        }
+
+        .icon {
+            @include vendor(transition, .40s ease-in-out);
+            font-size: 0.9rem;
+            color: $black;
+        }
+    }
+
+    .dropdown-selection {
+        z-index: 1000;
+        position: absolute;
+        display: none;
+        width: 20%;
+        list-style: none;
+        background: $white;
+        background-clip: padding-box;
+        border: 1px solid $lightgrey;
+        border-radius: $spacing-xsmall;
+        @include vendor(box-shadow, 0 6px 12px rgba(0, 0, 0, 0.175));
+
+        li {
+            border-bottom: 1px solid $lightgrey;
+            cursor: pointer;
+            padding: 0.8rem;
+
+            p {
+                font-size: 0.9rem;
+                color: $coolgrey;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                justify-items: start;
+                align-items: center;
+            }
+
+            &:hover {
+                P {
+                    font-weight: $weight-black;
+                }
+            }
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
 }
 
 .stats-btn {
@@ -178,9 +264,10 @@ h2 {
 }
 
 .show-more-btn {
-    width: 50%;
-    margin: $spacing-normal 25%;
-    padding: $spacing-xsmall;
+    display: block;
+    width: 15%;
+    margin: .8rem auto;
+    padding: 1rem;
     @include vendor(transition, 0.25s ease-in-out);
     background: $black;
 
