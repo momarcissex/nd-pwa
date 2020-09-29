@@ -90,6 +90,12 @@ export class CheckoutComponent implements OnInit {
 
     this.isSelling = this.route.snapshot.queryParams.sell;
 
+    //Free Shipping between Sept. 29th 6PM & Oct. 7th 12AM
+    const d = Date.now()
+    if (d >= 1601416800000 && d < 1607317200000) {
+      this.shippingPrice = 0
+    }
+
     if (!isNullOrUndefined(this.isSelling) && !isNullOrUndefined(this.route.snapshot.queryParams.product)) {
       this.isUserConnected()
     } else {
