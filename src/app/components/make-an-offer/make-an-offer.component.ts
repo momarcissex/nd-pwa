@@ -282,14 +282,20 @@ export class MakeAnOfferComponent implements OnInit {
         }
       })
     } else {
-      this.bidService.updateBid(this.userBid, this.pairPrice, this.expiration_date)
-        .then(response => {
-          if (response) {
-            this.addListed()
-          } else {
-            this.addError()
+      this.bidService.extendBid(this.userBid).then(
+        res => {
+          if (res) {
+            this.bidService.updateBid(this.userBid, this.pairPrice, this.expiration_date)
+              .then(response => {
+                if (response) {
+                  this.addListed()
+                } else {
+                  this.addError()
+                }
+              })
           }
-        })
+        }
+      )
     }
   }
 
