@@ -37,7 +37,7 @@ export class TransactionService {
    */
   async transactionApproved(UID: string, product: Ask, shippingInfo: User['shippingAddress']['buying'], paymentID: string, shippingCost: number, total: number, discount?: NxtdropCC) {
     const batch = firebase.firestore().batch()
-    const id = product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()
+    const id = product.productID
     const boughtAt = Date.now()
     const transactionID = `${UID}-${product.sellerID}-${boughtAt}`
 
