@@ -104,6 +104,24 @@ export class SlackService {
             return false
           });
       }
+      case 'seller_confirmation': {
+        const endpoint = environment.slack.seller_confirmation;
+
+        const payload = { "text": msg };
+
+        return this.http.post(endpoint, JSON.stringify(payload)).subscribe(
+          (res: any) => {
+            if (res.status === 200) {
+              return true;
+            }
+
+            return false;
+          },
+          err => {
+            //console.error(err)
+            return false
+          });
+      }
     }
   }
 

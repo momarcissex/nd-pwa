@@ -74,7 +74,7 @@ export class SaleConfirmationComponent implements OnInit {
   confirmOrder() {
     this.confLoading = true;
 
-    this.confService.confirmOrder(this.route.snapshot.params.id).then(response => {
+    this.confService.confirmOrder(this.route.snapshot.params.id, this.user.shippingAddress.selling).then(response => {
       this.confLoading = false;
       if (!response) {
         this.confError = true;
