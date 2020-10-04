@@ -37,7 +37,7 @@
     }
 
     .input-error {
-      background: $inputError;
+      background: $prodBtnLight2;
     }
 
     input {
@@ -95,6 +95,18 @@
       background: $black;
       color: $white;
       margin: $spacing-normal auto;
+    }
+
+    form > .ng-valid {
+      background: $mintgreen;
+    }
+
+    form > .ng-invalid {
+      background: $prodBtnLight2;
+    }
+
+    form > .ng-untouched {
+      background: $white
     }
   }
 }

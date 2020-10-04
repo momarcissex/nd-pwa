@@ -88,7 +88,8 @@ export class SignUpComponent implements OnInit {
       ],
       password: ['', [
         Validators.minLength(6),
-        Validators.maxLength(25)
+        Validators.maxLength(25),
+        Validators.required
       ]]
     });
 
@@ -105,26 +106,32 @@ export class SignUpComponent implements OnInit {
     this.loading = true;
     //console.log('signup called');
 
-    if (isUndefined(this.inviteCode)) {
-      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP).then(res => {
-        if (!res) {
-          this.loading = false;
-          this.error = true;
-          this.reset()
-        } else {
-          this.redirect()
-        }
-      });
+    if (this.signupForm.valid) {
+      if (isUndefined(this.inviteCode)) {
+        return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP).then(res => {
+          if (!res) {
+            this.loading = false;
+            this.error = true;
+            this.reset()
+          } else {
+            this.redirect()
+          }
+        });
+      } else {
+        return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP, this.inviteCode).then(res => {
+          if (!res) {
+            this.loading = false;
+            this.error = true;
+            this.reset()
+          } else {
+            this.redirect()
+          }
+        });
+      }
     } else {
-      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP, this.inviteCode).then(res => {
-        if (!res) {
-          this.loading = false;
-          this.error = true;
-          this.reset()
-        } else {
-          this.redirect()
-        }
-      });
+      this.loading = false
+      this.error = true
+      this.reset()
     }
   }
 
@@ -153,7 +160,7 @@ export class SignUpComponent implements OnInit {
   reset() {
     setTimeout(() => {
       this.error = false;
-    }, 2000);
+    }, 3000);
   }
 
   // Getters
