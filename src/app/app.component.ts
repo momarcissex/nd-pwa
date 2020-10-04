@@ -6,7 +6,6 @@ import { MetaService } from './services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { isNullOrUndefined } from 'util';
 import { IpService } from './services/ip.service';
 import { ModalService } from './services/modal.service';
 
@@ -42,7 +41,7 @@ export class AppComponent implements AfterViewInit {
     if (isPlatformBrowser(this._platformId)) {
       window.Intercom = window.Intercom || {};
       this.auth.isConnected().then(res => {
-        if (!isNullOrUndefined(res)) {
+        if (res === undefined || res === null) {
           gtag('set', { 'user_id': res.uid }); // Set the user ID using signed-in user_id.
           fbq('init', '247312712881625', { uid: res.uid });
           this.ipService.getIPAddress().subscribe((data: any) => {
@@ -84,7 +83,7 @@ export class AppComponent implements AfterViewInit {
         window.Intercom("update");
 
         this.auth.isConnected().then(res => {
-          if (!isNullOrUndefined(res)) {
+          if (res === null || res === undefined) {
             const pattern = new RegExp(/^\/additional-information($|\?.*$)/gm)
             //console.log(this.router.url)
             //console.log(pattern.test(this.router.url))

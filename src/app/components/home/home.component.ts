@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { UserService } from 'src/app/services/user.service';
 import { SlackService } from 'src/app/services/slack.service';
@@ -37,7 +36,7 @@ export class HomeComponent implements OnInit {
     this.seo.addTags('Home');
 
     this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
+      if (res === null || res === undefined) {
         this.connected = true;
 
         this.userService.getUserInfo(res.uid).subscribe(
