@@ -92,7 +92,7 @@ export class CheckoutComponent implements OnInit {
 
     //Free Shipping between Sept. 29th 6PM & Oct. 7th 12AM
     const d = Date.now()
-    if (d >= 1601416800000 && d < 1607317200000) {
+    if (d >= 1601416800000 && d < 1602129600000) {
       this.shippingPrice = 0
     }
 
