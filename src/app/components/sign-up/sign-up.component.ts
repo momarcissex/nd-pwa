@@ -4,9 +4,9 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { debounceTime, take, map } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { IpService } from 'src/app/services/ip.service';
+import { ToastrService } from 'ngx-toastr';
 
 export class CustomValidators {
 
@@ -28,6 +28,14 @@ export class CustomValidators {
         map(arr => arr.length ? { emailAvailable: false } : null)
       );
     };
+  }
+
+  static validName() {
+    return (control: AbstractControl) => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return Promise.resolve(isValid ? null : { whitespace: true })
+    }
   }
 
 }
@@ -60,7 +68,8 @@ export class SignUpComponent implements OnInit {
     private meta: MetaService,
     private router: Router,
     private ngZone: NgZone,
-    private ipService: IpService
+    private ipService: IpService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -70,12 +79,16 @@ export class SignUpComponent implements OnInit {
     this.redirectURL = this.route.snapshot.queryParams.redirectTo
 
     this.signupForm = this.fb.group({
-      firstName: ['', [
-        Validators.required,
-      ]],
-      lastName: ['', [
-        Validators.required
-      ]],
+      firstName: ['',
+        [Validators.minLength(2),
+        Validators.required],
+        [CustomValidators.validName()]
+      ],
+      lastName: ['',
+        [Validators.minLength(2),
+        Validators.required],
+        [CustomValidators.validName()]
+      ],
       username: ['',
         [Validators.minLength(2),
         Validators.required],
@@ -92,7 +105,7 @@ export class SignUpComponent implements OnInit {
       ]]
     });
 
-    if (!isUndefined(this.route.snapshot.queryParams.inviteCode)) {
+    if (this.route.snapshot.queryParams.inviteCode === null || this.route.snapshot.queryParams.inviteCode === undefined) {
       this.inviteCode = this.route.snapshot.queryParams.inviteCode;
     }
 
@@ -105,31 +118,39 @@ export class SignUpComponent implements OnInit {
     this.loading = true;
     //console.log('signup called');
 
-    if (isUndefined(this.inviteCode)) {
-      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP).then(res => {
-        if (!res) {
-          this.loading = false;
-          this.error = true;
-          this.reset()
-        } else {
-          this.redirect()
-        }
-      });
+    if (this.signupForm.valid) {
+      if (this.inviteCode === null || this.inviteCode === undefined) {
+        return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP).then(res => {
+          if (!res) {
+            this.loading = false;
+            this.error = true;
+            this.reset()
+          } else {
+            this.redirect()
+          }
+        });
+      } else {
+        return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP, this.inviteCode).then(res => {
+          if (!res) {
+            this.loading = false;
+            this.error = true;
+            this.reset()
+          } else {
+            this.redirect()
+          }
+        });
+      }
     } else {
-      return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP, this.inviteCode).then(res => {
-        if (!res) {
-          this.loading = false;
-          this.error = true;
-          this.reset()
-        } else {
-          this.redirect()
-        }
-      });
+      this.loading = false
+      this.toastr.error('Please fill in all fields.', '', {
+        progressBar: true,
+        progressAnimation: 'decreasing'
+      })
     }
   }
 
   redirect() {
-    if (!isUndefined(this.redirectURL)) {
+    if (this.redirectURL === null || this.redirectURL === undefined) {
       return this.ngZone.run(() => {
         return this.router.navigateByUrl(`${this.redirectURL}`);
       });
@@ -141,7 +162,7 @@ export class SignUpComponent implements OnInit {
   }
 
   loginRedirect() {
-    if (!isUndefined(this.redirectURL)) {
+    if (this.redirectURL === null || this.redirectURL === undefined) {
       this.router.navigate(['/login'], {
         queryParams: { redirectTo: this.redirectURL }
       })

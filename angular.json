@@ -31,7 +31,8 @@
               "src/robots.txt"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": [],
             "es5BrowserSupport": true
@@ -165,6 +166,6 @@
   },
   "defaultProject": "nd-pwa",
   "cli": {
-    "analytics": "17343142-9197-4529-b3f0-f65b2d672e36"
+    "analytics": true
   }
 }

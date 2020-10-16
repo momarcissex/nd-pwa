@@ -1,8 +1,6 @@
 import { Component, OnInit, NgZone, HostListener, PLATFORM_ID, Inject } from '@angular/core';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { AuthService } from '../../services/auth.service';
-import { NavbarService } from 'src/app/services/navbar.service';
-import { isNullOrUndefined } from 'util';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -86,7 +84,7 @@ export class NavbarComponent implements OnInit {
 
   checkUser() {
     return this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
+      if (res === null || res === undefined) {
         return this.afs.collection(`users`).doc(`${res.uid}`).ref.get().then(docSnapshot => {
           if (!docSnapshot.exists) {
             res.delete();

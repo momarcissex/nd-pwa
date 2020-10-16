@@ -100,6 +100,9 @@ import { ReferralProgramComponent } from './components/referral-program/referral
 import { ContestComponent } from './components/contest/contest.component';
 import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -183,7 +186,9 @@ import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bi
     NgxMaskModule.forRoot(),
     HttpClientModule,
     HttpClientJsonpModule,
-    NgxPayPalModule
+    NgxPayPalModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [
     CookieService

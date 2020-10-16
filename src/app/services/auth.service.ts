@@ -16,7 +16,6 @@ import { User } from '../models/user';
 import { first } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { EmailService } from './email.service';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -49,7 +48,7 @@ export class AuthService {
   ) { }
 
   async signOut(redirect: boolean) {
-    await this.afAuth.auth.signOut()
+    await this.afAuth.signOut()
       .then(() => {
         //console.log('Signed Out')
         //alert('signed out')
@@ -80,7 +79,7 @@ export class AuthService {
 
   async emailSignUp(email: string, password: string, firstName: string, lastName: string, username: string, userIP: string, inviteCode?: string) {
     if (email || password || firstName || lastName || username) {
-      return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
+      return this.afAuth.createUserWithEmailAndPassword(email, password)
         .then(user => {
           this.isEmailSignUp = true
 
@@ -100,7 +99,7 @@ export class AuthService {
             last_login: Date.parse(user.user.metadata.creationTime)
           };
 
-          if (!isUndefined(inviteCode)) {
+          if (inviteCode === undefined) {
             userData.freeShipping = true;
             this.afs.collection(`users`).doc(`${inviteCode}`).set({
               shippingPromo: {
@@ -110,7 +109,9 @@ export class AuthService {
               freeShipping: true
             }, { merge: true }).catch(err => {
               console.error(err);
-              this.afAuth.auth.currentUser.delete();
+              this.afAuth.currentUser.then(res => {
+                res.delete()
+              })
               return false;
             });
           }
@@ -130,7 +131,7 @@ export class AuthService {
   }
 
   async emailLogin(email: string, password: string) {
-    return this.afAuth.auth.signInWithEmailAndPassword(email, password)
+    return this.afAuth.signInWithEmailAndPassword(email, password)
       .then((response) => {
 
         this.ipService.getIPAddress().subscribe((data: any) => {
@@ -156,7 +157,7 @@ export class AuthService {
   }
 
   private oAuthLogin(provider) {
-    return this.afAuth.auth.signInWithPopup(provider)
+    return this.afAuth.signInWithPopup(provider)
       .then((credential) => {
         if (this.handleAuthToken(credential.user)) {
           //console.log('does exist');
@@ -175,7 +176,7 @@ export class AuthService {
       const redirect = this.route.snapshot.queryParams.redirectTo;
 
       if (snapshot.empty) {
-        if (!isUndefined(redirect)) {
+        if (redirect === undefined) {
           return this.ngZone.run(() => {
             return this.router.navigate(['/additional-information'], {
               queryParams: { redirectTo: redirect }
@@ -191,7 +192,7 @@ export class AuthService {
           this.updateLastActivity(user.uid, data.ip)
         })
 
-        if (!isUndefined(redirect)) {
+        if (redirect === undefined) {
           return this.ngZone.run(() => {
             return this.router.navigateByUrl(`${redirect}`);
           });
@@ -266,10 +267,11 @@ export class AuthService {
   }
 
   public addInformationUser(firstName: string, lastName: string, username: string, password: string, userIP: string) {
-    if (!isNullOrUndefined(this.afAuth.auth.currentUser)) {
-      const credential = auth.EmailAuthProvider.credential(this.afAuth.auth.currentUser.email, password);
+    if (this.afAuth.currentUser === null || this.afAuth.currentUser === undefined) {
+      this.afAuth.currentUser.then(currentUser => {
+        const credential = auth.EmailAuthProvider.credential(currentUser.email, password);
 
-      return this.afAuth.auth.currentUser.linkWithCredential(credential)
+        return currentUser.linkWithCredential(credential)
         .then((userCredential) => {
           const userData: User = {
             firstName,
@@ -298,9 +300,13 @@ export class AuthService {
         })
         .catch((error) => {
           console.error('Account linking error', error);
-          this.slack.sendAlert('bugreport', `Account linking: ${error}, Data: ${this.afAuth.auth.currentUser.email}`)
+          this.slack.sendAlert('bugreport', `Account linking: ${error}, Data: ${currentUser.email}`)
           return false;
         });
+      }).catch(err => {
+        console.error('Getting current user error', err)
+        this.slack.sendAlert('bugreport', `this.afAuth.currentUser.then error: ${err}`)
+      })
     } else {
       return Promise.resolve(false);
     }

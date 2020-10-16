@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { SlackService } from './slack.service';
 
 
 @Injectable({
@@ -13,22 +14,27 @@ export class EmailService {
   constructor(
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private http: HttpClient
+    private http: HttpClient,
+    private slack: SlackService
   ) { }
 
   passwordChange() {
-    const user = this.afAuth.auth.currentUser;
-    const endpoint = `${environment.cloud.url}changedPassword`;
+    this.afAuth.currentUser.then(user => {
+      const endpoint = `${environment.cloud.url}changedPassword`;
 
-    this.afs.collection(`users`).doc(`${user.uid}`).get().subscribe(res => {
-      const email = res.data().email;
+      this.afs.collection(`users`).doc(`${user.uid}`).get().subscribe(res => {
+        const email = res.data().email;
 
-      const data = {
-        toEmail: email,
-        toName: res.data().username
-      };
+        const data = {
+          toEmail: email,
+          toName: res.data().username
+        };
 
-      this.http.post(endpoint, data).subscribe();
+        this.http.post(endpoint, data).subscribe();
+      })
+    }).catch(err => {
+      console.error('Getting current user error', err)
+      this.slack.sendAlert('bugreport', `this.afAuth.currentUser.then error: ${err}`)
     })
   }
 
@@ -62,22 +68,26 @@ export class EmailService {
   }
 
   activateAccount() {
-    const user = this.afAuth.auth.currentUser;
-    const endpoint = `${environment.cloud.url}accountCreated`;
+    this.afAuth.currentUser.then(user => {
+      const endpoint = `${environment.cloud.url}accountCreated`;
 
-    this.afs.collection(`users`).doc(`${user.uid}`).get().subscribe(res => {
-      const email = res.data().email;
+      this.afs.collection(`users`).doc(`${user.uid}`).get().subscribe(res => {
+        const email = res.data().email;
 
-      const data = {
-        email: email,
-        first_name: res.data().firstName,
-        last_name: res.data().lastName,
-        uid: res.data().uid,
-        last_login: res.data().last_login,
-        creation_date: res.data().creation_date
-      };
+        const data = {
+          email: email,
+          first_name: res.data().firstName,
+          last_name: res.data().lastName,
+          uid: res.data().uid,
+          last_login: res.data().last_login,
+          creation_date: res.data().creation_date
+        };
 
-      this.http.post(endpoint, data).subscribe();
+        this.http.post(endpoint, data).subscribe();
+      })
+    }).catch(err => {
+      console.error('Getting current user error', err)
+      this.slack.sendAlert('bugreport', `this.afAuth.currentUser.then error: ${err}`)
     })
   }
 }
