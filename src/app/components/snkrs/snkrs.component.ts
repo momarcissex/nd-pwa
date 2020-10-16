@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { isNullOrUndefined, isUndefined } from 'util';
 import { Router } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
+import { faAsterisk, faCircleNotch, faMedal } from '@fortawesome/free-solid-svg-icons';
 
 class Question {
   answers: Array<any>;
@@ -17,6 +18,10 @@ class Question {
   styleUrls: ['./snkrs.component.scss']
 })
 export class SnkrsComponent implements OnInit, OnDestroy {
+
+  faMedal = faMedal
+  faAsterisk = faAsterisk
+  faCircleNotch = faCircleNotch
 
   UID: string;
   username: string;

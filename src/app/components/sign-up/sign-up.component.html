@@ -8,7 +8,7 @@
     </button>-->
 
     <button class="google-btn" (click)="auth.googleSignIn()">
-      <fa-icon [icon]="['fab', 'google']"></fa-icon>
+      <fa-icon [icon]="faGoogle"></fa-icon>
       <h3>Sign in with Google</h3>
     </button>
 
@@ -26,7 +26,7 @@
       <button type="submit" class="btn signup-btn" *ngIf="!loading && !error">Sign Up</button>
 
       <button type="submit" class="btn loading" *ngIf="loading">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
       </button>
 
       <button type="submit" class="btn error" *ngIf="error">Error</button>

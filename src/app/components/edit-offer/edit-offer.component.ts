@@ -7,6 +7,7 @@ import { Bid } from 'src/app/models/bid';
 import { Ask } from 'src/app/models/ask';
 import { BidService } from 'src/app/services/bid.service';
 import { AskService } from 'src/app/services/ask.service';
+import { faCheck, faCircleNotch, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-edit-offer',
@@ -14,6 +15,10 @@ import { AskService } from 'src/app/services/ask.service';
   styleUrls: ['./edit-offer.component.scss']
 })
 export class EditOfferComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
+  faDollarSign = faDollarSign
+  faCheck = faCheck
 
   listingID: string;
 

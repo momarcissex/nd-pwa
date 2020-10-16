@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-side-menu',
@@ -10,6 +11,8 @@ import { isPlatformBrowser } from '@angular/common';
 export class SideMenuComponent implements OnInit, OnDestroy {
 
   connected: boolean;
+
+  faTimes = faTimes
 
   constructor(
     private auth: AuthService,

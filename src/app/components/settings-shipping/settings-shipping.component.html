@@ -53,7 +53,7 @@
         [className]="streetChanged || lineChanged || cityChanged || provinceChanged || postalCodeChanged || firstNameChanged || lastNameChanged ? 'settings-save-btn btn' : 'settings-save-btn btn disabled'"
         (click)="updateShipping()" *ngIf="!loading && !error && !updated">Save Changes</button>
       <button class="settings-save-btn btn" *ngIf="loading">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
       </button>
       <button class="settings-save-btn btn error-btn" *ngIf="error">Error</button>
       <button class="settings-save-btn btn" *ngIf="updated">Updated</button>

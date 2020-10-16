@@ -14,7 +14,7 @@
 
     <button [className]="firstNameChanged || lastNameChanged || usernameChanged || dobChanged ? 'settings-save-btn btn' : 'disabled settings-save-btn btn'" (click)="updateProfile()" *ngIf="!loading && !error && !updated">Save Changes</button>
 
-    <button class="settings-save-btn btn" *ngIf="loading"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+    <button class="settings-save-btn btn" *ngIf="loading"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
 
     <button class="settings-save-btn btn" *ngIf="error">Error</button>
     

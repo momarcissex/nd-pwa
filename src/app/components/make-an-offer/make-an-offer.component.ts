@@ -15,6 +15,7 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { User } from 'firebase';
 import { response } from 'express';
+import { faBox, faCircleNotch, faHandHoldingUsd, faShippingFast } from '@fortawesome/free-solid-svg-icons';
 
 declare var gtag: any;
 
@@ -24,6 +25,11 @@ declare var gtag: any;
   styleUrls: ['./make-an-offer.component.scss']
 })
 export class MakeAnOfferComponent implements OnInit {
+
+  faHandHoldingUsd = faHandHoldingUsd
+  faShippingFast = faShippingFast
+  faCircleNotch = faCircleNotch
+  faBox = faBox
 
   // Algolia Set up
   algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey)

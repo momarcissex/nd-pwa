@@ -1,6 +1,6 @@
 <nav class="navbar" *ngIf="!isMobile">
   <button class="nav-hamburger" (click)="openMenu()">
-    <fa-icon [icon]="['fas', 'bars']"></fa-icon>
+    <fa-icon [icon]="faBars"></fa-icon>
   </button>
 
   <div class="nav-home">
@@ -74,7 +74,7 @@
 
 <nav class="navbar" *ngIf="isMobile">
   <button class="nav-hamburger" (click)="openMenu()">
-    <fa-icon [icon]="['fas', 'bars']"></fa-icon>
+    <fa-icon [icon]="faBars"></fa-icon>
   </button>
 
   <div class="nav-home" *ngIf="!showSearchBar">
@@ -89,11 +89,11 @@
   </div>
 
   <button class="nav-search" (click)="openSearch()" *ngIf="!showSearchBar">
-    <fa-icon [icon]="['fas', 'search']"></fa-icon>
+    <fa-icon [icon]="faSearch"></fa-icon>
   </button>
 
   <button class="nav-search" (click)="openSearch()" *ngIf="showSearchBar">
-    <fa-icon [icon]="['fas', 'times']"></fa-icon>
+    <fa-icon [icon]="faTimes"></fa-icon>
   </button>
 
   <div class="blueLine"></div>

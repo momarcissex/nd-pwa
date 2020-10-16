@@ -14,6 +14,7 @@ import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { User } from 'firebase';
+import { faBox, faCircleNotch, faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 
@@ -23,6 +24,11 @@ declare const gtag: any;
   styleUrls: ['./sell.component.scss']
 })
 export class SellComponent implements OnInit {
+
+  faTag = faTag
+  faBox = faBox
+  faMoneyBillWave = faMoneyBillWave
+  faCircleNotch = faCircleNotch
 
   // Algolia Set up
   algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey)

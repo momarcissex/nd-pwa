@@ -7,6 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MetaService } from 'src/app/services/meta.service';
 import { IpService } from 'src/app/services/ip.service';
 import { ToastrService } from 'ngx-toastr';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export class CustomValidators {
 
@@ -46,6 +48,9 @@ export class CustomValidators {
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent implements OnInit {
+
+  faGoogle = faGoogle
+  faSpinner = faSpinner
 
   public customPatterns = { '0': { pattern: new RegExp('\[a-zA-Z0-9._\]+') } };
 

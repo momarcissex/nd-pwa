@@ -5,6 +5,7 @@ import { TransactionService } from 'src/app/services/transaction.service';
 import { isNullOrUndefined } from 'util';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sold',
@@ -12,6 +13,8 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./sold.component.scss']
 })
 export class SoldComponent implements OnInit {
+
+  faExclamationCircle = faExclamationCircle
 
   transactionID: string;
   transaction: Transaction;

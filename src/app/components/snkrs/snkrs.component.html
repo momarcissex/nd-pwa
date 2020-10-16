@@ -14,9 +14,9 @@
 
             <div class="user-rank" *ngFor="let user of leaderboard">
                 <p id="rank" *ngIf="user.rank <= 3">
-                    <fa-icon [icon]="['fas', 'medal']" id="first" *ngIf="user.rank == 1"></fa-icon>
-                    <fa-icon [icon]="['fas', 'medal']" id="second" *ngIf="user.rank == 2"></fa-icon>
-                    <fa-icon [icon]="['fas', 'medal']" id="third" *ngIf="user.rank == 3"></fa-icon>
+                    <fa-icon [icon]="faMedal" id="first" *ngIf="user.rank == 1"></fa-icon>
+                    <fa-icon [icon]="faMedal" id="second" *ngIf="user.rank == 2"></fa-icon>
+                    <fa-icon [icon]="faMedal" id="third" *ngIf="user.rank == 3"></fa-icon>
                 </p>
                 <p id="rank" *ngIf="user.rank > 3">{{ user.rank }}</p>
                 <p id="username">{{ user.username }}</p>
@@ -30,28 +30,28 @@
             <div class="content-container">
                 <div class="rules">
                     <p>
-                        <fa-icon [icon]="['fas', 'asterisk']"></fa-icon> Rounds <strong>starts at 12:01 AM
+                        <fa-icon [icon]="faAsterisk"></fa-icon> Rounds <strong>starts at 12:01 AM
                             PDT</strong> and <strong>ends
                             at 11:59 PM PDT</strong>
                     </p>
                     <p>
-                        <fa-icon [icon]="['fas', 'asterisk']"></fa-icon> You will be given <strong>1 image and 4
+                        <fa-icon [icon]="faAsterisk"></fa-icon> You will be given <strong>1 image and 4
                             answers</strong>
                     </p>
                     <p>
-                        <fa-icon [icon]="['fas', 'asterisk']"></fa-icon> Pick the <strong>right
+                        <fa-icon [icon]="faAsterisk"></fa-icon> Pick the <strong>right
                             answer</strong> and <strong>earn 10 points</strong>
                     </p>
                     <p>
-                        <fa-icon [icon]="['fas', 'asterisk']"></fa-icon> Pick the <strong>wrong answer</strong> and <strong>lose
+                        <fa-icon [icon]="faAsterisk"></fa-icon> Pick the <strong>wrong answer</strong> and <strong>lose
                             2 points</strong>
                     </p>
                     <p>
-                        <fa-icon [icon]="['fas', 'asterisk']"></fa-icon> You have <strong>10 seconds</strong> to pick
+                        <fa-icon [icon]="faAsterisk"></fa-icon> You have <strong>10 seconds</strong> to pick
                         an answer
                     </p>
                     <p>
-                        <fa-icon [icon]="['fas', 'asterisk']"></fa-icon> In order to <strong>win a prize (Store Credit)</strong>, you
+                        <fa-icon [icon]="faAsterisk"></fa-icon> In order to <strong>win a prize (Store Credit)</strong>, you
                         must be in the <strong>top 3</strong> at the end of week
                     </p>
                 </div>
@@ -122,7 +122,7 @@
                         (click)="sendInvite()">Send Invite</button>
                     <button class="btn disabled-btn" *ngIf="!validEmail">Send Invite</button>
                     <button class="btn" *ngIf="invitationLoading">
-                        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+                        <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
                     </button>
                     <button class="btn red-btn" *ngIf="invitationError">Error</button>
                     <button class="btn green-btn" *ngIf="invitationSent">Sent</button>

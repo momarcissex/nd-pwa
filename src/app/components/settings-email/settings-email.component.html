@@ -10,7 +10,7 @@
     <div class="settings-btn">
       <button class="settings-back-btn btn" routerLink="..">Back</button>
       <button *ngIf="!loading && !error && !updated" [className]="new_email_valid && old_email_valid && pwd_entered ? 'settings-save-btn btn' : 'settings-save-btn btn disabled'" (click)="updateEmail()">Save Changes</button>
-      <button class="settings-back-btn btn" *ngIf="loading"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+      <button class="settings-back-btn btn" *ngIf="loading"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
       <button class="settings-back-btn error" *ngIf="error">Error</button>
       <button class="settings-back-btn btn" *ngIf="updated">Updated</button>
     </div>

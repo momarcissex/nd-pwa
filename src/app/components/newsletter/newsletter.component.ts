@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { faCheck, faCircleNotch, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-newsletter',
@@ -9,6 +10,10 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./newsletter.component.scss']
 })
 export class NewsletterComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
+  faCheck = faCheck
+  faExclamationCircle = faExclamationCircle
 
   error: boolean = false;
   loading: boolean = false;

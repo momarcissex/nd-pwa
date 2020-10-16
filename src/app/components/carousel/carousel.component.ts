@@ -1,6 +1,7 @@
 import { Component, OnInit, NgZone, HostListener, PLATFORM_ID, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-carousel',
@@ -10,6 +11,8 @@ import { isPlatformBrowser } from '@angular/common';
 export class CarouselComponent implements OnInit {
 
   isMobile: boolean = false;
+  
+  faSearch = faSearch
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {

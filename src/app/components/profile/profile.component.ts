@@ -9,6 +9,7 @@ import { BidService } from 'src/app/services/bid.service';
 import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
 import { isNullOrUndefined } from 'util';
+import { faChevronDown, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +17,9 @@ import { isNullOrUndefined } from 'util';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+
+  faChevronDown = faChevronDown
+  faCircleNotch = faCircleNotch
 
   dashInfo: User = {
     sold: 0,

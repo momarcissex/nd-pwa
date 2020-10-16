@@ -3,6 +3,7 @@ import { SettingsPasswordService } from 'src/app/services/settings-password.serv
 import { EmailService } from 'src/app/services/email.service';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-settings-password',
@@ -10,6 +11,8 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./settings-password.component.scss']
 })
 export class SettingsPasswordComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
 
   samePwd = false;
   pwdEntered = false;

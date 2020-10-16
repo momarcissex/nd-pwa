@@ -8,6 +8,7 @@ import { MetaService } from 'src/app/services/meta.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user';
 import { HttpClient } from '@angular/common/http';
+import { faCircleNotch, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 
@@ -17,6 +18,9 @@ declare const gtag: any;
   styleUrls: ['./transaction-review.component.scss']
 })
 export class TransactionReviewComponent implements OnInit {
+  
+  faCircleNotch = faCircleNotch
+  faExclamationCircle = faExclamationCircle
 
   transactionID: string;
   transaction: Transaction;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EmailService } from 'src/app/services/email.service';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
+import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-forget-password',
@@ -9,6 +10,9 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./forget-password.component.scss']
 })
 export class ForgetPasswordComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
+  faCheck = faCheck
 
   validEmail = false;
   loading = false;

@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-modal',
@@ -12,6 +13,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent implements OnInit {
+
+  faTimes = faTimes
 
   isOpen: boolean = false
 

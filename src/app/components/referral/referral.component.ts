@@ -7,6 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { SlackService } from 'src/app/services/slack.service';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 
@@ -16,6 +17,8 @@ declare const gtag: any;
   styleUrls: ['./referral.component.scss']
 })
 export class ReferralComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
 
   sent: boolean = false;
   error: boolean = false;

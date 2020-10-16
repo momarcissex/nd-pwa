@@ -10,9 +10,9 @@
     <textarea name="input-request" id="input-request" placeholder="Ex: adidas Yeezy Boost 350 Clay; Air Jordan 1 High SB NYC To Paris; React Element 87 Hyper Fusion"></textarea>
 
     <button *ngIf="!error && !sent && !loading" class="btn request-btn" (click)="sendRequest()">Send Request</button>
-    <button *ngIf="loading" class="btn request-btn"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+    <button *ngIf="loading" class="btn request-btn"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
     <button *ngIf="error" class="btn error-btn">Error</button>
-    <button *ngIf="sent" class="btn sent-btn"><fa-icon [icon]="['fas', 'check']"></fa-icon></button>
+    <button *ngIf="sent" class="btn sent-btn"><fa-icon [icon]="faCheck"></fa-icon></button>
   </section>
 </div>
 

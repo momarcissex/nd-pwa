@@ -9,6 +9,8 @@ import { MetaService } from 'src/app/services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
+import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -19,6 +21,11 @@ declare const fbq: any;
   styleUrls: ['./product.component.scss']
 })
 export class ProductComponent implements OnInit {
+
+  faFacebookF = faFacebookF
+  faTwitter = faTwitter
+  faEnvelope = faEnvelope
+  faLink = faLink
 
   productID: string
 

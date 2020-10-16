@@ -4,6 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user';
+import { faCcAmex, faCcMastercard, faCcVisa } from '@fortawesome/free-brands-svg-icons';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-settings-buying',
@@ -11,6 +13,11 @@ import { User } from 'src/app/models/user';
   styleUrls: ['./settings-buying.component.scss']
 })
 export class SettingsBuyingComponent implements OnInit {
+
+  faCcAmex = faCcAmex
+  faCcMastercard = faCcMastercard
+  faCcVisa = faCcVisa
+  faCircleNotch = faCircleNotch
 
   shippingInfo: User['shippingAddress']['buying'];
 

@@ -4,6 +4,7 @@ import { isUndefined, isNullOrUndefined } from 'util';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-settings-shipping',
@@ -11,6 +12,8 @@ import { User } from 'src/app/models/user';
   styleUrls: ['./settings-shipping.component.scss']
 })
 export class SettingsShippingComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
 
   shippingInfo: User["shippingAddress"] //shipping information
   UID: string //user id

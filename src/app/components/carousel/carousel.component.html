@@ -6,7 +6,7 @@
   </h1>
 
   <div class="search-bar" *ngIf="!isMobile">
-    <fa-icon [icon]="['fas', 'search']"></fa-icon>
+    <fa-icon [icon]="faSearch"></fa-icon>
     <input type="text" name="search-field" id="search-field" placeholder="Search for brand, model, etc." (keyup)="search($event)">
   </div>
 </div>

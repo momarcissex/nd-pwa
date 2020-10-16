@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { faTimes, faSearch, faBars } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   providers: [NotificationsComponent],
@@ -31,6 +32,10 @@ export class NavbarComponent implements OnInit {
   doneTypingInterval = 1000;
 
   userInfo = {};
+
+  faBars = faBars
+  faTimes = faTimes
+  faSearch = faSearch
 
   constructor(
     private notification: NotificationsComponent,

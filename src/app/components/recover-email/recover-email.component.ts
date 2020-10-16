@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-recover-email',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./recover-email.component.scss']
 })
 export class RecoverEmailComponent implements OnInit {
+
+  faExclamationCircle = faExclamationCircle
 
   constructor() { }
 

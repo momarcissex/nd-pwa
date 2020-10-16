@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from 'src/app/services/home.service';
-import { Product } from 'src/app/models/product';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-discovery',
@@ -8,6 +8,8 @@ import { Product } from 'src/app/models/product';
   styleUrls: ['./discovery.component.scss']
 })
 export class DiscoveryComponent implements OnInit {
+
+  faSpinner = faSpinner
 
   discoveries = [];
 

@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
 import { isNullOrUndefined } from 'util';
+import { faFilter, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 declare const fbq: any;
 
@@ -15,6 +16,9 @@ declare const fbq: any;
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+
+  faTimes = faTimes
+  faFilter = faFilter
 
   algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey);
   index;

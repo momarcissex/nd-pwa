@@ -18,6 +18,7 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
 import { NxtdropCcService } from 'src/app/services/nxtdrop-cc.service';
+import { faCheckCircle, faCircleNotch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -28,6 +29,9 @@ declare const fbq: any;
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
+
+  faCheckCircle = faCheckCircle
+  faCircleNotch = faCircleNotch
 
   public payPalConfig?: IPayPalConfig;
 

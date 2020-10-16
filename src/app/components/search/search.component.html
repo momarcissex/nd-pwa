@@ -3,7 +3,7 @@
 <section class="main-container">
   <div class="search-bar-container">
     <button routerLink="..">
-      <fa-icon [icon]="['fas', 'times']"></fa-icon>
+      <fa-icon [icon]="faTimes"></fa-icon>
     </button>
     <input type="text" id="search-input" placeholder="Search" autofocus (keyup)="search()">
   </div>
@@ -12,7 +12,7 @@
     <h6 id="results">{{ nbHits }} Results</h6>
 
     <h6 id="filters" (click)="showFilters()"><span>
-        <fa-icon [icon]="['fas', 'filter']"></fa-icon>
+        <fa-icon [icon]="faFilter"></fa-icon>
         Show Filters
       </span></h6>
   </div>
@@ -33,7 +33,7 @@
 
 <section class="filter-modal" id="filter-modal">
   <div class="filter-card">
-    <h6 (click)="closeFilters()">Close <fa-icon [icon]="['fas', 'times']"></fa-icon></h6>
+    <h6 (click)="closeFilters()">Close <fa-icon [icon]="faTimes"></fa-icon></h6>
 
 
     <h2>Filters</h2>

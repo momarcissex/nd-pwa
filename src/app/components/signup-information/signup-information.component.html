@@ -12,7 +12,7 @@
         <input type="password" placeholder="Password" formControlName="password" [className]="password.invalid && password.dirty ? 'input-error' : ''">
         
         <button type="submit" class="btn signup-btn" *ngIf="!loading && !error">Done</button>
-        <button class="btn signup-btn" *ngIf="loading"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+        <button class="btn signup-btn" *ngIf="loading"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
         <button class="btn signup-btn error-btn" *ngIf="error">Error</button>
       </form>
   </div>

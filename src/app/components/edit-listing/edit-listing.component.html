@@ -10,7 +10,7 @@
     <p class="condition">Condition: New & 100% Authentic</p>
 
     <div class="edit-price-input">
-      <button>CA<fa-icon [icon]="['fas', 'dollar-sign']"></fa-icon></button>
+      <button>CA<fa-icon [icon]="faDollarSign"></fa-icon></button>
       <input type="text" value="{{ offerInfo.price }}" (keyup)="priceChanges($event)" id="priceInput" mask="0{10}">
       <button>.00</button>
     </div>
@@ -58,13 +58,13 @@
         (click)="sellNow()">Sell at {{ highestOffer.price | currency: 'CAD' }}</button>
 
       <button id="save-changes-btn" class="btn" *ngIf="loading">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
       </button>
 
       <button id="save-changes-btn" class="btn error-btn" *ngIf="error">Error</button>
 
       <button id="save-changes-btn" class="btn updated-btn" *ngIf="updated">
-        <fa-icon [icon]="['fas', 'check']"></fa-icon>
+        <fa-icon [icon]="faCheck"></fa-icon>
       </button>
     </div>
 
@@ -72,7 +72,7 @@
   </section>
 
   <section class="edit-container loading" *ngIf="!offerInfo">
-    <fa-icon [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+    <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
   </section>
 </div>
 

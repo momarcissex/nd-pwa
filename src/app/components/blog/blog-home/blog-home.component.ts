@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NewsService } from 'src/app/services/news.service';
 import { MetaService } from 'src/app/services/meta.service';
 import { Title } from '@angular/platform-browser';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-blog-home',
@@ -9,6 +10,8 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./blog-home.component.scss']
 })
 export class BlogHomeComponent implements OnInit {
+
+  faClock = faClock
 
   posts = [];
 

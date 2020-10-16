@@ -8,6 +8,7 @@ import { isUndefined, isNullOrUndefined } from 'util';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IpService } from 'src/app/services/ip.service';
 import { SlackService } from 'src/app/services/slack.service';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 export class CustomValidators {
 
@@ -39,6 +40,8 @@ export class CustomValidators {
   styleUrls: ['./signup-information.component.scss']
 })
 export class SignupInformationComponent implements OnInit, OnDestroy {
+
+  faCircleNotch = faCircleNotch
 
   signupForm: FormGroup;
   accountCreated: boolean;

@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { NewsService } from 'src/app/services/news.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
+import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faClock, faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 @Component({
@@ -12,6 +14,12 @@ declare const gtag: any;
   encapsulation: ViewEncapsulation.None,
 })
 export class BlogPostComponent implements OnInit {
+
+  faFacebookF = faFacebookF
+  faTwitter = faTwitter
+  faEnvelope = faEnvelope
+  faLink = faLink
+  faClock = faClock
 
   post: any = {}
   articles = [];

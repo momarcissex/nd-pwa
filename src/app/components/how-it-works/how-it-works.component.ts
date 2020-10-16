@@ -3,6 +3,8 @@ import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { ActivatedRoute } from '@angular/router';
 import { isNullOrUndefined } from 'util';
+import { faCanadianMapleLeaf } from '@fortawesome/free-brands-svg-icons';
+import { faHandHoldingUsd, faMoneyBillWave, faSearch, faShieldAlt, faShippingFast, faStoreAlt, faTag } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 
@@ -12,6 +14,15 @@ declare const gtag: any;
     styleUrls: ['./how-it-works.component.scss']
 })
 export class HowItWorksComponent implements OnInit {
+
+    faCanadianMapleLeaf = faCanadianMapleLeaf
+    faStoreAlt = faStoreAlt
+    faShieldAlt = faShieldAlt
+    faHandHoldingUsd = faHandHoldingUsd
+    faSearch = faSearch
+    faShippingFast = faShippingFast
+    faTag = faTag
+    faMoneyBillWave = faMoneyBillWave
 
     constructor(
         private title: Title,

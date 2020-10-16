@@ -6,6 +6,7 @@ import { isUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { SlackService } from 'src/app/services/slack.service';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-phone-verification',
@@ -13,6 +14,8 @@ import { SlackService } from 'src/app/services/slack.service';
   styleUrls: ['./phone-verification.component.scss']
 })
 export class PhoneVerificationComponent implements OnInit, AfterViewInit {
+
+  faCircleNotch = faCircleNotch
 
   isValidNumber = false
   islinked = false

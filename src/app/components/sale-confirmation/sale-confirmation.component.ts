@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Transaction } from 'src/app/models/transaction';
 import { SaleConfirmationService } from 'src/app/services/sale-confirmation.service';
 import { isNullOrUndefined } from 'util';
+import { faCircleNotch, faStoreAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sale-confirmation',
@@ -12,6 +13,9 @@ import { isNullOrUndefined } from 'util';
   styleUrls: ['./sale-confirmation.component.scss']
 })
 export class SaleConfirmationComponent implements OnInit {
+
+  faStoreAlt = faStoreAlt
+  faCircleNotch = faCircleNotch
 
   //seller fee
   consignmentFee: number = 0;

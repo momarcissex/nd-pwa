@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-faq-category',
@@ -10,6 +11,8 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./faq-category.component.scss']
 })
 export class FaqCategoryComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
 
   category: string = '';
   posts = [];

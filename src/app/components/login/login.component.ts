@@ -5,6 +5,8 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +14,9 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+
+  faGoogle = faGoogle
+  faSpinner = faSpinner
 
   loginForm: FormGroup;
 
