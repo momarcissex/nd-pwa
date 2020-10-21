@@ -89,7 +89,7 @@ export class NavbarComponent implements OnInit {
 
   checkUser() {
     return this.auth.isConnected().then(res => {
-      if (res === null || res === undefined) {
+      if (res != undefined) {
         return this.afs.collection(`users`).doc(`${res.uid}`).ref.get().then(docSnapshot => {
           if (!docSnapshot.exists) {
             res.delete();

@@ -3,7 +3,6 @@ import { AuthService } from '../../services/auth.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -86,7 +85,7 @@ export class LoginComponent implements OnInit {
   }
 
   private redirect() {
-    if (!isUndefined(this.redirectURL)) {
+    if (!(this.redirectURL === undefined)) {
       this.router.navigateByUrl(this.redirectURL);
     } else {
       this.router.navigate(['/home']);
@@ -94,7 +93,7 @@ export class LoginComponent implements OnInit {
   }
 
   signUpRedirect() {
-    if (!isUndefined(this.redirectURL)) {
+    if (!(this.redirectURL === undefined)) {
       this.router.navigate(['/signup'], {
         queryParams: { redirectTo: this.redirectURL }
       })
@@ -112,9 +111,9 @@ export class LoginComponent implements OnInit {
     }, 2500);
   }
 
-  public facebookSign() {
+  /*public facebookSign() {
     this.auth.facebookSignIn();
-  }
+  }*/
 
   public googleSign() {
     this.auth.googleSignIn();

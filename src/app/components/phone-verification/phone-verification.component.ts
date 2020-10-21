@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/
 import * as firebase from 'firebase/app';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { isUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { SlackService } from 'src/app/services/slack.service';
@@ -185,7 +184,7 @@ export class PhoneVerificationComponent implements OnInit, AfterViewInit {
   }
 
   back() {
-    if (isUndefined(this.route.snapshot.queryParams.redirectTo)) {
+    if (this.route.snapshot.queryParams.redirectTo === undefined) {
       this.router.navigate([`..`]);
     } else {
       if (this.route.snapshot.queryParams.redirectTo === 'sell') {

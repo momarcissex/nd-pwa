@@ -11,6 +11,6 @@ export class IpService {
   ) { }
 
   getIPAddress() {
-    return this.http.get('https://api6.ipify.org?format=json', {});
+    return this.http.get('https://api.ipify.org?format=json', {});
   }
 }

@@ -1,13 +1,13 @@
 <section class="signup-body">
-  <div class="signup-card">
+  <div class="signup-card" *ngIf="dataLoaded">
       <img src="../../../assets/Negative.png" alt="NXTDROP, Inc. Logo Negative Symbol">
 
       <form [formGroup]="signupForm" (ngSubmit)="createUser()">
-        <input type="text" placeholder="First Name" formControlName="firstName" [className]="firstName.invalid && firstName.dirty ? 'input-error' : ''">
+        <input *ngIf="!userDataAvailable" type="text" placeholder="First Name" formControlName="firstName" [className]="firstName.invalid && firstName.dirty ? 'input-error' : ''">
 
-        <input type="text" placeholder="Last Name" formControlName="lastName" [className]="lastName.invalid && lastName.dirty ? 'input-error' : ''">
+        <input *ngIf="!userDataAvailable" type="text" placeholder="Last Name" formControlName="lastName" [className]="lastName.invalid && lastName.dirty ? 'input-error' : ''">
 
-        <input type="text" placeholder="Username" formControlName="username" [className]="username.invalid && username.dirty ? 'input-error' : ''">
+        <input *ngIf="!userDataAvailable" type="text" placeholder="Username" formControlName="username" [className]="username.invalid && username.dirty ? 'input-error' : ''" [patterns]="customPatterns" mask="0*">
 
         <input type="password" placeholder="Password" formControlName="password" [className]="password.invalid && password.dirty ? 'input-error' : ''">
         

@@ -4,11 +4,12 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 import { debounceTime, take, map } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IpService } from 'src/app/services/ip.service';
 import { SlackService } from 'src/app/services/slack.service';
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 export class CustomValidators {
 
@@ -32,6 +33,14 @@ export class CustomValidators {
     };
   }
 
+  static validName() {
+    return (control: AbstractControl) => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return Promise.resolve(isValid ? null : { whitespace: true })
+    }
+  }
+
 }
 
 @Component({
@@ -43,6 +52,8 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
 
   faCircleNotch = faCircleNotch
 
+  public customPatterns = { '0': { pattern: new RegExp('\[a-zA-Z0-9._\]+') } };
+
   signupForm: FormGroup;
   accountCreated: boolean;
 
@@ -50,6 +61,11 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
   error = false;
 
   userIP: string
+
+  userDataAvailable: boolean = false
+  dataLoaded: boolean = false
+
+  userDataObservable: Subscription
 
   constructor(
     private auth: AuthService,
@@ -60,29 +76,54 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private ipService: IpService,
-    private slackService: SlackService
+    private slackService: SlackService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
     this.title.setTitle(`Sign Up | NXTDROP: Sell and Buy Sneakers in Canada`);
     this.meta.addTags('Sign Up');
+    this.accountCreated = false;
 
     this.auth.isConnected().then(res => {
       //alert(res)
-      if (isNullOrUndefined(res)) {
+      if (res === null || res === undefined) {
         this.router.navigate(['/signup'])
       } else if (res.providerData[0].providerId != 'google.com' || res.providerData.length > 1) {
         this.router.navigate(['/home'])
       }
+
+      if (res != null || res != undefined) {
+        this.userDataObservable = this.auth.getUserData(res.uid)
+          .subscribe(
+            res => {
+              this.signupForm.setValue({
+                firstName: `${res.firstName}`,
+                lastName: `${res.lastName}`,
+                username: `${res.username}`,
+                password: ``
+              })
+
+              this.userDataAvailable = true
+            },
+            err => {
+              console.error(err)
+            }
+          )
+      }
     })
 
     this.signupForm = this.fb.group({
-      firstName: ['', [
-        Validators.required,
-      ]],
-      lastName: ['', [
-        Validators.required
-      ]],
+      firstName: ['',
+        [Validators.minLength(2),
+        Validators.required],
+        [CustomValidators.validName()]
+      ],
+      lastName: ['',
+        [Validators.minLength(2),
+        Validators.required],
+        [CustomValidators.validName()]
+      ],
       username: ['',
         [Validators.minLength(2),
         Validators.required],
@@ -94,10 +135,9 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
       ]]
     });
 
-    this.accountCreated = false;
     this.ipService.getIPAddress().subscribe(
       (data: any) => {
-        if (isNullOrUndefined(data.ip)) {
+        if (data.ip === null || data.ip === undefined) {
           this.userIP = "null"
         } else {
           this.userIP = data.ip
@@ -105,12 +145,15 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
       },
       err => {
         this.userIP = "null"
+        console.error(err)
       })
+
+    this.dataLoaded = true
   }
 
   ngOnDestroy() {
     //console.log(this.accountCreated);
-    if (!this.accountCreated) {
+    if (!this.accountCreated && !this.userDataAvailable) {
       //console.log('ngOnDestroy')
       //console.log(this.accountCreated)
       this.auth.isConnected().then(res => {
@@ -119,6 +162,8 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
         }
       });
     }
+
+    this.userDataObservable.unsubscribe()
   }
 
   createUser() {
@@ -126,32 +171,76 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     this.loading = true;
     const redirect = this.route.snapshot.queryParams.redirectTo;
 
-    this.auth.addInformationUser(this.firstName.value, this.lastName.value, this.username.value, this.password.value, this.userIP).then((res) => {
-      if (!res) {
-        this.loading = false;
-        this.error = true;
-      } else {
-        this.accountCreated = true;
+    if (this.signupForm.valid) {
+      this.auth.addInformationUser(this.capitalizeWords(this.firstName.value.trim()), this.capitalizeWords(this.lastName.value.trim()), this.username.value.trim(), this.password.value, this.userIP)
+        .then((res) => {
+          if (!res) {
+            this.loading = false;
+            this.error = true;
 
-        if (!isUndefined(redirect)) {
-          return this.ngZone.run(() => {
-            return this.router.navigateByUrl(`${redirect}`);
-          });
-        } else {
-          return this.ngZone.run(() => {
-            return this.router.navigate(['/home']);
-          });
-        }
-      }
+            setTimeout(() => {
+              this.error = false;
+            }, 1000);
+          } else {
+            this.accountCreated = true;
 
-      setTimeout(() => {
-        this.error = false;
-      }, 1000);
-      //console.log(this.accountCreated);
-    }).catch(err => {
-      console.error(err)
-      this.slackService.sendAlert('bugreport', err)
-    })
+            if (redirect != null || redirect != undefined) {
+              return this.ngZone.run(() => {
+                return this.router.navigateByUrl(`${redirect}`);
+              });
+            } else {
+              return this.ngZone.run(() => {
+                return this.router.navigate(['/home']);
+              });
+            }
+          }
+          //console.log(this.accountCreated);
+        })
+        .catch(err => {
+          console.error(err)
+          this.slackService.sendAlert('bugreport', err)
+        })
+    } else if (this.firstName.valid && this.lastName.valid && this.password.valid && this.userDataAvailable) {
+      this.auth.linkGoogleToPasswordAccount(this.password.value)
+        .then(res => {
+          if (!res) {
+            this.loading = false;
+            this.error = true;
+
+            setTimeout(() => {
+              this.error = false;
+            }, 1000);
+          } else {
+            if (redirect != null || redirect != undefined) {
+              return this.ngZone.run(() => {
+                return this.router.navigateByUrl(`${redirect}`);
+              });
+            } else {
+              return this.ngZone.run(() => {
+                return this.router.navigate(['/home']);
+              });
+            }
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          this.slackService.sendAlert('bugreport', err)
+        })
+    } else {
+      this.loading = false
+      this.toastr.error('Please fill in all fields.', '', {
+        progressBar: true,
+        progressAnimation: 'decreasing'
+      })
+    }
+  }
+
+  capitalizeWords(s: string) {
+    const names = s.split(" ")
+
+    return names.map((name) => {
+      return name[0].toUpperCase() + name.substring(1)
+    }).join(" ")
   }
 
   // Getters

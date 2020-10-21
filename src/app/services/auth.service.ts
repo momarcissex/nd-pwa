@@ -69,13 +69,67 @@ export class AuthService {
 
   async googleSignIn() {
     const provider = new auth.GoogleAuthProvider();
-    this.oAuthLogin(provider);
+
+    return this.afAuth.signInWithPopup(provider)
+      .then(credential => {
+        return this.checkEmail(credential.user.email).get().subscribe((snapshot) => {
+          const redirect = this.route.snapshot.queryParams.redirectTo;
+
+          if (snapshot.empty) {
+            if (redirect != undefined) {
+              return this.ngZone.run(() => {
+                return this.router.navigate(['/additional-information'], {
+                  queryParams: { redirectTo: redirect }
+                });
+              });
+            } else {
+              return this.ngZone.run(() => {
+                return this.router.navigate(['/additional-information']);
+              });
+            }
+          } else {
+            this.ipService.getIPAddress().subscribe((data: any) => {
+              this.updateLastActivity(credential.user.uid, data.ip)
+            })
+
+            this.afAuth.fetchSignInMethodsForEmail(credential.user.email)
+              .then(res => {
+                if (res.length === 1) {
+                  if (redirect != undefined) {
+                    return this.ngZone.run(() => {
+                      return this.router.navigate(['/additional-information'], {
+                        queryParams: { redirectTo: redirect }
+                      });
+                    });
+                  } else {
+                    return this.ngZone.run(() => {
+                      return this.router.navigate(['/additional-information']);
+                    });
+                  }
+                } else {
+                  if (redirect != undefined) {
+                    return this.ngZone.run(() => {
+                      return this.router.navigateByUrl(`${redirect}`);
+                    });
+                  } else {
+                    return this.ngZone.run(() => {
+                      return this.router.navigate(['/home']);
+                    });
+                  }
+                }
+              })
+          }
+        });
+      })
+      .catch(error => {
+        return error.code
+      })
   }
 
-  async facebookSignIn() {
+  /*async facebookSignIn() {
     const provider = new auth.FacebookAuthProvider();
     this.oAuthLogin(provider);
-  }
+  }*/
 
   async emailSignUp(email: string, password: string, firstName: string, lastName: string, username: string, userIP: string, inviteCode?: string) {
     if (email || password || firstName || lastName || username) {
@@ -99,7 +153,7 @@ export class AuthService {
             last_login: Date.parse(user.user.metadata.creationTime)
           };
 
-          if (inviteCode === undefined) {
+          if (inviteCode != undefined) {
             userData.freeShipping = true;
             this.afs.collection(`users`).doc(`${inviteCode}`).set({
               shippingPromo: {
@@ -124,7 +178,10 @@ export class AuthService {
           }
 
           return this.createUserData(userData, user);
-        });
+        })
+        .catch(err => {
+          return err.code
+        })
     } else {
       return false;
     }
@@ -156,27 +213,27 @@ export class AuthService {
       });
   }
 
-  private oAuthLogin(provider) {
+  /*private oAuthLogin(provider) {
     return this.afAuth.signInWithPopup(provider)
       .then((credential) => {
         if (this.handleAuthToken(credential.user)) {
-          //console.log('does exist');
+          console.log('does exist');
           // console.log(this.handleAuthToken(credential.user));
         } else {
-          //console.log('does not exist');
+          console.log('does not exist');
         }
       })
       .catch(error => {
-        //console.error('Error: ', error);
+
       });
   }
 
-  private handleAuthToken(user) {
+  private handleAuthToken(user: firebase.User) {
     return this.checkEmail(user.email).get().subscribe((snapshot) => {
       const redirect = this.route.snapshot.queryParams.redirectTo;
 
       if (snapshot.empty) {
-        if (redirect === undefined) {
+        if (redirect != undefined) {
           return this.ngZone.run(() => {
             return this.router.navigate(['/additional-information'], {
               queryParams: { redirectTo: redirect }
@@ -192,7 +249,7 @@ export class AuthService {
           this.updateLastActivity(user.uid, data.ip)
         })
 
-        if (redirect === undefined) {
+        if (redirect != undefined) {
           return this.ngZone.run(() => {
             return this.router.navigateByUrl(`${redirect}`);
           });
@@ -201,22 +258,39 @@ export class AuthService {
             return this.router.navigate(['/home']);
           });
         }
+
+        /*if (user.providerData.length === 1) {
+          return this.ngZone.run(() => {
+            return this.router.navigate(['/additional-information']);
+          });
+        } else {
+          if (redirect != undefined) {
+            return this.ngZone.run(() => {
+              return this.router.navigateByUrl(`${redirect}`);
+            });
+          } else {
+            return this.ngZone.run(() => {
+              return this.router.navigate(['/home']);
+            });
+          }
+        }
       }
     });
-  }
+  }*/
 
   private createUserData(user: User, userCred: auth.UserCredential) {
-    const userRef = this.afs.firestore.doc(`users/${user.uid}`);
-    const userVerificationRef = this.afs.firestore.doc(`userVerification/${user.uid}`);
+    console.log('createUserDate running...')
+    const userRef = this.afs.firestore.collection('users').doc(user.uid)
+    const userVerificationRef = this.afs.firestore.collection('userVerification').doc(user.uid)
 
-    const batch = this.afs.firestore.batch();
+    const batch = this.afs.firestore.batch()
 
-    batch.set(userRef, user, { merge: true });
+    batch.set(userRef, user);
     batch.set(userVerificationRef, {
       uid: user.uid,
       username: user.username,
       email: user.email
-    }, { merge: true });
+    });
 
     return batch.commit()
       .then(() => {
@@ -238,7 +312,7 @@ export class AuthService {
         return true;
       })
       .catch((error) => {
-        console.error('Error: ', error);
+        console.error('batch error');
 
         this.slack.sendAlert('bugreport', `Error: ${error}\n Data: ${user}`)
 
@@ -267,46 +341,71 @@ export class AuthService {
   }
 
   public addInformationUser(firstName: string, lastName: string, username: string, password: string, userIP: string) {
-    if (this.afAuth.currentUser === null || this.afAuth.currentUser === undefined) {
-      this.afAuth.currentUser.then(currentUser => {
+    if (this.afAuth.currentUser != null || this.afAuth.currentUser != undefined) {
+      return this.afAuth.currentUser.then(currentUser => {
         const credential = auth.EmailAuthProvider.credential(currentUser.email, password);
 
         return currentUser.linkWithCredential(credential)
-        .then((userCredential) => {
-          const userData: User = {
-            firstName,
-            lastName,
-            username,
-            email: userCredential.user.email,
-            uid: userCredential.user.uid,
-            listed: 0,
-            sold: 0,
-            ordered: 0,
-            offers: 0,
-            isActive: true,
-            creation_date: Date.parse(userCredential.user.metadata.creationTime),
-            last_known_ip_address: userIP,
-            last_login: Date.parse(userCredential.user.metadata.creationTime)
-          };
+          .then((userCredential) => {
+            const userData: User = {
+              firstName,
+              lastName,
+              username,
+              email: userCredential.user.email,
+              uid: userCredential.user.uid,
+              listed: 0,
+              sold: 0,
+              ordered: 0,
+              offers: 0,
+              isActive: true,
+              creation_date: Date.parse(userCredential.user.metadata.creationTime),
+              last_known_ip_address: userIP,
+              last_login: Date.parse(userCredential.user.metadata.creationTime)
+            };
 
-          if (isPlatformBrowser(this._platformId)) {
-            gtag('event', 'sign_up', {
-              'event_category': 'engagement',
-              'event_label': 'Social_Media_SignUp'
-            });
-          }
+            if (isPlatformBrowser(this._platformId)) {
+              gtag('event', 'sign_up', {
+                'event_category': 'engagement',
+                'event_label': 'Social_Media_SignUp'
+              });
+            }
 
-          return this.createUserData(userData, userCredential);
-        })
-        .catch((error) => {
-          console.error('Account linking error', error);
-          this.slack.sendAlert('bugreport', `Account linking: ${error}, Data: ${currentUser.email}`)
-          return false;
-        });
+            return this.createUserData(userData, userCredential);
+          })
+          .catch((error) => {
+            console.error('Account linking error', error);
+            this.slack.sendAlert('bugreport', `Account linking: ${error}, Data: ${currentUser.email}`)
+            return false;
+          });
       }).catch(err => {
         console.error('Getting current user error', err)
         this.slack.sendAlert('bugreport', `this.afAuth.currentUser.then error: ${err}`)
       })
+    } else {
+      return Promise.resolve(false);
+    }
+  }
+
+  public linkGoogleToPasswordAccount(password: string) {
+    if (this.afAuth.currentUser != null || this.afAuth.currentUser != undefined) {
+      return this.afAuth.currentUser
+        .then(currentUser => {
+          const credential = auth.EmailAuthProvider.credential(currentUser.email, password);
+
+          return currentUser.linkWithCredential(credential)
+            .then((userCredential) => {
+              return true
+            })
+            .catch((error) => {
+              console.error('Account linking error', error);
+              this.slack.sendAlert('bugreport', `Account linking: ${error}, Data: ${currentUser.email}`)
+              return false;
+            });
+        })
+        .catch(err => {
+          console.error('Getting current user error', err)
+          this.slack.sendAlert('bugreport', `this.afAuth.currentUser.then error: ${err}`)
+        })
     } else {
       return Promise.resolve(false);
     }

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -67,7 +66,7 @@ export class SettingsBuyingComponent implements OnInit {
     this.redirectURI = this.route.snapshot.queryParams.redirectURI;
 
     this.auth.isConnected().then(res => {
-      if (isNullOrUndefined(res)) {
+      if (res === undefined) {
 
       } else {
         this.userService.getUserInfo(res.uid).subscribe(data => {
@@ -82,7 +81,7 @@ export class SettingsBuyingComponent implements OnInit {
   }
 
   backBtn() {
-    if (isUndefined(this.redirectURI)) {
+    if (this.redirectURI === undefined) {
       this.router.navigate(['..']);
     } else {
       this.router.navigate([`../../${this.redirectURI}`]);
@@ -134,7 +133,7 @@ export class SettingsBuyingComponent implements OnInit {
   firstNameChanges() {
     const firstName = (document.getElementById('cc-firstName') as HTMLInputElement).value;
 
-    if (isUndefined(this.billingInfo.firstName) || (firstName.toLowerCase() != this.billingInfo.firstName.toLowerCase())) {
+    if (this.billingInfo.firstName === undefined || (firstName.toLowerCase() != this.billingInfo.firstName.toLowerCase())) {
       this.firstNameChanged = true;
     } else {
       this.firstNameChanged = false;
@@ -144,7 +143,7 @@ export class SettingsBuyingComponent implements OnInit {
   lastNameChanges() {
     const lastName = (document.getElementById('cc-lastName') as HTMLInputElement).value;
 
-    if (isUndefined(this.billingInfo.lastName) || (lastName.toLowerCase() != this.billingInfo.lastName.toLowerCase())) {
+    if (this.billingInfo.lastName === undefined || (lastName.toLowerCase() != this.billingInfo.lastName.toLowerCase())) {
       this.lastNameChanged = true;
     } else {
       this.lastNameChanged = false;

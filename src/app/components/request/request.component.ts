@@ -3,7 +3,6 @@ import { Title } from '@angular/platform-browser';
 import { AuthService } from 'src/app/services/auth.service';
 import { SlackService } from 'src/app/services/slack.service';
 import { MetaService } from 'src/app/services/meta.service';
-import { isNullOrUndefined } from 'util';
 import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -34,7 +33,7 @@ export class RequestComponent implements OnInit {
     this.meta.addTags('Request Product');
 
     this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
+      if (!(res === undefined)) {
         this.userEmail = res.email;
         this.connected = true
       }

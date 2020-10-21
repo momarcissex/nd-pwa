@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -34,7 +33,7 @@ export class SettingsEmailComponent implements OnInit {
 
   ngOnInit() {
     this.auth.isConnected().then(res => {
-      if (isNullOrUndefined(res)) {
+      if (res === undefined) {
         this.router.navigate(['/login'], {
           queryParams: {
             redirectTo: 'settings/email'

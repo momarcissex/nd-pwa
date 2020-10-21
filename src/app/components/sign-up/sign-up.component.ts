@@ -8,7 +8,7 @@ import { MetaService } from 'src/app/services/meta.service';
 import { IpService } from 'src/app/services/ip.service';
 import { ToastrService } from 'ngx-toastr';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 export class CustomValidators {
 
@@ -50,7 +50,7 @@ export class CustomValidators {
 export class SignUpComponent implements OnInit {
 
   faGoogle = faGoogle
-  faSpinner = faSpinner
+  faCircleNotch = faCircleNotch
 
   public customPatterns = { '0': { pattern: new RegExp('\[a-zA-Z0-9._\]+') } };
 
@@ -110,13 +110,22 @@ export class SignUpComponent implements OnInit {
       ]]
     });
 
-    if (this.route.snapshot.queryParams.inviteCode === null || this.route.snapshot.queryParams.inviteCode === undefined) {
+    if (this.route.snapshot.queryParams.inviteCode != null || this.route.snapshot.queryParams.inviteCode != undefined) {
       this.inviteCode = this.route.snapshot.queryParams.inviteCode;
     }
 
-    this.ipService.getIPAddress().subscribe((data: any) => {
-      this.userIP = data.ip
-    })
+    this.ipService.getIPAddress().subscribe(
+      (data: any) => {
+        if (data.ip === null || data.ip === undefined) {
+          this.userIP = "null"
+        } else {
+          this.userIP = data.ip
+        }
+      },
+      err => {
+        this.userIP = "null"
+        console.error(err)
+      })
   }
 
   public signup() {
@@ -124,27 +133,42 @@ export class SignUpComponent implements OnInit {
     //console.log('signup called');
 
     if (this.signupForm.valid) {
-      if (this.inviteCode === null || this.inviteCode === undefined) {
-        return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP).then(res => {
-          if (!res) {
-            this.loading = false;
-            this.error = true;
-            this.reset()
+      return this.auth.emailSignUp(this.email.value.trim(), this.password.value, this.capitalizeWords(this.firstName.value.trim()), this.capitalizeWords(this.lastName.value.trim()), this.username.value.trim(), this.userIP, this.inviteCode).then(res => {
+        if (!res) {
+          this.loading = false;
+          this.error = true;
+          this.reset()
+        } else {
+          if (res === 'auth/email-already-in-use') {
+            this.loading = false
+            this.toastr.error('Email already linked to another account.', '', {
+              progressBar: true,
+              progressAnimation: 'decreasing'
+            })
+          } else if (res === 'auth/invalid-email') {
+            this.loading = false
+            this.toastr.error('Invalid Email.', '', {
+              progressBar: true,
+              progressAnimation: 'decreasing'
+            })
+          } else if (res === 'auth/operation-not-allowed') {
+            this.loading = false
+            this.toastr.error('Error. Try again!', '', {
+              progressBar: true,
+              progressAnimation: 'decreasing'
+            })
+          } else if (res === 'auth/weak-password') {
+            this.loading = false
+            this.toastr.error('Your password is weak. Try again!', '', {
+              progressBar: true,
+              progressAnimation: 'decreasing'
+            })
           } else {
+            console.log(res)
             this.redirect()
           }
-        });
-      } else {
-        return this.auth.emailSignUp(this.email.value, this.password.value, this.firstName.value, this.lastName.value, this.username.value, this.userIP, this.inviteCode).then(res => {
-          if (!res) {
-            this.loading = false;
-            this.error = true;
-            this.reset()
-          } else {
-            this.redirect()
-          }
-        });
-      }
+        }
+      });
     } else {
       this.loading = false
       this.toastr.error('Please fill in all fields.', '', {
@@ -154,8 +178,16 @@ export class SignUpComponent implements OnInit {
     }
   }
 
+  capitalizeWords(s: string) {
+    const names = s.split(" ")
+
+    return names.map((name) => {
+      return name[0].toUpperCase() + name.substring(1)
+    }).join(" ")
+  }
+
   redirect() {
-    if (this.redirectURL === null || this.redirectURL === undefined) {
+    if (this.redirectURL != null || this.redirectURL != undefined) {
       return this.ngZone.run(() => {
         return this.router.navigateByUrl(`${this.redirectURL}`);
       });
@@ -167,7 +199,7 @@ export class SignUpComponent implements OnInit {
   }
 
   loginRedirect() {
-    if (this.redirectURL === null || this.redirectURL === undefined) {
+    if (this.redirectURL != null || this.redirectURL != undefined) {
       this.router.navigate(['/login'], {
         queryParams: { redirectTo: this.redirectURL }
       })
@@ -180,6 +212,54 @@ export class SignUpComponent implements OnInit {
     setTimeout(() => {
       this.error = false;
     }, 2000);
+  }
+
+  googleSignUp() {
+    this.auth.googleSignIn()
+      .then(res => {
+        console.log(res)
+        if (res === 'auth/account-exists-with-different-credential') {
+          this.toastr.error('This email is already linked to an account. Use your password to login.', '', {
+            progressBar: true,
+            progressAnimation: 'decreasing'
+          })
+        } else if (res === 'auth/auth-domain-config-required') {
+          this.toastr.error('Oops! Something went wrong. Try later.', '', {
+            progressBar: true,
+            progressAnimation: 'decreasing'
+          })
+        } else if (res === 'auth/cancelled-popup-request') {
+          // do nothing
+        } else if (res === 'auth/operation-not-allowed') {
+          this.toastr.error('Oops! Something went wrong. Try login with your password.', '', {
+            progressBar: true,
+            progressAnimation: 'decreasing'
+          })
+        } else if (res === 'auth/operation-not-supported-in-this-environment') {
+          this.toastr.error('Oops! Something went wrong. Try later.', '', {
+            progressBar: true,
+            progressAnimation: 'decreasing'
+          })
+        } else if (res === 'auth/popup-blocked') {
+          this.toastr.error('Oops! Something went wrong. Try again.', '', {
+            progressBar: true,
+            progressAnimation: 'decreasing'
+          })
+        } else if (res === 'auth/popup-closed-by-user') {
+          // do nothing
+        } else if (res === 'auth/unauthorized-domain') {
+          this.toastr.error('Oops! Something went wrong. Try login with your password.', '', {
+            progressBar: true,
+            progressAnimation: 'decreasing'
+          })
+        }
+      })
+      .catch(err => {
+        this.toastr.error('Oops! Something went wrong. Try again.', '', {
+          progressBar: true,
+          progressAnimation: 'decreasing'
+        })
+      })
   }
 
   // Getters

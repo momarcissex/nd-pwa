@@ -7,9 +7,9 @@
       <h3>Sign in with Facebook</h3>
     </button>-->
 
-    <button class="google-btn" (click)="auth.googleSignIn()">
+    <button class="google-btn" (click)="googleSignUp()">
       <fa-icon [icon]="faGoogle"></fa-icon>
-      <h3>Sign in with Google</h3>
+      <h3>Sign Up with Google</h3>
     </button>
 
     <div class="divider">
@@ -26,7 +26,7 @@
       <button type="submit" class="btn signup-btn" *ngIf="!loading && !error">Sign Up</button>
 
       <button type="submit" class="btn loading" *ngIf="loading">
-        <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
       </button>
 
       <button type="submit" class="btn error" *ngIf="error">Error</button>

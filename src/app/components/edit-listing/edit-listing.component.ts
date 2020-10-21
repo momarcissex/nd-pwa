@@ -1,6 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { Ask } from 'src/app/models/ask';
@@ -68,7 +67,7 @@ export class EditListingComponent implements OnInit {
     this.listingID = this.route.snapshot.params.id;
     this.source = this.route.snapshot.queryParamMap.get('source');
     this.askService.getAsk(this.listingID).subscribe(data => {
-      if (isUndefined(data)) {
+      if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
         this.offerInfo = data;
@@ -217,7 +216,7 @@ export class EditListingComponent implements OnInit {
   }
 
   showSaveChangesBtn() {
-    if (isNullOrUndefined(this.highestOffer)) {
+    if (this.highestOffer === undefined) {
       this.showSaveChanges = true
     } else {
       if (this.curPrice <= this.highestOffer.price) {

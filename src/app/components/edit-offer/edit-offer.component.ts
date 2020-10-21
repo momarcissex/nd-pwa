@@ -1,6 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { Bid } from 'src/app/models/bid';
@@ -62,7 +61,7 @@ export class EditOfferComponent implements OnInit {
     this.listingID = this.route.snapshot.params.id;
     this.source = this.route.snapshot.queryParamMap.get('source');
     this.bidService.getBid(this.listingID).subscribe(data => {
-      if (isUndefined(data)) {
+      if (data === undefined) {
         this.router.navigate(['page-not-found']);
       } else {
         this.offerInfo = data;
@@ -200,7 +199,7 @@ export class EditOfferComponent implements OnInit {
   }
 
   showSaveChangesBtn() {
-    if (isNullOrUndefined(this.lowest_ask)) {
+    if (this.lowest_ask === undefined) {
       this.showSaveChanges = true
     } else {
       if (this.curPrice >= this.lowest_ask.price) {

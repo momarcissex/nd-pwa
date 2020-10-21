@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { ActivatedRoute } from '@angular/router';
-import { isNullOrUndefined } from 'util';
 import { faCanadianMapleLeaf } from '@fortawesome/free-brands-svg-icons';
 import { faHandHoldingUsd, faMoneyBillWave, faSearch, faShieldAlt, faShippingFast, faStoreAlt, faTag } from '@fortawesome/free-solid-svg-icons';
 
@@ -34,7 +33,7 @@ export class HowItWorksComponent implements OnInit {
         this.title.setTitle(`How It Works | NXTDROP: Buy and Sell Sneakers in Canada`);
         this.meta.addTags('How It Works');
 
-        if (!isNullOrUndefined(this.route.snapshot.queryParams.source)) {
+        if (!(this.route.snapshot.queryParams.source === undefined)) {
             gtag('event', 'referral_link', {
                 'event_category': 'engagement',
                 'event_label': 'sms_referral'

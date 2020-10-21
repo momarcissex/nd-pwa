@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { UserService } from 'src/app/services/user.service';
 import { SlackService } from 'src/app/services/slack.service';
@@ -36,23 +35,24 @@ export class HomeComponent implements OnInit {
     this.title.setTitle(`NXTDROP: Buy and Sell Sneakers in Canada`);
     this.seo.addTags('Home');
 
-    this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
-        this.connected = true;
+    this.auth.isConnected()
+      .then(res => {
+        if (res != null || res != undefined) {
+          this.connected = true;
 
-        this.userService.getUserInfo(res.uid).subscribe(
-          data => {
-            this.userInfo = data
-          },
-          err => {
-            //console.error(err)
-            this.slackService.sendAlert('bugreport', err)
-          }
-        )
-      } else {
-        this.connected = false
-      }
-    });
+          this.userService.getUserInfo(res.uid).subscribe(
+            data => {
+              this.userInfo = data
+            },
+            err => {
+              //console.error(err)
+              this.slackService.sendAlert('bugreport', err)
+            }
+          )
+        } else {
+          this.connected = false
+        }
+      });
 
     this.afs.collection(`transactions`).get().subscribe(res => {
       let prices: number = 0;

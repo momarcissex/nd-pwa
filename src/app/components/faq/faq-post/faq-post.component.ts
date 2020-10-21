@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Title, Meta } from '@angular/platform-browser';
-import { MetaService } from 'src/app/services/meta.service';
 
 @Component({
   selector: 'app-faq-post',

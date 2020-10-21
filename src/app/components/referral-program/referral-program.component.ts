@@ -1,5 +1,4 @@
 import { Component, OnInit, Renderer2, Inject } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user';
@@ -25,14 +24,14 @@ export class ReferralProgramComponent implements OnInit {
 
   ngOnInit() {
     this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
+      if (!(res === undefined)) {
 
         this.userService.getUserInfo(res.uid).subscribe(
           data => {
 
             this.userInfo = data
 
-            if (!isNullOrUndefined(this.userInfo.email)) {
+            if (!(this.userInfo.email === undefined)) {
               // initialize iframe
               const iframe = document.createElement('iframe')
               iframe.setAttribute('height', '900')

@@ -1,6 +1,5 @@
 import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { ModalService } from 'src/app/services/modal.service';
-import { isNullOrUndefined } from 'util';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -34,7 +33,7 @@ export class ModalComponent implements OnInit {
 
   ngOnInit() {
     this.modalService.open.subscribe(res => {
-      if (isNullOrUndefined(res)) {
+      if (res === undefined) {
         this.close()
       } else {
         this.open()

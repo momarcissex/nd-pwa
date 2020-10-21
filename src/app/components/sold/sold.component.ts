@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Transaction } from 'src/app/models/transaction';
 import { ActivatedRoute } from '@angular/router';
 import { TransactionService } from 'src/app/services/transaction.service';
-import { isNullOrUndefined } from 'util';
 import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
@@ -33,7 +32,7 @@ export class SoldComponent implements OnInit {
 
     this.transactionID = this.route.snapshot.queryParams.transactionID;
 
-    if (isNullOrUndefined(this.transactionID)) {
+    if (this.transactionID === undefined) {
       this.error = true;
     } else {
       this.TranService.checkTransaction(this.transactionID).subscribe(data => {

@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
-import { isUndefined, isNull, isNullOrUndefined } from 'util';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { AuthService } from 'src/app/services/auth.service';
@@ -105,15 +104,15 @@ export class MakeAnOfferComponent implements OnInit {
     this.index = this.algoliaClient.initIndex(environment.algolia.index);
 
     this.auth.isConnected().then(res => {
-      if (!isNull(res)) {
+      if (!(res === null)) {
         this.user = res;
       }
 
       this.activatedRoute.queryParams.subscribe(params => {
-        if (!isUndefined(params.sneaker)) {
+        if (!(params.sneaker === undefined)) {
           this.selectPair(JSON.parse(params.sneaker), false);
 
-          if (!isNullOrUndefined(params.size)) {
+          if (!(params.size === undefined)) {
             this.selectSize(params.size);
           }
         }
@@ -173,7 +172,7 @@ export class MakeAnOfferComponent implements OnInit {
   getOffers() {
     let shoeSizes: Array<string>
 
-    if (!isNullOrUndefined(this.selectedPair.sizes)) {
+    if (!(this.selectedPair.sizes === undefined)) {
       shoeSizes = this.selectedPair.sizes
     } else {
       shoeSizes = this.default_sizes[this.sizeType]
@@ -235,7 +234,7 @@ export class MakeAnOfferComponent implements OnInit {
   }
 
   nextPage() {
-    if (isNullOrUndefined(this.selectedPair)) {
+    if (this.selectedPair === undefined) {
       this.showHowItWorks = false;
       this.showSearch = true;
     } else {
@@ -259,7 +258,7 @@ export class MakeAnOfferComponent implements OnInit {
     if (isNaN(this.pairPrice) || !this.willCheckout) {
       this.addError();
       return;
-    } else if (isNullOrUndefined(this.user)) {
+    } else if (this.user === undefined) {
       this.router.navigate(['/login'], {
         queryParams: {
           redirectTo: this.router.url
@@ -268,7 +267,7 @@ export class MakeAnOfferComponent implements OnInit {
       return;
     }
 
-    if (isNullOrUndefined(this.userBid)) {
+    if (this.userBid === undefined) {
       this.bidService.submitBid(this.user.uid, this.selectedPair, 'new', this.pairPrice, this.pairSize, this.currentBid.price, this.expiration_date).then(res => {
         if (res) {
           if (isPlatformBrowser(this._platformId)) {
@@ -349,7 +348,7 @@ export class MakeAnOfferComponent implements OnInit {
       }
     });
 
-    if (!isNullOrUndefined(this.user)) {
+    if (!(this.user === undefined)) {
       this.bidService.checkUserBid(this.selectedPair.productID, this.selectedSize, this.user.uid, 'new').subscribe(response => {
         if (response.length > 0) {
           this.userBid = response[0]
