@@ -1,91 +1,98 @@
-/**
- * *** NOTE ON IMPORTING FROM ANGULAR AND NGUNIVERSAL IN THIS FILE ***
- *
- * If your application uses third-party dependencies, you'll need to
- * either use Webpack or the Angular CLI's `bundleDependencies` feature
- * in order to adequately package them for use on the server without a
- * node_modules directory.
- *
- * However, due to the nature of the CLI's `bundleDependencies`, importing
- * Angular in this file will create a different instance of Angular than
- * the version in the compiled application code. This leads to unavoidable
- * conflicts. Therefore, please do not explicitly import from @angular or
- * @nguniversal in this file. You can export any needed resources
- * from your application's main.server.ts file, as seen below with the
- * import for `ngExpressEngine`.
- */
-
 import 'zone.js/dist/zone-node';
 
+import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
-import {join} from 'path';
+import { join } from 'path';
 
-(global as any).WebSocket = require('ws');
-(global as any).XMLHttpRequest = require('xhr2');
+import { AppServerModule } from './src/main.server';
+import { APP_BASE_HREF } from '@angular/common';
+import { existsSync } from 'fs';
 
-// Express server
-const app = express();
+// The Express app is exported so that it can be used by serverless Functions.
+export function app(): express.Express {
+  const server = express();
+  const distFolder = join(process.cwd(), 'dist/browser');
+  const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
-const PORT = process.env.PORT || 4000;
-const DIST_FOLDER = join(process.cwd(), 'dist/browser');
+  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
+  server.engine('html', ngExpressEngine({
+    bootstrap: AppServerModule,
+  }));
 
-// * NOTE :: leave this as require() since this file is built Dynamically from webpack
-const {AppServerModuleNgFactory, LAZY_MODULE_MAP, ngExpressEngine, provideModuleMap} = require('./dist/server/main');
+  server.set('view engine', 'html');
+  server.set('views', distFolder);
 
-// Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-app.engine('html', ngExpressEngine({
-  bootstrap: AppServerModuleNgFactory,
-  providers: [
-    provideModuleMap(LAZY_MODULE_MAP)
-  ]
-}));
+  // Example Express Rest API endpoints
+  // server.get('/api/**', (req, res) => { });
+  // Serve static files from /browser
+  server.get('*.*', express.static(distFolder, {
+    maxAge: '1y'
+  }));
 
-app.set('view engine', 'html');
-app.set('views', DIST_FOLDER);
+  // All regular routes use the Universal engine
+  server.get('*', (req, res) => {
+    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+  });
 
-// Example Express Rest API endpoints
-// app.get('/api/**', (req, res) => { });
-// Serve static files from /browser
-app.get('*.*', express.static(DIST_FOLDER, {
-  maxAge: '1y'
-}));
+  return server;
+}
 
-// All regular routes use the Universal engine
-app.get('/blog/the-best-canadian-online-sneaker-stores', (req, res) => {
-  res.redirect(301, '/news/the-best-canadian-online-sneaker-stores');
-});
+function run(): void {
+  const PORT = process.env.PORT || 4000;
 
-app.get('/blog/nxtdrop-the-canadian-stockx-is-finally-here', (req, res) => {
-  res.redirect(301, '/news/nxtdrop-the-canadian-stockx-is-finally-here');
-});
+  // Start up the Node server
+  const server = app();
 
-app.get('/blog/tag/*', (req, res) => {
-  res.redirect(301, '/news');
-});
 
-app.get('/blog/streetwear/*', (req, res) => {
-  res.redirect(301, '/news');
-})
+  // All regular routes use the Universal engine
+  server.get('/blog/the-best-canadian-online-sneaker-stores', (req, res) => {
+    res.redirect(301, '/news/the-best-canadian-online-sneaker-stores');
+  });
 
-app.get('/blog', (req, res) => {
-  res.redirect(301, '/news');
-});
+  server.get('/blog/nxtdrop-the-canadian-stockx-is-finally-here', (req, res) => {
+    res.redirect(301, '/news/nxtdrop-the-canadian-stockx-is-finally-here');
+  });
 
-app.get('/welcome', (req, res) => {
-  res.redirect(301, '/how-it-works?source=sms');
-});
+  server.get('/blog/tag/*', (req, res) => {
+    res.redirect(301, '/news');
+  });
 
-app.get('/404', (req, res) => {
-  res.render('index', { req });
-  res.status(404);
-});
+  server.get('/blog/streetwear/*', (req, res) => {
+    res.redirect(301, '/news');
+  })
 
-app.get('*', (req, res) => {
-  console.log(req.url);
-  res.render('index', { req });
-});
+  server.get('/blog', (req, res) => {
+    res.redirect(301, '/news');
+  });
 
-// Start up the Node server
-app.listen(PORT, () => {
-  console.log(`Node Express server listening on http://localhost:${PORT}`);
-});
+  server.get('/welcome', (req, res) => {
+    res.redirect(301, '/how-it-works?source=sms');
+  });
+
+  server.get('/404', (req, res) => {
+    res.render('index', { req });
+    res.status(404);
+  });
+
+  server.get('*', (req, res) => {
+    console.log(req.url);
+    res.render('index', { req });
+  });
+
+  // Start up the Node server
+  server.listen(PORT, () => {
+    console.log(`Node Express server listening on http://localhost:${PORT}`);
+  });
+}
+
+// Webpack will replace 'require' with '__webpack_require__'
+// '__non_webpack_require__' is a proxy to Node 'require'
+// The below code is to ensure that the server is run only when not requiring the bundle.
+declare const __non_webpack_require__: NodeRequire;
+const mainModule = __non_webpack_require__.main;
+const moduleFilename = mainModule && mainModule.filename || '';
+if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
+  run();
+}
+
+export * from './src/main.server';

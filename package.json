@@ -9,11 +9,13 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",
-    "serve:ssr": "node dist/server",
-    "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
+    "serve:ssr": "node dist/server/main.js",
+    "build:ssr": "ng build --prod && ng run nd-pwa:server:production",
     "build:client-and-server-bundles": "ng build --prod && ng run nd-pwa:server:production",
     "deploy": "npm run build:ssr && gcloud app deploy",
-    "deploy:local": "npm run build:ssr && npm run serve:ssr"
+    "deploy:local": "npm run build:ssr && npm run serve:ssr",
+    "dev:ssr": "ng run nd-pwa:serve-ssr",
+    "prerender": "ng run nd-pwa:prerender"
   },
   "private": true,
   "dependencies": {
@@ -88,7 +90,9 @@
     "@angular/cli": "^10.1.7",
     "@angular/compiler-cli": "^10.1.6",
     "@angular/language-service": "^8.2.14",
+    "@nguniversal/builders": "^10.1.0",
     "@types/algoliasearch": "^3.34.7",
+    "@types/express": "^4.17.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.11.1",
