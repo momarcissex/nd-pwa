@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
-import { isNullOrUndefined } from 'util';
+import { faFilter, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 declare const fbq: any;
 
@@ -15,6 +15,9 @@ declare const fbq: any;
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+
+  faTimes = faTimes
+  faFilter = faFilter
 
   algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey);
   index;
@@ -81,9 +84,9 @@ export class SearchComponent implements OnInit {
       console.log(this.categorySelected)
       console.log(this.sizeSelected)
 
-      if (!isNullOrUndefined(this.categorySelected) || !isNullOrUndefined(this.sizeSelected)) {
-        if (!isNullOrUndefined(this.categorySelected)) query.category = this.categorySelected
-        if (!isNullOrUndefined(this.sizeSelected)) query.size = this.sizeSelected
+      if (!(this.categorySelected === undefined) || !(this.sizeSelected === undefined)) {
+        if (!(this.categorySelected === undefined)) query.category = this.categorySelected
+        if (!(this.sizeSelected === undefined)) query.size = this.sizeSelected
 
         this.buildFilter()
       }
@@ -136,7 +139,7 @@ export class SearchComponent implements OnInit {
     let category = categories[$event.target.id]
 
 
-    if (isNullOrUndefined(this.categorySelected)) {
+    if (this.categorySelected === undefined) {
       (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.add('categorySelected')
       this.categorySelected = category
     } else {
@@ -155,7 +158,7 @@ export class SearchComponent implements OnInit {
   }
 
   selectSize($event) {
-    if (isNullOrUndefined(this.sizeSelected)) {
+    if (this.sizeSelected === undefined) {
       (document.getElementById(`${$event.target.id}`) as HTMLInputElement).classList.add('sizeSelected')
       this.sizeSelected = $event.target.id
     } else {
@@ -191,17 +194,17 @@ export class SearchComponent implements OnInit {
   }
 
   buildFilter() {
-    if (!isNullOrUndefined(this.categorySelected)) this.filters = `size_category:${this.categorySelected}`
+    if (!(this.categorySelected === undefined)) this.filters = `size_category:${this.categorySelected}`
 
-    if (!isNullOrUndefined(this.sizeSelected) && this.filters != '') this.filters += ` AND sizes_available:US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`
-    if (!isNullOrUndefined(this.sizeSelected) && this.filters == '') this.filters = `sizes_available:US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`
+    if (!(this.sizeSelected === undefined) && this.filters != '') this.filters += ` AND sizes_available:US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`
+    if (!(this.sizeSelected === undefined) && this.filters == '') this.filters = `sizes_available:US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`
   }
 
   getLowestPrice(prices, lowest_price) {
     let price
 
-    if (!isNullOrUndefined(this.sizeSelected)) {
-      if (isNullOrUndefined(prices)) price = lowest_price
+    if (!(this.sizeSelected === undefined)) {
+      if (prices === undefined) price = lowest_price
       else price = prices[`US${this.sizeSelected}${this.sizeSuffix[this.categorySelected]}`]
     } else {
       price = lowest_price

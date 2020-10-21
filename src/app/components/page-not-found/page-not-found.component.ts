@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { MetaService } from 'src/app/services/meta.service';
 
 @Component({
@@ -8,6 +9,8 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./page-not-found.component.scss']
 })
 export class PageNotFoundComponent implements OnInit {
+
+  faExclamationCircle = faExclamationCircle
 
   constructor(
     private title: Title,

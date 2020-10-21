@@ -3,7 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { AuthService } from 'src/app/services/auth.service';
 import { SlackService } from 'src/app/services/slack.service';
 import { MetaService } from 'src/app/services/meta.service';
-import { isNullOrUndefined } from 'util';
+import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-request',
@@ -11,6 +11,9 @@ import { isNullOrUndefined } from 'util';
   styleUrls: ['./request.component.scss']
 })
 export class RequestComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
+  faCheck = faCheck
 
   loading = false;
   error = false;
@@ -30,7 +33,7 @@ export class RequestComponent implements OnInit {
     this.meta.addTags('Request Product');
 
     this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
+      if (!(res === undefined)) {
         this.userEmail = res.email;
         this.connected = true
       }

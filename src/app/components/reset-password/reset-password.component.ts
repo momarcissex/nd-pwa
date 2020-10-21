@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
 import { EmailService } from 'src/app/services/email.service';
 import { MetaService } from 'src/app/services/meta.service';
+import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-reset-password',
@@ -11,6 +11,9 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
+  faCheck = faCheck
 
   errorPwd = false;
 

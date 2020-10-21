@@ -9,7 +9,7 @@
       <button class="btn login-btn" *ngIf="!loading && !error">Log in</button>
 
       <button class="btn loading" *ngIf="loading">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
       </button>
 
       <button class="btn error" *ngIf="error">
@@ -30,7 +30,7 @@
       </button>-->
 
     <button class="google-btn" (click)="googleSign()">
-      <fa-icon [icon]="['fab', 'google']"></fa-icon>
+      <fa-icon [icon]="faGoogle"></fa-icon>
       <h3>Sign in with Google</h3>
     </button>
 

@@ -12,7 +12,7 @@
             </div>
 
             <div class="seller-address">
-                <fa-icon [icon]="['fas', 'store-alt']"></fa-icon>
+                <fa-icon [icon]="faStoreAlt"></fa-icon>
                 <div *ngIf="addressExist()">
                     <p id="name">
                         {{ user.shippingAddress.selling.firstName + ' ' + user.shippingAddress.selling.lastName }}
@@ -71,7 +71,7 @@
                 *ngIf="!addressExist() && !confLoading && !confError">Confirm
                 Order</button>
             <button class="btn" *ngIf="confLoading">
-                <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+                <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
             </button>
             <button class="btn error-btn" *ngIf="confError">Error</button>
         </div>
@@ -88,6 +88,6 @@
     </div>
 
     <div class="confirmation-container" *ngIf="!user && !transactionData">
-        <fa-icon id="loading-icon" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+        <fa-icon id="loading-icon" [icon]="faCircleNotch" [spin]="true"></fa-icon>
     </div>
 </section>

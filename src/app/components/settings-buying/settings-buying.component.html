@@ -4,9 +4,9 @@
   <h2>Buyer Information</h2>
 
   <div class="card-accepted">
-    <fa-icon [icon]="['fab', 'cc-amex']" [className]="ccIsAmex ? 'amex-active' : ''"></fa-icon>
-    <fa-icon [icon]="['fab', 'cc-mastercard']" [className]="ccIsMastercard ? 'mastercard-active' : ''"></fa-icon>
-    <fa-icon [icon]="['fab', 'cc-visa']" [className]="ccIsVisa ? 'visa-active' : ''"></fa-icon>
+    <fa-icon [icon]="faCcAmex" [className]="ccIsAmex ? 'amex-active' : ''"></fa-icon>
+    <fa-icon [icon]="faCcMastercard" [className]="ccIsMastercard ? 'mastercard-active' : ''"></fa-icon>
+    <fa-icon [icon]="faCcVisa" [className]="ccIsVisa ? 'visa-active' : ''"></fa-icon>
   </div>
   <div id="cc-number"></div>
   <div id="cc-expiry"></div>
@@ -29,7 +29,7 @@
   <div class="settings-btn">
     <button class="settings-back-btn" (click)="backBtn()">Back</button>
     <button *ngIf="!error && !loading && !updated" class="settings-save-btn" id="verifyPayMethod" (click)="submitPayment()" disabled>Save Changes</button>
-    <button *ngIf="loading" class="settings-save-btn" id="verifyPayMethod"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+    <button *ngIf="loading" class="settings-save-btn" id="verifyPayMethod"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
     <button *ngIf="updated" class="settings-save-btn" id="verifyPayMethod">Updated</button>
     <button *ngIf="error" class="settings-save-btn" id="error">Error</button>
   </div>

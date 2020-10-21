@@ -69,13 +69,13 @@ import { TrustboxComponent } from './components/trustbox/trustbox.component';
 
 /** Font Awesome */
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { library, dom } from '@fortawesome/fontawesome-svg-core';
 
 /** Icons imports */
 // tslint:disable-next-line: max-line-length
-import { faBell, faTimes, faShoppingCart, faUserCircle, faBars, faSearch, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCog, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCircleNotch, faCheck, faFilter, faChevronDown, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
+/*import { faBell, faTimes, faShoppingCart, faUserCircle, faBars, faSearch, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCog, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCircleNotch, faCheck, faFilter, faChevronDown, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import { faFacebook, faTwitter, faInstagram, faGoogle, faPaypal, faCcVisa, faCcMastercard, faCcAmex, faFacebookF, faCanadianMapleLeaf, faYoutube } from '@fortawesome/free-brands-svg-icons';
+import { faFacebook, faTwitter, faInstagram, faGoogle, faPaypal, faCcVisa, faCcMastercard, faCcAmex, faFacebookF, faCanadianMapleLeaf, faYoutube } from '@fortawesome/free-brands-svg-icons';*/
 
 // Firebase Setup
 import { AngularFireModule } from '@angular/fire';
@@ -99,6 +99,9 @@ import { RecoverEmailComponent } from './components/recover-email/recover-email.
 import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
 import { ContestComponent } from './components/contest/contest.component';
 import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
+
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -183,7 +186,9 @@ import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bi
     NgxMaskModule.forRoot(),
     HttpClientModule,
     HttpClientJsonpModule,
-    NgxPayPalModule
+    NgxPayPalModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [
     CookieService
@@ -194,6 +199,6 @@ export class AppModule {
   constructor() {
     // add icon to library to be used in components
     // tslint:disable-next-line: max-line-length
-    library.add(faBell, faBars, faShoppingCart, faUserCircle, faFacebook, faInstagram, faTwitter, faTimes, faGoogle, faSearch, faPaypal, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCcVisa, faCcMastercard, faCcAmex, faCog, faClock, faFacebookF, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCanadianMapleLeaf, faYoutube, faCircleNotch, faCheck, faFilter, faChevronDown, faSortUp, faSortDown);
+    //library.add(faBell, faBars, faShoppingCart, faUserCircle, faFacebook, faInstagram, faTwitter, faTimes, faGoogle, faSearch, faPaypal, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCcVisa, faCcMastercard, faCcAmex, faCog, faClock, faFacebookF, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCanadianMapleLeaf, faYoutube, faCircleNotch, faCheck, faFilter, faChevronDown, faSortUp, faSortDown);
   }
 }

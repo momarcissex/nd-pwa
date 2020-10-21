@@ -2,7 +2,6 @@ import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined, isBoolean } from 'util';
 import { Title } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { isPlatformBrowser } from '@angular/common';
@@ -18,6 +17,7 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
 import { NxtdropCcService } from 'src/app/services/nxtdrop-cc.service';
+import { faCheckCircle, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -28,6 +28,9 @@ declare const fbq: any;
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
+
+  faCheckCircle = faCheckCircle
+  faCircleNotch = faCircleNotch
 
   public payPalConfig?: IPayPalConfig;
 
@@ -92,14 +95,14 @@ export class CheckoutComponent implements OnInit {
 
     //Free Shipping between Sept. 29th 6PM & Oct. 7th 12AM
     const d = Date.now()
-    if (d >= 1601416800000 && d < 1607317200000) {
+    if (d >= 1601416800000 && d < 1602129600000) {
       this.shippingPrice = 0
     }
 
-    if (!isNullOrUndefined(this.isSelling) && !isNullOrUndefined(this.route.snapshot.queryParams.product)) {
+    if (!(this.isSelling === undefined) && !(this.route.snapshot.queryParams.product === undefined)) {
       this.isUserConnected()
     } else {
-      if (isNullOrUndefined(this.tID)) {
+      if (this.tID === undefined) {
         this.router.navigate([`..`]);
       } else {
         this.isUserConnected()
@@ -167,7 +170,7 @@ export class CheckoutComponent implements OnInit {
           //console.log('onApprove - you can get full order details inside onApprove: ', details);
 
           this.user.shippingAddress.buying.street = details.purchase_units[0].shipping.address.address_line_1
-          isNullOrUndefined(details.purchase_units[0].shipping.address.address_line_2) ? this.user.shippingAddress.buying.line2 = '' : this.user.shippingAddress.buying.line2 = details.purchase_units[0].shipping.address.address_line_2
+          details.purchase_units[0].shipping.address.address_line_2 === undefined ? this.user.shippingAddress.buying.line2 = '' : this.user.shippingAddress.buying.line2 = details.purchase_units[0].shipping.address.address_line_2
           this.user.shippingAddress.buying.city = details.purchase_units[0].shipping.address.admin_area_2
           this.user.shippingAddress.buying.province = details.purchase_units[0].shipping.address.admin_area_1
           this.user.shippingAddress.buying.postalCode = details.purchase_units[0].shipping.address.postal_code
@@ -182,7 +185,7 @@ export class CheckoutComponent implements OnInit {
         //console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
         let transaction;
 
-        if (isNullOrUndefined(this.tID)) {
+        if (this.tID === undefined) {
           if (this.promoApplied) {
             transaction = this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shippingAddress.buying, data.id, this.shippingPrice, this.total, this.discount);
           } else {
@@ -214,7 +217,7 @@ export class CheckoutComponent implements OnInit {
             })
           }
 
-          if (isBoolean(res)) {
+          if (typeof res === 'boolean') {
             this.ngZone.run(() => {
               this.router.navigate(['transaction']);
             });
@@ -260,7 +263,7 @@ export class CheckoutComponent implements OnInit {
       this.nxtdropCCService.getPromoCode(code).subscribe(res => {
         //console.log(res.initiationDate)
         //console.log(this.user.creation_date)
-        if (!isNullOrUndefined(res) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
+        if (!(res === undefined) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
           this.discount = res
           if (res.type === 'cash') {
             if (this.total <= res.amount) {
@@ -292,7 +295,7 @@ export class CheckoutComponent implements OnInit {
 
   getListing(listingID: string, user?: firebase.User) {
     this.askService.getAsk(listingID).subscribe(res => {
-      if (isNullOrUndefined(res)) {
+      if (res === undefined) {
         this.router.navigate(['page-not-found']);
       } else {
         this.product = res;
@@ -305,10 +308,10 @@ export class CheckoutComponent implements OnInit {
             'event_label': this.product.model
           });
 
-          if (!isNullOrUndefined(user)) {
+          if (!(user === undefined)) {
             this.updateLastCartItem(this.product.productID, this.product.size, user)
 
-            if (isNullOrUndefined(user.phoneNumber) && !isNullOrUndefined(this.route.snapshot.queryParams.product) && this.isSelling) {
+            if (user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
               this.router.navigate(['/phone-verification'], {
                 queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
               });
@@ -316,7 +319,7 @@ export class CheckoutComponent implements OnInit {
           }
         }
 
-        if (isNullOrUndefined(user)) {
+        if (user == undefined) {
           this.showShipping()
           this.showCheckoutBtns()
         } else {
@@ -342,7 +345,7 @@ export class CheckoutComponent implements OnInit {
 
   getOffer(offerID: string, user?: firebase.User) {
     this.bidService.getBid(offerID).subscribe(res => {
-      if (isNullOrUndefined(res)) {
+      if (res === undefined) {
         this.router.navigate(['page-not-found']);
       } else {
         this.product = res;
@@ -356,14 +359,14 @@ export class CheckoutComponent implements OnInit {
           'event_label': this.product.model
         });
 
-        if (!isNullOrUndefined(user) && isNullOrUndefined(user.phoneNumber) && !isNullOrUndefined(this.route.snapshot.queryParams.product) && this.isSelling) {
+        if (!(user === undefined) && user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
           this.router.navigate(['/phone-verification'], {
             queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
           });
         }
       }
 
-      if (isNullOrUndefined(user)) {
+      if (user === undefined) {
         this.showShipping()
         this.showCheckoutBtns()
       } else {
@@ -379,19 +382,19 @@ export class CheckoutComponent implements OnInit {
 
   checkUserAndTransaction(transactionID: string, userID?: string) {
     this.tranService.checkTransaction(transactionID).subscribe(res => {
-      if (!isNullOrUndefined(res) && !res.status.cancelled && res.paymentID === '') {
+      if (!(res == undefined) && !res.status.cancelled && res.paymentID === '') {
         this.product = res
         this.subtotal = this.product.price
         this.total = this.subtotal + this.shippingPrice
         this.initConfig()
 
-        if (!isNullOrUndefined(userID)) {
+        if (!(userID === undefined)) {
           console.log('run if')
           this.userService.getUserInfo(userID).subscribe(data => {
             this.user = data
             this.connected = true
 
-            if (!isNullOrUndefined(data.uid)) {
+            if (!(data.uid == undefined)) {
               this.showShipping()
               this.showCheckoutBtns()
             }
@@ -417,7 +420,7 @@ export class CheckoutComponent implements OnInit {
         });
       }
 
-      if (isBoolean(res)) {
+      if (typeof res === 'boolean') {
         this.router.navigate(['sold']);
       } else {
         this.router.navigate(['sold'], {
@@ -442,7 +445,7 @@ export class CheckoutComponent implements OnInit {
           });
         }
 
-        if (isBoolean(res)) {
+        if (typeof res === 'undefined') {
           this.ngZone.run(() => {
             this.router.navigate(['transaction']);
           });
@@ -476,7 +479,7 @@ export class CheckoutComponent implements OnInit {
   goBack() {
     const id = this.product.productID;
 
-    if (isNullOrUndefined(this.route.snapshot.queryParams.redirectTo)) {
+    if (this.route.snapshot.queryParams.redirectTo === undefined) {
       this.router.navigate([`product/${id}`]);
     } else {
       this.router.navigateByUrl(this.route.snapshot.queryParams.redirectTo)
@@ -501,8 +504,8 @@ export class CheckoutComponent implements OnInit {
 
   private isUserConnected() {
     this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
-        if (!isNullOrUndefined(this.tID)) {
+      if (!(res === undefined)) {
+        if (!(this.tID === undefined)) {
           this.checkUserAndTransaction(this.tID, res.uid);
         } else {
           if (this.isSelling != 'true') {
@@ -515,7 +518,7 @@ export class CheckoutComponent implements OnInit {
           }
         }
       } else {
-        if (!isNullOrUndefined(this.tID)) {
+        if (!(this.tID === undefined)) {
           this.checkUserAndTransaction(this.tID);
         } else {
           if (this.isSelling != 'true') {
@@ -544,18 +547,18 @@ export class CheckoutComponent implements OnInit {
 
   showShipping() {
     if (this.connected) {
-      if (isNullOrUndefined(this.isSelling)) {
+      if (this.isSelling === undefined) {
         this.showBuyingShipping = true
       } else if (!this.isSelling) {
-        if (isNullOrUndefined(this.user.shippingAddress)) {
+        if (this.user.shippingAddress === undefined) {
           this.showBuyingShipping = false
-        } else if (!isNullOrUndefined(this.user.shippingAddress.buying)) {
+        } else if (!(this.user.shippingAddress.buying === undefined)) {
           this.showBuyingShipping = true
         }
       } else if (this.isSelling) {
-        if (isNullOrUndefined(this.user.shippingAddress)) {
+        if (this.user.shippingAddress === undefined) {
           this.showSellingShipping = false
-        } else if (!isNullOrUndefined(this.user.shippingAddress.selling)) {
+        } else if (!(this.user.shippingAddress.selling === undefined)) {
           this.showSellingShipping = true
         }
       }
@@ -570,19 +573,19 @@ export class CheckoutComponent implements OnInit {
     if (!this.connected) {
       this.showLoginBtns = true
     } else {
-      if (!isNullOrUndefined(this.tID)) {
+      if (!(this.tID === undefined)) {
         const t = this.product as Transaction
-        if (t.buyerID === this.user.uid && isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.buying)) this.showContinueShipping = true
+        if (t.buyerID === this.user.uid && this.user.shippingAddress === undefined || this.user.shippingAddress.buying === undefined) this.showContinueShipping = true
         else this.showPaypal = true
       } else if (this.isSelling) {
         const t = this.product as Bid
         if (t.buyerID === this.user.uid) this.showEditBid = true
-        else if (isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.selling)) this.showContinueShipping = true
+        else if (this.user.shippingAddress === undefined || this.user.shippingAddress.selling === undefined) this.showContinueShipping = true
         else this.showConfirmSale = true
       } else if (!this.isSelling) {
         const t = this.product as Ask
         if (t.sellerID === this.user.uid) this.showEditAsk = true
-        else if (isNullOrUndefined(this.user.shippingAddress) || isNullOrUndefined(this.user.shippingAddress.buying)) this.showContinueShipping = true
+        else if (this.user.shippingAddress === undefined || this.user.shippingAddress.buying === undefined) this.showContinueShipping = true
         else if (this.total === 0) this.showConfirmPurchase = true
         else this.showPaypal = true
       }

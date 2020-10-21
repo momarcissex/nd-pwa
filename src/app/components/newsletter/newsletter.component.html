@@ -6,12 +6,12 @@
 
         <button (click)="subscribe()" *ngIf="!loading && !subscribed">Subscribe</button>
 
-        <button class="loading" *ngIf="loading"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+        <button class="loading" *ngIf="loading"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
 
-        <button class="subscribed" *ngIf="subscribed"><fa-icon [icon]="['fas', 'check']"></fa-icon></button>
+        <button class="subscribed" *ngIf="subscribed"><fa-icon [icon]="faCheck"></fa-icon></button>
 
         <p class="error-msg">
-            <span *ngIf="error"><fa-icon [icon]="['fas', 'exclamation-circle']"></fa-icon> Invalid Email</span>
+            <span *ngIf="error"><fa-icon [icon]="faExclamationCircle"></fa-icon> Invalid Email</span>
             <span *ngIf="!error"></span>
         </p>
     </div>

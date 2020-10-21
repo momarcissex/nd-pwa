@@ -2,10 +2,10 @@ import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/
 import * as firebase from 'firebase/app';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { isUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { SlackService } from 'src/app/services/slack.service';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-phone-verification',
@@ -13,6 +13,8 @@ import { SlackService } from 'src/app/services/slack.service';
   styleUrls: ['./phone-verification.component.scss']
 })
 export class PhoneVerificationComponent implements OnInit, AfterViewInit {
+
+  faCircleNotch = faCircleNotch
 
   isValidNumber = false
   islinked = false
@@ -182,7 +184,7 @@ export class PhoneVerificationComponent implements OnInit, AfterViewInit {
   }
 
   back() {
-    if (isUndefined(this.route.snapshot.queryParams.redirectTo)) {
+    if (this.route.snapshot.queryParams.redirectTo === undefined) {
       this.router.navigate([`..`]);
     } else {
       if (this.route.snapshot.queryParams.redirectTo === 'sell') {

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isNullOrUndefined } from 'util';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { Transaction } from 'src/app/models/transaction';
 import { Title } from '@angular/platform-browser';
@@ -8,6 +7,7 @@ import { MetaService } from 'src/app/services/meta.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/models/user';
 import { HttpClient } from '@angular/common/http';
+import { faCircleNotch, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 
@@ -17,6 +17,9 @@ declare const gtag: any;
   styleUrls: ['./transaction-review.component.scss']
 })
 export class TransactionReviewComponent implements OnInit {
+  
+  faCircleNotch = faCircleNotch
+  faExclamationCircle = faExclamationCircle
 
   transactionID: string;
   transaction: Transaction;
@@ -51,7 +54,7 @@ export class TransactionReviewComponent implements OnInit {
     //console.log(this.referralScript)
 
     this.auth.isConnected().then(res => {
-      if (isNullOrUndefined(res) || isNullOrUndefined(this.route.snapshot.queryParams.transactionID)) {
+      if (res === undefined || this.route.snapshot.queryParams.transactionID === undefined) {
         this.error = true;
       } else {
         this.transactionID = this.route.snapshot.queryParams.transactionID;
@@ -65,7 +68,7 @@ export class TransactionReviewComponent implements OnInit {
 
   getData(UID: string) {
     this.TranService.checkTransaction(this.transactionID).subscribe(data => {
-      if (isNullOrUndefined(data)) {
+      if (data === undefined) {
         this.error = true
       } else {
         this.transaction = data;
@@ -87,7 +90,7 @@ export class TransactionReviewComponent implements OnInit {
       this.user = userData;
       //console.log(this.user)
 
-      if (this.user.uid === this.transaction.buyerID && !isNullOrUndefined(this.route.snapshot.queryParams.source) && date - this.transaction.purchaseDate <= 60000) {
+      if (this.user.uid === this.transaction.buyerID && !(this.route.snapshot.queryParams.source === undefined) && date - this.transaction.purchaseDate <= 60000) {
         gtag('require', 'ecommerce')
 
         gtag('ecommerce:addTransaction', {

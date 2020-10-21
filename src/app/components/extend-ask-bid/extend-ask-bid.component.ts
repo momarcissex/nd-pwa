@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { faCheckCircle, faCircleNotch, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-extend-ask-bid',
@@ -10,6 +11,10 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./extend-ask-bid.component.scss']
 })
 export class ExtendAskBidComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
+  faCheckCircle = faCheckCircle
+  faExclamationCircle = faExclamationCircle
 
   mode: string;
   user_id: string;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faPaypal } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-settings-payout',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./settings-payout.component.scss']
 })
 export class SettingsPayoutComponent implements OnInit {
+
+  faPaypal = faPaypal
 
   constructor() { }
 

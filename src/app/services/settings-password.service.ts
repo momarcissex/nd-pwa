@@ -11,19 +11,21 @@ export class SettingsPasswordService {
     private afAuth: AngularFireAuth
   ) { }
 
-  async updatePassword(oldPassword: string, newPassword: string) {
-    const user = this.afAuth.auth.currentUser;
-    const credentials = auth.EmailAuthProvider.credential(this.afAuth.auth.currentUser.email, oldPassword);
-    return user.reauthenticateWithCredential(credentials).then(() => {
-      return user.updatePassword(newPassword).then(() => {
-        return true;
+  updatePassword(oldPassword: string, newPassword: string) {
+    return this.afAuth.currentUser.then(user => {
+      const credentials = auth.EmailAuthProvider.credential(user.email, oldPassword);
+
+      return user.reauthenticateWithCredential(credentials).then(() => {
+        return user.updatePassword(newPassword).then(() => {
+          return true;
+        }).catch((err) => {
+          console.error(err);
+          return false;
+        });
       }).catch((err) => {
         console.error(err);
         return false;
       });
-    }).catch((err) => {
-      console.error(err);
-      return false;
-    });
+    })
   }
 }

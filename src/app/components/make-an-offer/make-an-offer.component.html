@@ -7,18 +7,18 @@
 
     <div id="how-it-works-content">
       <div>
-        <fa-icon [icon]="['fas', 'hand-holding-usd']"></fa-icon>
+        <fa-icon [icon]="faHandHoldingUsd"></fa-icon>
         <h6>Place a Bid</h6>
       </div>
 
       <div>
-        <fa-icon [icon]="['fas', 'box']"></fa-icon>
+        <fa-icon [icon]="faBox"></fa-icon>
         <h6>When a seller accepts your offer, checkout the item. The seller will ship the item within 2 business days
           and we'll authenticate it.</h6>
       </div>
 
       <div>
-        <fa-icon [icon]="['fas', 'shipping-fast']"></fa-icon>
+        <fa-icon [icon]="faShippingFast"></fa-icon>
         <h6>Sit tight while we ship the verified authetic item to you</h6>
       </div>
     </div>
@@ -133,7 +133,7 @@
           <button class="btn place-bid-btn disabled" *ngIf="!priceAdded || !willCheckout">Place Bid</button>
 
           <button class="btn ripple place-bid-btn" *ngIf="loading">
-            <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+            <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
           </button>
 
           <button class="btn ripple buy-now-btn"

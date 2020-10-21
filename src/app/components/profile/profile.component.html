@@ -45,7 +45,7 @@
       <button (click)="dropdown()">
         <div class="text">Ask Display</div>
         <div class="mode">{{ ask_filter }}</div>
-        <div class="icon"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></div>
+        <div class="icon"><fa-icon [icon]="faChevronDown"></fa-icon></div>
       </button>
 
 
@@ -102,7 +102,7 @@
     <button *ngIf="dashInfo.listed > listings.length && !loading && listings.length > 0" class="btn show-more-btn"
       (click)="moreListings()">More</button>
     <button *ngIf="loading" class="btn show-more-btn">
-      <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+      <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
     </button>
   </div>
 
@@ -114,7 +114,7 @@
       <button>
         <div class="text">Bid Display</div>
         <div class="mode">{{ bid_filter }}</div>
-        <div class="icon"><fa-icon [icon]="['fas', 'chevron-down']"></fa-icon></div>
+        <div class="icon"><fa-icon [icon]="faChevronDown"></fa-icon></div>
       </button>
 
 
@@ -167,7 +167,7 @@
     <button *ngIf="dashInfo.offers > offers.length && !loading && offers.length > 0" class="btn show-more-btn"
       (click)="moreOffers()">More</button>
     <button *ngIf="loading" class="btn show-more-btn">
-      <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+      <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
     </button>
   </ng-template>
 </div>

@@ -1,10 +1,10 @@
 import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
 import { ModalService } from 'src/app/services/modal.service';
-import { isNullOrUndefined } from 'util';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-modal',
@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent implements OnInit {
+
+  faTimes = faTimes
 
   isOpen: boolean = false
 
@@ -31,7 +33,7 @@ export class ModalComponent implements OnInit {
 
   ngOnInit() {
     this.modalService.open.subscribe(res => {
-      if (isNullOrUndefined(res)) {
+      if (res === undefined) {
         this.close()
       } else {
         this.open()

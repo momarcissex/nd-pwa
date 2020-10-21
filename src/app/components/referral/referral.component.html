@@ -12,7 +12,7 @@
         <p class="disclaimer">Disclaimer: We do not store phone numbers, because your friend&apos;s privacy matters to us.</p>
 
         <button class="btn ripple" *ngIf="!error && !loading && !sent" (click)="sendInvite()">Send Invite</button>
-        <button class="btn loading-btn" *ngIf="loading"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+        <button class="btn loading-btn" *ngIf="loading"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
         <button class="btn sent" *ngIf="sent">SMS Sent</button>
         <button class="btn error-btn" *ngIf="error">Failed To Send</button>
         <p class="thankYou">Thank you for participating in building a Canadian sneaker marketplace.</p>

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-settings-shipping',
@@ -11,6 +11,8 @@ import { User } from 'src/app/models/user';
   styleUrls: ['./settings-shipping.component.scss']
 })
 export class SettingsShippingComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
 
   shippingInfo: User["shippingAddress"] //shipping information
   UID: string //user id
@@ -66,7 +68,7 @@ export class SettingsShippingComponent implements OnInit {
 
     if (this.buying || this.selling) {
       this.auth.isConnected().then(res => {
-        if (isNullOrUndefined(res)) {
+        if (res === undefined) {
           this.router.navigate(['/login'], {
             queryParams: { redirectURI: 'settings/shipping' }
           })
@@ -80,13 +82,13 @@ export class SettingsShippingComponent implements OnInit {
 
   getShippingInfo(UID: string) {
     this.userService.getUserInfo(UID).subscribe(data => {
-      if (!isNullOrUndefined(data.shippingAddress)) {
+      if (!(data.shippingAddress === undefined)) {
         this.shippingInfo = data.shippingAddress
         let curShip: User["shippingAddress"]['buying'] | User["shippingAddress"]["selling"]
 
         this.buying ? curShip = this.shippingInfo.buying : curShip = this.shippingInfo.selling
 
-        if (!isNullOrUndefined(curShip)) {
+        if (!(curShip === undefined)) {
           this.firstName = curShip.firstName
           this.lastName = curShip.lastName
           this.street = curShip.street
@@ -143,7 +145,7 @@ export class SettingsShippingComponent implements OnInit {
             this.provinceChanged = false;
             this.postalCodeChanged = false;
 
-            if (!isUndefined(this.redirectURI)) {
+            if (!(this.redirectURI === undefined)) {
               this.backBtn();
             }
           }, 2000);
@@ -161,7 +163,7 @@ export class SettingsShippingComponent implements OnInit {
   firstNameChanges() {
     const firstName = (document.getElementById('ship-firstName') as HTMLInputElement).value;
 
-    if (isUndefined(this.firstName) || (firstName.toLowerCase() != this.firstName.toLowerCase())) {
+    if (this.firstName === undefined || (firstName.toLowerCase() != this.firstName.toLowerCase())) {
       this.firstNameChanged = true;
     } else {
       this.firstNameChanged = false;
@@ -171,7 +173,7 @@ export class SettingsShippingComponent implements OnInit {
   lastNameChanges() {
     const lastName = (document.getElementById('ship-lastName') as HTMLInputElement).value;
 
-    if (isUndefined(this.lastName) || (lastName.toLowerCase() != this.lastName.toLowerCase())) {
+    if (this.lastName === undefined || (lastName.toLowerCase() != this.lastName.toLowerCase())) {
       this.lastNameChanged = true;
     } else {
       this.lastNameChanged = false;
@@ -233,7 +235,7 @@ export class SettingsShippingComponent implements OnInit {
   }
 
   backBtn() {
-    if (isUndefined(this.redirectURI)) {
+    if (this.redirectURI === undefined) {
       this.router.navigate(['/settings/shipping']);
     } else {
       this.router.navigateByUrl(this.redirectURI);

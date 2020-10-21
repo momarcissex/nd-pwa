@@ -15,7 +15,7 @@
     </div>
 
     <a routerLink="/faq/buying/are-the-items-authentic" class="auth">100% authentic or 100% refund <fa-icon
-        [icon]="['fas', 'check-circle']"></fa-icon>
+        [icon]="faCheckCirle"></fa-icon>
     </a>
 
     <div class="summary-numbers" *ngIf="!isSelling">
@@ -73,7 +73,7 @@
       <button class="btn promo-btn" (click)="applyPromo()"
         *ngIf="!promoError && !promoApplied && !promoLoading">Apply</button>
       <button class="btn promo-btn" *ngIf="promoLoading">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
       </button>
       <button class="btn promo-btn-applied" *ngIf="promoApplied">Applied</button>
       <button class="btn promo-btn-invalid" *ngIf="promoError">Invalid</button>
@@ -162,6 +162,6 @@
   </div>
 
   <div class="loading-page" *ngIf="!product">
-    <fa-icon [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+    <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
   </div>
 </section>

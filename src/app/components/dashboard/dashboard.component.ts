@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined } from 'util';
 import { User } from 'src/app/models/user';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -34,12 +33,12 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle('Dashboard | NXTDROP')
     this.auth.isConnected().then(res => {
-      if (!isNullOrUndefined(res)) {
+      if (!(res === undefined)) {
         this.UID = res.uid;
 
         this.getUserData();
 
-        if (!isNullOrUndefined(this.route.snapshot.params.id) && this.route.snapshot.params.id == 'sales') {
+        if (!(this.route.snapshot.params.id === undefined) && this.route.snapshot.params.id == 'sales') {
           this.getSales();
         } else {
           this.getPurchases();
@@ -100,7 +99,7 @@ export class DashboardComponent implements OnInit {
   printOrderStatus(status: Transaction["status"], type: string, paymentID: string) {
     //console.log(`${type}, ${id}, ${paymentID}`)
     if (type == 'bought') {
-      if (isNullOrUndefined(status.sellerConfirmation) || !status.sellerConfirmation && !status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+      if (status.sellerConfirmation === undefined || !status.sellerConfirmation && !status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
         return 'waiting for seller to ship'
       }
     } else {

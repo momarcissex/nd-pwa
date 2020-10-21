@@ -4,11 +4,12 @@ import { ProductService } from 'src/app/services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Title } from '@angular/platform-browser';
 import { Product } from 'src/app/models/product';
-import { isNullOrUndefined } from 'util';
 import { MetaService } from 'src/app/services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
+import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -19,6 +20,11 @@ declare const fbq: any;
   styleUrls: ['./product.component.scss']
 })
 export class ProductComponent implements OnInit {
+
+  faFacebookF = faFacebookF
+  faTwitter = faTwitter
+  faEnvelope = faEnvelope
+  faLink = faLink
 
   productID: string
 
@@ -74,7 +80,7 @@ export class ProductComponent implements OnInit {
 
     this.auth.isConnected().then((res) => {
       //console.log('isConnected start')
-      if (!isNullOrUndefined(res)) {
+      if (!(res === undefined)) {
         this.UID = res.uid;
       }
       //console.log('isConnected end')
@@ -101,7 +107,7 @@ export class ProductComponent implements OnInit {
     this.productService.getProductInfo(this.productID).subscribe(data => {
       console.log('getProductInfo start')
       console.log(data)
-      if (isNullOrUndefined(data)) {
+      if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
         if (this.productInfo.assetURL === '') {
@@ -234,7 +240,7 @@ export class ProductComponent implements OnInit {
     let shoeSizes: Array<string> | Array<number>;
     this.offers.length = 0
 
-    if (isNullOrUndefined(this.productInfo.size_category)) {
+    if (this.productInfo.size_category === undefined) {
       if (this.sizeSuffix === 'W') {
         suffix = this.sizeSuffix;
       } else if (this.sizeSuffix === 'Y') {
@@ -254,7 +260,7 @@ export class ProductComponent implements OnInit {
 
     //console.log(this.sizes[suffix]);
     //console.log(this.productInfo.sizes)
-    if (!isNullOrUndefined(this.productInfo.sizes)) {
+    if (!(this.productInfo.sizes === undefined)) {
       shoeSizes = this.productInfo.sizes
     } else {
       shoeSizes = this.default_sizes[suffix]
@@ -285,16 +291,16 @@ export class ProductComponent implements OnInit {
 
           this.offers.push(data);
 
-          if (!isNullOrUndefined(data.LowestAsk)) {
-            if (isNullOrUndefined(this.lowestAsk)) {
+          if (!(data.LowestAsk === undefined)) {
+            if (this.lowestAsk === undefined) {
               this.lowestAsk = data.LowestAsk;
             } else if (this.lowestAsk.price > data.LowestAsk.price) {
               this.lowestAsk = data.LowestAsk;
             }
           }
 
-          if (!isNullOrUndefined(data.HighestBid)) {
-            if (isNullOrUndefined(this.highestBid)) {
+          if (!(data.HighestBid === undefined)) {
+            if (this.highestBid === undefined) {
               this.highestBid = data.HighestBid;
             } else if (this.highestBid.price < data.HighestBid.price) {
               this.highestBid = data.HighestBid;

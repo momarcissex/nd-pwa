@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SnkrsService } from 'src/app/services/snkrs.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined, isUndefined } from 'util';
 import { Router } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
+import { faAsterisk, faCircleNotch, faMedal } from '@fortawesome/free-solid-svg-icons';
 
 class Question {
   answers: Array<any>;
@@ -17,6 +17,10 @@ class Question {
   styleUrls: ['./snkrs.component.scss']
 })
 export class SnkrsComponent implements OnInit, OnDestroy {
+
+  faMedal = faMedal
+  faAsterisk = faAsterisk
+  faCircleNotch = faCircleNotch
 
   UID: string;
   username: string;
@@ -121,12 +125,12 @@ export class SnkrsComponent implements OnInit, OnDestroy {
         }
 
         this.auth.isConnected().then(res => {
-          if (!isNullOrUndefined(res)) {
+          if (!(res === undefined)) {
             this.UID = res.uid;
             this.userEmail = res.email;
 
             this.snkrsService.getUsername(this.UID, this.gameID).subscribe((response: any) => {
-              if (!isNullOrUndefined(response)) {
+              if (!(response === undefined)) {
                 this.username = response.username;
                 this.hasExtra = response.invitationExtra;
               }
@@ -306,7 +310,7 @@ export class SnkrsComponent implements OnInit, OnDestroy {
   }
 
   startGame() {
-    if (isNullOrUndefined(this.UID)) {
+    if (this.UID === undefined) {
       this.router.navigate(['/login'], {
         queryParams: { redirectTo: '/contest' }
       });
@@ -383,7 +387,7 @@ export class SnkrsComponent implements OnInit, OnDestroy {
   sendInvite() {
     const email = (document.getElementById('email') as HTMLInputElement).value;
 
-    if (email !== this.userEmail && !isNullOrUndefined(email) && email !== '') {
+    if (email !== this.userEmail && !(email === undefined) && email !== '') {
       this.invitationLoading = true;
       this.snkrsService.addEmail(email, this.gameID, this.UID, this.username).then(res => {
         this.invitationLoading = false;
@@ -476,7 +480,7 @@ export class SnkrsComponent implements OnInit, OnDestroy {
 
   getNextTournament() {
     this.snkrsService.getNextTournament(this.timestamp).then(response => {
-      if (!isUndefined(response.docs[0])) {
+      if (!(response.docs[0] === undefined)) {
         this.quizCountdown(response.docs[0].data().openingDate);
       } else {
         this.nextTourCountdown = false;

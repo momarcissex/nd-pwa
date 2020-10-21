@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined } from 'util';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { SlackService } from 'src/app/services/slack.service';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 
@@ -16,6 +16,8 @@ declare const gtag: any;
   styleUrls: ['./referral.component.scss']
 })
 export class ReferralComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
 
   sent: boolean = false;
   error: boolean = false;
@@ -42,13 +44,13 @@ export class ReferralComponent implements OnInit {
 
     this.auth.isConnected().then(res => {
 
-      if (isNullOrUndefined(res) || isNaN(this.phoneNumber) || isNullOrUndefined(this.phoneNumber)) {
+      if (res === undefined || isNaN(this.phoneNumber) || this.phoneNumber === undefined) {
         this.loading = false;
         this.error = true;
       } else {
         this.afs.collection(`users`).doc(`${res.uid}`).get().subscribe(response => {
           let name;
-          (isNullOrUndefined(response.data().lastName)) ? name = response.data().firstName : name = response.data().firstName + response.data().lastName;
+          (response.data().lastName === undefined) ? name = response.data().firstName : name = response.data().firstName + response.data().lastName;
 
           const data = {
             phoneNumber: this.phoneNumber,

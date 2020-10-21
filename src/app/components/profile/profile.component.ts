@@ -8,7 +8,7 @@ import { Bid } from 'src/app/models/bid';
 import { BidService } from 'src/app/services/bid.service';
 import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
-import { isNullOrUndefined } from 'util';
+import { faChevronDown, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +16,9 @@ import { isNullOrUndefined } from 'util';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+
+  faChevronDown = faChevronDown
+  faCircleNotch = faCircleNotch
 
   dashInfo: User = {
     sold: 0,
@@ -98,7 +101,7 @@ export class ProfileComponent implements OnInit {
 
     this.listingNav = true;
 
-    if (!isNullOrUndefined(filterChange)) {
+    if (!(filterChange === undefined)) {
       this.listings.length = 0
       this.userService.getUserListings(this.ask_filter).then(val => {
         val.subscribe(data => {
@@ -142,7 +145,7 @@ export class ProfileComponent implements OnInit {
 
     this.listingNav = false;
 
-    if (isNullOrUndefined(filterChange)) {
+    if (filterChange === undefined) {
       this.userService.getUserOffers(this.bid_filter).then(val => {
         val.subscribe(data => {
           data.forEach(element => {

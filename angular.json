@@ -17,6 +17,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "@angular/fire/firestore",
+              "@firebase/auth"
+            ],
             "aot": true,
             "outputPath": "dist/browser",
             "index": "src/index.html",
@@ -32,7 +36,8 @@
               "src/robots.txt"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": []
           },
@@ -166,6 +171,6 @@
   },
   "defaultProject": "nd-pwa",
   "cli": {
-    "analytics": false
+    "analytics": true
   }
 }

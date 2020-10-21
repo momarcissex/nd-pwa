@@ -7,18 +7,18 @@
 
     <div id="how-it-works-content">
       <div>
-        <fa-icon [icon]="['fas', 'tag']"></fa-icon>
+        <fa-icon [icon]="faTag"></fa-icon>
         <h6>List an item for sale</h6>
       </div>
 
       <div>
-        <fa-icon [icon]="['fas', 'box']"></fa-icon>
+        <fa-icon [icon]="faBox"></fa-icon>
         <h6>When your item sells. Confirm then ship within 2 business days. We'll authenticate it and ship it to the
           buyer.</h6>
       </div>
 
       <div>
-        <fa-icon [icon]="['fas', 'money-bill-wave']"></fa-icon>
+        <fa-icon [icon]="faMoneyBillWave"></fa-icon>
         <h6>You receive your money A$AP.</h6>
       </div>
     </div>
@@ -150,7 +150,7 @@
           <button class="btn place-ask-btn disabled" *ngIf="!priceAdded || !isDeadstock || !willShip">Place Ask</button>
 
           <button class="btn ripple place-ask-btn" *ngIf="loading">
-            <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+            <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
           </button>
 
           <button class="btn ripple place-ask-btn" *ngIf="listed">Listed</button>

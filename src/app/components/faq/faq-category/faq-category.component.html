@@ -11,7 +11,7 @@
     </section>
 
     <button class="btn" *ngIf="posts.length >= 10 && !isLimit && !loading" (click)=loadMore()>Load More</button>
-    <button class="btn" *ngIf="loading"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+    <button class="btn" *ngIf="loading"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
 </section>
 
 <app-footer></app-footer>

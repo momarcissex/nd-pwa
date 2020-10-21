@@ -12,5 +12,5 @@
   </div>
 
   <button class="discovery-btn btn" *ngIf="!loading && !end" (click)="more()">Show More</button>
-  <button class="discovery-btn btn" *ngIf="loading" (click)="more()"><fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon></button>
+  <button class="discovery-btn btn" *ngIf="loading" (click)="more()"><fa-icon [icon]="faSpinner" [spin]="true"></fa-icon></button>
 </div>

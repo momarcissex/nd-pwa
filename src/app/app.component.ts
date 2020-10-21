@@ -40,38 +40,39 @@ export class AppComponent implements AfterViewInit {
 
     if (isPlatformBrowser(this._platformId)) {
       window.Intercom = window.Intercom || {};
-      this.auth.isConnected().then(res => {
-        if (res === undefined || res === null) {
-          gtag('set', { 'user_id': res.uid }); // Set the user ID using signed-in user_id.
-          fbq('init', '247312712881625', { uid: res.uid });
-          this.ipService.getIPAddress().subscribe((data: any) => {
-            this.auth.updateLastActivity(res.uid, data.ip);
-          })
+      this.auth.isConnected()
+        .then(res => {
+          if (res != null || res != undefined) {
+            gtag('set', { 'user_id': res.uid }); // Set the user ID using signed-in user_id.
+            fbq('init', '247312712881625', { uid: res.uid });
+            this.ipService.getIPAddress().subscribe((data: any) => {
+              this.auth.updateLastActivity(res.uid, data.ip);
+            })
 
-          this.http.put(`${environment.cloud.url}IntercomData`, { uid: res.uid }).subscribe((data: any) => {
-            //console.log(data)
-            window.Intercom("boot", {
-              app_id: "w1p7ooc8",
-              name: `${data.firstName} ${data.lastName}`, // Full name
-              email: res.email, // Email address
-              created_at: res.metadata.creationTime, // Signup date as a Unix timestamp
-              user_id: res.uid,
-              user_hash: data.hash
+            this.http.put(`${environment.cloud.url}IntercomData`, { uid: res.uid }).subscribe((data: any) => {
+              //console.log(data)
+              window.Intercom("boot", {
+                app_id: "w1p7ooc8",
+                name: `${data.firstName} ${data.lastName}`, // Full name
+                email: res.email, // Email address
+                created_at: res.metadata.creationTime, // Signup date as a Unix timestamp
+                user_id: res.uid,
+                user_hash: data.hash
+              });
             });
-          });
-        } else {
-          fbq('init', '247312712881625');
-          window.Intercom("boot", {
-            app_id: "w1p7ooc8"
-          });
+          } else {
+            fbq('init', '247312712881625');
+            window.Intercom("boot", {
+              app_id: "w1p7ooc8"
+            });
 
-          setTimeout(() => {
-            this.modalService.openModal('capture')
-          }, 10000);
-        }
-      }).catch(err => {
-        console.error(err);
-      })
+            setTimeout(() => {
+              this.modalService.openModal('capture')
+            }, 10000);
+          }
+        }).catch(err => {
+          console.error(err);
+        })
     }
 
     navEndEvents.subscribe((event: NavigationEnd) => {
@@ -82,16 +83,17 @@ export class AppComponent implements AfterViewInit {
         fbq('track', 'PageView');
         window.Intercom("update");
 
-        this.auth.isConnected().then(res => {
-          if (res === null || res === undefined) {
-            const pattern = new RegExp(/^\/additional-information($|\?.*$)/gm)
-            //console.log(this.router.url)
-            //console.log(pattern.test(this.router.url))
-            if (res.providerData[0].providerId == 'google.com' && res.providerData.length === 1 && !pattern.test(this.router.url)) {
-              this.auth.signOut(false)
+        this.auth.isConnected()
+          .then(res => {
+            if (res != null || res != undefined) {
+              const pattern = new RegExp(/^\/additional-information($|\?.*$)/gm)
+              //console.log(this.router.url)
+              //console.log(pattern.test(this.router.url))
+              if (res.providerData[0].providerId == 'google.com' && res.providerData.length === 1 && !pattern.test(this.router.url)) {
+                this.auth.signOut(false)
+              }
             }
-          }
-        })
+          })
       }
       this.seo.createCanonicalLink();
       this.seo.removeTags()

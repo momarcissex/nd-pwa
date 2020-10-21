@@ -4,8 +4,8 @@ import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { UserService } from 'src/app/services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { isNullOrUndefined } from 'util';
 import { Router } from '@angular/router';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-settings-profile',
@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./settings-profile.component.scss']
 })
 export class SettingsProfileComponent implements OnInit {
+
+  faCircleNotch = faCircleNotch
 
   user: User;
   firstName: string
@@ -42,7 +44,7 @@ export class SettingsProfileComponent implements OnInit {
     this.meta.addTags('Edit Profile');
 
     this.auth.isConnected().then(res => {
-      if (isNullOrUndefined(res)) {
+      if (res === undefined) {
         this.router.navigate(['/login'], {
           queryParams: { redirectURI: 'settings/profile' }
         })

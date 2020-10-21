@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { MetaService } from 'src/app/services/meta.service';
 
 @Component({
@@ -8,6 +9,8 @@ import { MetaService } from 'src/app/services/meta.service';
   styleUrls: ['./contact-us.component.scss']
 })
 export class ContactUsComponent implements OnInit {
+  
+  faQuestionCircle = faQuestionCircle
 
   constructor(
     private title: Title,

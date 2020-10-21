@@ -21,7 +21,7 @@
         id="send-code-btn" (click)="sendCode()">Send Code</button>
 
       <button *ngIf="linkLoading" class="btn" id="send-code-btn">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
       </button>
 
       <button *ngIf="sendError" class="btn" id="send-code-btn-error">Error</button>
@@ -46,7 +46,7 @@
         style="outline: none" id="send-code-btn" (click)="verifyCode()">Verify</button>
 
       <button *ngIf="verificationLoading" class="btn" id="send-code-btn">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
       </button>
 
       <button *ngIf="verificationError" class="btn" id="send-code-btn-error">Error</button>

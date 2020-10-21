@@ -1,7 +1,6 @@
 import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
 import { Product } from 'src/app/models/product';
 import { Router, ActivatedRoute } from '@angular/router';
-import { isUndefined, isNullOrUndefined, isNull } from 'util';
 import { AuthService } from 'src/app/services/auth.service';
 import { Title } from '@angular/platform-browser';
 import { SlackService } from 'src/app/services/slack.service';
@@ -14,6 +13,7 @@ import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { User } from 'firebase';
+import { faBox, faCircleNotch, faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
 
 declare const gtag: any;
 
@@ -23,6 +23,11 @@ declare const gtag: any;
   styleUrls: ['./sell.component.scss']
 })
 export class SellComponent implements OnInit {
+
+  faTag = faTag
+  faBox = faBox
+  faMoneyBillWave = faMoneyBillWave
+  faCircleNotch = faCircleNotch
 
   // Algolia Set up
   algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey)
@@ -101,10 +106,10 @@ export class SellComponent implements OnInit {
 
     // Skip the first page and serves the third page
     this.activatedRoute.queryParams.subscribe(params => {
-      if (!isUndefined(params.sneaker)) {
+      if (!(params.sneaker === undefined)) {
         this.selectPair(JSON.parse(params.sneaker), false);
 
-        if (!isNullOrUndefined(params.size)) {
+        if (!(params.size === undefined)) {
           this.selectSize(params.size);
         }
       }
@@ -112,11 +117,11 @@ export class SellComponent implements OnInit {
 
     // check if the user is connected and redirect if not
     this.auth.isConnected().then(res => {
-      if (!isNull(res)) {
+      if (!(res === null)) {
         this.user = res;
 
         // redirect is phone number verification not verified
-        if (isNullOrUndefined(res.phoneNumber) && res.email != "momarcisse0@gmail.com") {
+        if (res.phoneNumber === undefined && res.email != "momarcisse0@gmail.com") {
           if (this.activatedRoute.snapshot.queryParams.sneaker) {
             this.router.navigate(['../phone-verification'], {
               queryParams: { redirectTo: `product/${this.selectedPair.productID}` }
@@ -139,7 +144,7 @@ export class SellComponent implements OnInit {
     if (isNaN(this.pairPrice) || !this.isDeadstock || !this.willShip) {
       this.addError();
       return;
-    } else if (isNullOrUndefined(this.user)) {
+    } else if (this.user === undefined) {
       this.router.navigate(['/login'], {
         queryParams: {
           redirectTo: this.router.url
@@ -223,7 +228,7 @@ export class SellComponent implements OnInit {
   }
 
   nextPage() {
-    if (isNullOrUndefined(this.selectedPair)) {
+    if (this.selectedPair === undefined) {
       this.showHowItWorks = false;
       this.showSearch = true;
     } else {
@@ -243,7 +248,7 @@ export class SellComponent implements OnInit {
     let shoeSizes: Array<string>;
     //console.log(this.selectedPair.sizes)
 
-    if (!isNullOrUndefined(this.selectedPair.sizes)) {
+    if (!(this.selectedPair.sizes === undefined)) {
       shoeSizes = this.selectedPair.sizes
     } else {
       shoeSizes = this.default_sizes[this.sizeType]
