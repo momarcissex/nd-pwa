@@ -102,9 +102,9 @@ export class EditOfferComponent implements OnInit {
       type = 'item-size';
     }
 
-    setTimeout(() => {
+    /*setTimeout(() => {
       (document.getElementById(type) as HTMLInputElement).value = this.offerInfo.size;
-    }, 500);
+    }, 500);*/
   }
 
   /*conditionChanges($event) {
@@ -118,6 +118,11 @@ export class EditOfferComponent implements OnInit {
   }*/
 
   priceChanges($event) {
+    if (isNaN(+$event.target.value)) {
+      //(document.getElementById('priceInput') as HTMLInputElement).value = `${$event.target.value.slice(0, -1)}`
+      $event.preventDefault()
+    }
+    
     if ($event.target.value != '' && +$event.target.value >= 40) {
       if (this.offerInfo.price != $event.target.value && this.priceChanged == false) {
         this.priceChanged = true;
@@ -132,6 +137,13 @@ export class EditOfferComponent implements OnInit {
 
     this.showSaveChangesBtn();
   }
+  
+  isNumberKey($event) {
+    if (isNaN(+$event.target.value)) {
+      //(document.getElementById('priceInput') as HTMLInputElement).value = `${$event.target.value.slice(0, -1)}`
+      $event.preventDefault()
+    }
+  }
 
   sizeChanges($event) {
     if (this.offerInfo.size != $event.target.value && this.sizeChanged == false) {
@@ -144,9 +156,9 @@ export class EditOfferComponent implements OnInit {
   }
 
   updateOffer() {
-    const condition = 'new';
+    //const condition = 'new';
     const price = this.curPrice;
-    const size = this.curSize;
+    //const size = this.curSize;
 
     if (this.priceChanged || this.sizeChanged) {
       this.loading = true;

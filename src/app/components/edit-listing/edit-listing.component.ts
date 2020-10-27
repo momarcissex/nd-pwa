@@ -112,9 +112,9 @@ export class EditListingComponent implements OnInit {
       type = 'item-size';
     }
 
-    setTimeout(() => {
+    /*setTimeout(() => {
       (document.getElementById(type) as HTMLInputElement).value = this.offerInfo.size;
-    }, 500);
+    }, 500);*/
   }
 
   /*conditionChanges($event) {
