@@ -91,7 +91,7 @@ export class TransactionReviewComponent implements OnInit {
       //console.log(this.user)
 
       if (this.user.uid === this.transaction.buyerID && !(this.route.snapshot.queryParams.source === undefined) && date - this.transaction.purchaseDate <= 60000) {
-        gtag('require', 'ecommerce')
+        gtag('require', 'ecommerce', 'ecommerce.js')
 
         gtag('ecommerce:addTransaction', {
           'id':`${this.transaction.id}`,
