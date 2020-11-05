@@ -1920,3 +1920,135 @@ exports.updateContact = functions.https.onRequest((req, res) => {
         }
     })
 })
+
+exports.daily_report = functions.pubsub.schedule('every day 00:00').timeZone('America/Edmonton').onRun((context: any) => {
+    //get today's and yesterday's date
+    let today: any = new Date().setHours(0, 0, 0, 0)
+    let yesterday: any = new Date(today)
+    yesterday.setDate(new Date(today).getDate() - 1)
+    yesterday = yesterday.getTime()
+
+    let active_users = 0
+    let sign_ups = 0
+    let asks = 0
+    let bids = 0
+    let sales = 0
+
+    //get # of active users
+    admin.firestore().collection('users').where('last_login', '>=', yesterday).where('last_login', '<', today).get().then(response => {
+        active_users = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Active Users error: ', err)
+    })
+
+    //get # of signups
+    admin.firestore().collection('users').where('creation_date', '>=', yesterday).where('creation_date', '<', today).get().then(response => {
+        sign_ups = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get SignUps error: ', err)
+    })
+
+    //get # of asks
+    admin.firestore().collection('asks').where('created_at', '>=', yesterday).where('created_at', '<', today).get().then(response => {
+        asks = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Asks error: ', err)
+    })
+
+    //get # of bids
+    admin.firestore().collection('bids').where('created_at', '>=', yesterday).where('created_at', '<', today).get().then(response => {
+        bids = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Bids error: ', err)
+    })
+
+    //get # of sales
+    admin.firestore().collection('transactions').where('purchase_date', '>=', yesterday).where('purchase_date', '<', today).get().then(response => {
+        sales = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Sales error: ', err)
+    })
+
+    return axios.default({
+        method: 'POST',
+        url: 'https://hooks.slack.com/services/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',
+        data: `Day ${new Date(yesterday).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}`
+    }).then((response: any) => {
+        console.log(`Status code: ${response.status}`)
+        return null
+    }).catch((error: any) => {
+        console.log(`Error: ${error}`)
+        return null
+    })
+})
+
+exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone('America/Edmonton').onRun((context: any) => {
+    //get today's and last_week's date
+    let today: any = new Date().setHours(0, 0, 0, 0)
+    let last_week: any = new Date(today)
+    last_week.setDate(new Date(today).getDate() - 7)
+    last_week = last_week.getTime()
+
+    let active_users = 0
+    let sign_ups = 0
+    let asks = 0
+    let bids = 0
+    let sales = 0
+
+    //get # of active users
+    admin.firestore().collection('users').where('last_login', '>=', last_week).where('last_login', '<', today).get().then(response => {
+        active_users = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Active Users error: ', err)
+    })
+
+    //get # of signups
+    admin.firestore().collection('users').where('creation_date', '>=', last_week).where('creation_date', '<', today).get().then(response => {
+        sign_ups = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get SignUps error: ', err)
+    })
+
+    //get # of asks
+    admin.firestore().collection('asks').where('created_at', '>=', last_week).where('created_at', '<', today).get().then(response => {
+        asks = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Asks error: ', err)
+    })
+
+    //get # of bids
+    admin.firestore().collection('bids').where('created_at', '>=', last_week).where('created_at', '<', today).get().then(response => {
+        bids = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Bids error: ', err)
+    })
+
+    //get # of sales
+    admin.firestore().collection('transactions').where('purchase_date', '>=', last_week).where('purchase_date', '<', today).get().then(response => {
+        sales = response.docs.length
+    })
+    .catch(err => {
+        console.error('Get Sales error: ', err)
+    })
+
+    return axios.default({
+        method: 'POST',
+        url: 'https://hooks.slack.com/services/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',
+        data: `Week ${new Date(last_week).toISOString().slice(0,10)} to ${new Date(today).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}`
+    }).then((response: any) => {
+        console.log(`Status code: ${response.status}`)
+        return null
+    }).catch((error: any) => {
+        console.log(`Error: ${error}`)
+        return null
+    })
+})
