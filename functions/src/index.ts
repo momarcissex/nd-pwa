@@ -1921,7 +1921,7 @@ exports.updateContact = functions.https.onRequest((req, res) => {
     })
 })
 
-exports.daily_report = functions.pubsub.schedule('every day 00:00').timeZone('America/Edmonton').onRun((context: any) => {
+exports.daily_report = functions.pubsub.schedule('every day 00:50').timeZone('America/Edmonton').onRun((context: any) => {
     //get today's and yesterday's date
     let today: any = new Date().setHours(0, 0, 0, 0)
     let yesterday: any = new Date(today)
@@ -1974,10 +1974,12 @@ exports.daily_report = functions.pubsub.schedule('every day 00:00').timeZone('Am
         console.error('Get Sales error: ', err)
     })
 
+    const payload = { "text": `Day ${new Date(yesterday).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }
+
     return axios.default({
         method: 'POST',
         url: 'https://hooks.slack.com/services/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',
-        data: `Day ${new Date(yesterday).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}`
+        data: JSON.stringify(payload)
     }).then((response: any) => {
         console.log(`Status code: ${response.status}`)
         return null
@@ -2040,10 +2042,12 @@ exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone
         console.error('Get Sales error: ', err)
     })
 
+    const payload = { "text": `Week ${new Date(last_week).toISOString().slice(0,10)} to ${new Date(today).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }
+
     return axios.default({
         method: 'POST',
         url: 'https://hooks.slack.com/services/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',
-        data: `Week ${new Date(last_week).toISOString().slice(0,10)} to ${new Date(today).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}`
+        data: JSON.stringify(payload)
     }).then((response: any) => {
         console.log(`Status code: ${response.status}`)
         return null
