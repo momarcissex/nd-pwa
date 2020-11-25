@@ -280,16 +280,6 @@ export class CheckoutComponent implements OnInit {
         this.discount.type = "cash"
         this.discount.used_by = [this.user.uid]
         this.promoApplied = true
-      } else if (this.subtotal > 250 && this.subtotal <= 500) {
-        this.discount.amount = this.total * 0.030
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "percent"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
       } else if (this.subtotal > 500 && this.subtotal <= 750) {
         this.discount.amount = this.total * 0.035
         this.total = this.total - this.discount.amount
