@@ -1967,7 +1967,7 @@ exports.daily_report = functions.pubsub.schedule('every day 00:00').timeZone('Am
 
                         return axios.default({
                             method: 'POST',
-                            url: 'https://hooks.slack.com/services/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',
+                            url: env.slack.daily_report,
                             data: JSON.stringify(payload)
                         }).then((response: any) => {
                             console.log(`Status code: ${response.status}`)
@@ -2044,7 +2044,7 @@ exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone
 
                         return axios.default({
                             method: 'POST',
-                            url: 'https://hooks.slack.com/services/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',
+                            url: env.slack.weekly_report,
                             data: JSON.stringify(payload)
                         }).then((response: any) => {
                             console.log(`Status code: ${response.status}`)
