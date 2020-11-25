@@ -1921,12 +1921,19 @@ exports.updateContact = functions.https.onRequest((req, res) => {
     })
 })
 
-exports.daily_report = functions.pubsub.schedule('every day 00:50').timeZone('America/Edmonton').onRun((context: any) => {
-    //get today's and yesterday's date
-    let today: any = new Date().setHours(0, 0, 0, 0)
-    let yesterday: any = new Date(today)
-    yesterday.setDate(new Date(today).getDate() - 1)
-    yesterday = yesterday.getTime()
+exports.daily_report = functions.pubsub.schedule('every day 00:00').timeZone('America/Edmonton').onRun((context: any) => {
+    //get today's and yesterday's 
+    const date = new Date()
+    const tz = date.toLocaleString("en-US", { timeZone: "America/Edmonton", timeZoneName: "short" }).split(" ").slice(-1)[0];
+    const dateString = date.toString();
+    const offset = Date.parse(`${dateString} UTC`) - Date.parse(`${dateString} ${tz}`);
+
+    const t = new Date()
+    const d = new Date(+t.toLocaleString().split(',')[0].split('/')[2], +t.toLocaleString().split(',')[0].split('/')[0] - 1, +t.toLocaleString().split(',')[0].split('/')[1])
+
+
+    const today = new Date(d.getTime() - offset).getTime()
+    const yesterday = new Date(d.getTime() - offset).setDate(new Date(d.getTime() - offset).getDate() - 1)
 
     let active_users = 0
     let sign_ups = 0
@@ -1935,66 +1942,75 @@ exports.daily_report = functions.pubsub.schedule('every day 00:50').timeZone('Am
     let sales = 0
 
     //get # of active users
-    admin.firestore().collection('users').where('last_login', '>=', yesterday).where('last_login', '<', today).get().then(response => {
-        active_users = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Active Users error: ', err)
-    })
+    return admin.firestore().collection('users').where('last_login', '>=', yesterday).where('last_login', '<', today).get().then(acUsers_res => {
+        active_users = acUsers_res.docs.length
 
-    //get # of signups
-    admin.firestore().collection('users').where('creation_date', '>=', yesterday).where('creation_date', '<', today).get().then(response => {
-        sign_ups = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get SignUps error: ', err)
-    })
+        //get # of signups
+        return admin.firestore().collection('users').where('creation_date', '>=', yesterday).where('creation_date', '<', today).get().then(signUp_res => {
+            sign_ups = signUp_res.docs.length
 
-    //get # of asks
-    admin.firestore().collection('asks').where('created_at', '>=', yesterday).where('created_at', '<', today).get().then(response => {
-        asks = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Asks error: ', err)
-    })
+            //get # of asks
+            return admin.firestore().collection('asks').where('created_at', '>=', yesterday).where('created_at', '<', today).get().then(ask_response => {
+                asks = ask_response.docs.length
 
-    //get # of bids
-    admin.firestore().collection('bids').where('created_at', '>=', yesterday).where('created_at', '<', today).get().then(response => {
-        bids = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Bids error: ', err)
-    })
+                //get # of bids
+                return admin.firestore().collection('bids').where('created_at', '>=', yesterday).where('created_at', '<', today).get().then(bid_response => {
+                    bids = bid_response.docs.length
 
-    //get # of sales
-    admin.firestore().collection('transactions').where('purchase_date', '>=', yesterday).where('purchase_date', '<', today).get().then(response => {
-        sales = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Sales error: ', err)
-    })
+                    //get # of sales
+                    return admin.firestore().collection('transactions').where('purchaseDate', '>=', yesterday).where('purchaseDate', '<', today).get().then(sale_res => {
+                        sales = sale_res.docs.length
 
-    const payload = { "text": `Day ${new Date(yesterday).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }
+                        const payload = { "text": `Day ${new Date(yesterday).toISOString().slice(0, 10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }
 
-    return axios.default({
-        method: 'POST',
-        url: 'https://hooks.slack.com/services/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',
-        data: JSON.stringify(payload)
-    }).then((response: any) => {
-        console.log(`Status code: ${response.status}`)
-        return null
-    }).catch((error: any) => {
-        console.log(`Error: ${error}`)
-        return null
+                        console.log(payload)
+
+                        return axios.default({
+                            method: 'POST',
+                            url: 'https://hooks.slack.com/services/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',
+                            data: JSON.stringify(payload)
+                        }).then((response: any) => {
+                            console.log(`Status code: ${response.status}`)
+                            return null
+                        }).catch((error: any) => {
+                            console.log(`Error: ${error}`)
+                            return null
+                        })
+                    })
+                        .catch(err => {
+                            console.error('Get Sales error: ', err)
+                        })
+                })
+                    .catch(err => {
+                        console.error('Get Bids error: ', err)
+                    })
+            })
+                .catch(err => {
+                    console.error('Get Asks error: ', err)
+                })
+        })
+            .catch(err => {
+                console.error('Get SignUps error: ', err)
+            })
     })
+        .catch(err => {
+            console.error('Get Active Users error: ', err)
+        })
 })
 
 exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone('America/Edmonton').onRun((context: any) => {
     //get today's and last_week's date
-    let today: any = new Date().setHours(0, 0, 0, 0)
-    let last_week: any = new Date(today)
-    last_week.setDate(new Date(today).getDate() - 7)
-    last_week = last_week.getTime()
+    const date = new Date()
+    const tz = date.toLocaleString("en-US", { timeZone: "America/Edmonton", timeZoneName: "short" }).split(" ").slice(-1)[0];
+    const dateString = date.toString();
+    const offset = Date.parse(`${dateString} UTC`) - Date.parse(`${dateString} ${tz}`);
+
+    const t = new Date()
+    const d = new Date(+t.toLocaleString().split(',')[0].split('/')[2], +t.toLocaleString().split(',')[0].split('/')[0] - 1, +t.toLocaleString().split(',')[0].split('/')[1])
+
+
+    const today = new Date(d.getTime() - offset).getTime()
+    const last_week = new Date(d.getTime() - offset).setDate(new Date(d.getTime() - offset).getDate() - 7)
 
     let active_users = 0
     let sign_ups = 0
@@ -2003,56 +2019,58 @@ exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone
     let sales = 0
 
     //get # of active users
-    admin.firestore().collection('users').where('last_login', '>=', last_week).where('last_login', '<', today).get().then(response => {
-        active_users = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Active Users error: ', err)
-    })
+    return admin.firestore().collection('users').where('last_login', '>=', last_week).where('last_login', '<', today).get().then(acUsers_res => {
+        active_users = acUsers_res.docs.length
 
-    //get # of signups
-    admin.firestore().collection('users').where('creation_date', '>=', last_week).where('creation_date', '<', today).get().then(response => {
-        sign_ups = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get SignUps error: ', err)
-    })
+        //get # of signups
+        return admin.firestore().collection('users').where('creation_date', '>=', last_week).where('creation_date', '<', today).get().then(signUp_res => {
+            sign_ups = signUp_res.docs.length
 
-    //get # of asks
-    admin.firestore().collection('asks').where('created_at', '>=', last_week).where('created_at', '<', today).get().then(response => {
-        asks = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Asks error: ', err)
-    })
+            //get # of asks
+            return admin.firestore().collection('asks').where('created_at', '>=', last_week).where('created_at', '<', today).get().then(ask_res => {
+                asks = ask_res.docs.length
 
-    //get # of bids
-    admin.firestore().collection('bids').where('created_at', '>=', last_week).where('created_at', '<', today).get().then(response => {
-        bids = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Bids error: ', err)
-    })
+                //get # of bids
+                return admin.firestore().collection('bids').where('created_at', '>=', last_week).where('created_at', '<', today).get().then(bid_res => {
+                    bids = bid_res.docs.length
 
-    //get # of sales
-    admin.firestore().collection('transactions').where('purchase_date', '>=', last_week).where('purchase_date', '<', today).get().then(response => {
-        sales = response.docs.length
-    })
-    .catch(err => {
-        console.error('Get Sales error: ', err)
-    })
+                    //get # of sales
+                    return admin.firestore().collection('transactions').where('purchaseDate', '>=', last_week).where('purchaseDate', '<', today).get().then(sale_res => {
+                        sales = sale_res.docs.length
 
-    const payload = { "text": `Week ${new Date(last_week).toISOString().slice(0,10)} to ${new Date(today).toISOString().slice(0,10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }
+                        const payload = { "text": `Week ${new Date(last_week).toISOString().slice(0, 10)} to ${new Date(today).toISOString().slice(0, 10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }
 
-    return axios.default({
-        method: 'POST',
-        url: 'https://hooks.slack.com/services/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',
-        data: JSON.stringify(payload)
-    }).then((response: any) => {
-        console.log(`Status code: ${response.status}`)
-        return null
-    }).catch((error: any) => {
-        console.log(`Error: ${error}`)
-        return null
+                        console.log(payload)
+
+                        return axios.default({
+                            method: 'POST',
+                            url: 'https://hooks.slack.com/services/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',
+                            data: JSON.stringify(payload)
+                        }).then((response: any) => {
+                            console.log(`Status code: ${response.status}`)
+                            return null
+                        }).catch((error: any) => {
+                            console.log(`Error: ${error}`)
+                            return null
+                        })
+                    })
+                        .catch(err => {
+                            console.error('Get Sales error: ', err)
+                        })
+                })
+                    .catch(err => {
+                        console.error('Get Bids error: ', err)
+                    })
+            })
+                .catch(err => {
+                    console.error('Get Asks error: ', err)
+                })
+        })
+            .catch(err => {
+                console.error('Get SignUps error: ', err)
+            })
     })
+        .catch(err => {
+            console.error('Get Active Users error: ', err)
+        })
 })
