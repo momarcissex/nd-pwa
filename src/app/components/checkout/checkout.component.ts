@@ -270,7 +270,7 @@ export class CheckoutComponent implements OnInit {
         used_by: []
       }
 
-      if (this.subtotal <= 250) {
+      if (this.subtotal <= 500) {
         this.discount.amount = 17
         this.total = this.total - this.discount.amount
         this.discount.cardID = "THANKS2020"
