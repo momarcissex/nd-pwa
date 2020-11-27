@@ -19,7 +19,7 @@
   <h2>Holiday Sales</h2>
 
   <div class="showcase-discovery">
-    <a *ngFor="let discovery of discoveries" class="discovery-card" routerLink="/product/{{ discovery.productID }}">
+    <a *ngFor="let discovery of discoveries" class="discovery-card" [routerLink]="['checkout']" [queryParams]="{product: discovery.listingID, sell: false}">
       <div>
         <h6>{{ discovery.size }}</h6>
         <h6>{{ newPrice(discovery.price) | currency: 'CAD' }} <span style="text-decoration: line-through; color: #ef4135;">{{ discovery.price | currency: 'CAD' }}</span></h6>
