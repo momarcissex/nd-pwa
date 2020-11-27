@@ -78,7 +78,7 @@
 
 // MEDIA QUERIES
 
-@media only screen and (min-width: 0px) and (max-width: 400px) {
+@media only screen and (min-width: 0px) and (max-width: 399.9px) {
     .showcase-discovery {
         grid-template-columns: 1fr 1fr;
 
@@ -91,12 +91,13 @@
                 height: 75px;
             }
 
-            h3, h6 {
+            h3,
+            h6 {
                 font-size: 0.6rem;
             }
 
             div > h6:last-child {
-                font-size: .40rem;
+                font-size: 0.4rem;
             }
         }
     }
@@ -106,7 +107,7 @@
     }
 }
 
-@media only screen and (min-width: 400px) and (max-width: 800px) {
+@media only screen and (min-width: 400px) and (max-width: 799.9px) {
     .showcase-discovery {
         grid-template-columns: 1fr 1fr;
 
@@ -119,8 +120,13 @@
                 height: 100px;
             }
 
-            h3 {
-                font-size: 0.75rem;
+            h3,
+            h6 {
+                font-size: 0.7rem;
+            }
+
+            div > h6:last-child {
+                font-size: 0.5rem;
             }
         }
     }
@@ -143,8 +149,13 @@
                 height: 100px;
             }
 
-            h3 {
-                font-size: 0.75rem;
+            h3,
+            h6 {
+                font-size: 0.8rem;
+            }
+
+            div > h6:last-child {
+                font-size: 0.6rem;
             }
         }
     }
@@ -167,8 +178,13 @@
                 height: 150px;
             }
 
-            h3 {
-                font-size: 0.8rem;
+            h3,
+            h6 {
+                font-size: 0.9rem;
+            }
+
+            div > h6:last-child {
+                font-size: 0.7rem;
             }
         }
     }
@@ -191,8 +207,13 @@
                 height: 175px;
             }
 
-            h3 {
+            h3,
+            h6 {
                 font-size: 1rem;
+            }
+
+            div > h6:last-child {
+                font-size: 0.8rem;
             }
         }
     }
@@ -215,8 +236,13 @@
                 height: 175px;
             }
 
-            h3 {
-                font-size: 1rem;
+            h3,
+            h6 {
+                font-size: 1.1rem;
+            }
+
+            div > h6:last-child {
+                font-size: 9rem;
             }
         }
     }
