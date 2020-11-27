@@ -6,6 +6,7 @@ import { MetaService } from 'src/app/services/meta.service';
 import { UserService } from 'src/app/services/user.service';
 import { SlackService } from 'src/app/services/slack.service';
 import { User } from 'src/app/models/user';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -28,12 +29,20 @@ export class HomeComponent implements OnInit {
     private auth: AuthService,
     private seo: MetaService,
     private userService: UserService,
-    private slackService: SlackService
+    private slackService: SlackService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.title.setTitle(`NXTDROP: Buy and Sell Sneakers in Canada`);
     this.seo.addTags('Home');
+
+    this.route.queryParams.subscribe(r => {
+      if (r.holidaysales && r.holidaysales != undefined) {
+        const el = document.getElementById('discount')
+        el.scrollIntoView()
+      }
+    })
 
     this.auth.isConnected()
       .then(res => {

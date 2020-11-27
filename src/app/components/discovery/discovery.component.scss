@@ -1,4 +1,4 @@
-@import '../../base_styles/base';
+@import "../../base_styles/base";
 
 .showcase-discovery {
     min-height: 250px;
@@ -12,8 +12,6 @@
     }
 
     .discovery-card {
-        width: 148px;
-        height: 250px;
         text-align: center;
         border: 1px solid $lightgrey;
         border-radius: $spacing-xsmall;
@@ -26,7 +24,8 @@
 
         &:hover {
             border-color: $matteblue;
-            h6, h3 {
+            h6,
+            h3 {
                 color: $matteblue;
             }
         }
@@ -40,13 +39,22 @@
             align-self: center;
         }
 
+        div {
+            display: grid;
+            align-items: center;
+            grid-template-columns: 1fr 3fr;
+
+            h6:last-child {
+                justify-self: end;
+            }
+        }
+
         h6 {
             text-align: left;
             margin-bottom: $spacing-large;
         }
 
         h3 {
-            font-size: $font-small;
             font-weight: $weight-bold;
         }
     }
@@ -62,7 +70,7 @@
     letter-spacing: 2px;
     font-weight: $weight-black;
     background: $black;
-    
+
     &:hover {
         background: $matteblack;
     }
@@ -73,6 +81,24 @@
 @media only screen and (min-width: 0px) and (max-width: 400px) {
     .showcase-discovery {
         grid-template-columns: 1fr 1fr;
+
+        .discovery-card {
+            width: 80%;
+            height: 200px;
+
+            img {
+                width: 90%;
+                height: 75px;
+            }
+
+            h3, h6 {
+                font-size: 0.6rem;
+            }
+
+            div > h6:last-child {
+                font-size: .40rem;
+            }
+        }
     }
 
     .discovery-btn {
@@ -85,12 +111,16 @@
         grid-template-columns: 1fr 1fr;
 
         .discovery-card {
-            width: 170px;
+            width: 75%;
             height: 300px;
 
             img {
-                width: 125px;
-                height: 125px;
+                width: 90%;
+                height: 100px;
+            }
+
+            h3 {
+                font-size: 0.75rem;
             }
         }
     }
@@ -105,12 +135,16 @@
         grid-template-columns: 1fr 1fr 1fr;
 
         .discovery-card {
-            width: 200px;
+            width: 75%;
             height: 300px;
 
             img {
-                width: 150px;
-                height: 150px;
+                width: 90%;
+                height: 100px;
+            }
+
+            h3 {
+                font-size: 0.75rem;
             }
         }
     }
@@ -125,12 +159,16 @@
         grid-template-columns: 1fr 1fr 1fr 1fr;
 
         .discovery-card {
-            width: 250px;
+            width: 75%;
             height: 350px;
 
             img {
-                width: 150px;
+                width: 80%;
                 height: 150px;
+            }
+
+            h3 {
+                font-size: 0.8rem;
             }
         }
     }
@@ -145,12 +183,16 @@
         grid-template-columns: 1fr 1fr 1fr 1fr;
 
         .discovery-card {
-            width: 300px;
+            width: 75%;
             height: 400px;
 
             img {
-                width: 200px;
-                height: 200px;
+                width: 70%;
+                height: 175px;
+            }
+
+            h3 {
+                font-size: 1rem;
             }
         }
     }
@@ -165,12 +207,16 @@
         grid-template-columns: 1fr 1fr 1fr 1fr;
 
         .discovery-card {
-            width: 350px;
-            height: 450px;
+            width: 75%;
+            height: 400px;
 
             img {
-                width: 225px;
-                height: 225px;
+                width: 70%;
+                height: 175px;
+            }
+
+            h3 {
+                font-size: 1rem;
             }
         }
     }
