@@ -95,10 +95,6 @@
         text-transform: uppercase;
         display: block;
         border-radius: 2rem;
-
-        &:hover {
-          background: #a3cc00;
-        }
       }
 
       .error {
@@ -356,6 +352,10 @@
         margin: 1.5rem auto;
         font-size: 0.7rem !important;
         padding: 1rem 0.4rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
       }
     }
   }
@@ -399,6 +399,10 @@
         margin: 1.5rem auto;
         font-size: 0.8rem !important;
         padding: 1.2rem 0.5rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
       }
     }
   }
@@ -442,6 +446,10 @@
         margin: 1.5rem auto;
         font-size: 0.8rem !important;
         padding: 1.2rem 0.6rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
       }
     }
   }
@@ -485,6 +493,10 @@
         margin: 1.8rem auto;
         font-size: 1.1rem !important;
         padding: 1.3rem 0.9rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
       }
     }
   }
