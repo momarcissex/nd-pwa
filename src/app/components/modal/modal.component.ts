@@ -23,6 +23,8 @@ export class ModalComponent implements OnInit {
   errorMessage: string = ''
 
   giveaway: boolean = false
+  capture: boolean = false
+  discount: boolean = false
 
   constructor(
     private modalService: ModalService,
@@ -40,6 +42,14 @@ export class ModalComponent implements OnInit {
 
         if (res === 'giveaway') {
           this.giveaway = true
+        } else if (res === 'capture') {
+          (document.getElementById('subscription-email') as HTMLInputElement).value = ''
+          this.capture = true
+        } else if (res === 'discount') {
+          this.discount = true
+          document.getElementById('modal-card').classList.add('discount-background')
+        } else {
+          this.close()
         }
       }
     })
@@ -68,7 +78,6 @@ export class ModalComponent implements OnInit {
   }
 
   open() {
-    (document.getElementById('subscription-email') as HTMLInputElement).value = ''
     this.subscribed = false
     this.subscribeError = false
     this.subscribeLoading = false
@@ -130,6 +139,13 @@ export class ModalComponent implements OnInit {
         this.subscribeLoading = false
       }, 3000);
     }
+  }
+
+  startShopping() {
+    this.router.navigate(['/'], {
+      queryParams: { holidaysales: true }
+    })
+    this.close()
   }
 
 }

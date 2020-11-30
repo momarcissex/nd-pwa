@@ -6,7 +6,6 @@ import { AuthService } from './auth.service';
 import * as firebase from 'firebase/app';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { isNullOrUndefined } from 'util';
 import { SlackService } from './slack.service';
 import { Bid } from '../models/bid';
 import { User } from '../models/user';
@@ -91,7 +90,7 @@ export class TransactionService {
     }
 
     //add discount to transaction data
-    if (!isNullOrUndefined(discount) && discount.cardID != '') {
+    if (discount != undefined && discount.cardID != '') {
       if (discount.reusable) {
         transactionData.discount = discount
         const discountRef = this.afs.firestore.collection(`nxtcards`).doc(`${discount.cardID}`)
@@ -162,7 +161,7 @@ export class TransactionService {
     batch.set(tranRef, transactionData)
 
     //remove buyer's highest bid
-    if (!isNullOrUndefined(userBid)) {
+    if (userBid != undefined) {
       let p: Bid[] = []
 
       await prodRef.collection(`offers`).orderBy(`price`, `desc`).limit(2).get().then(snap => {
@@ -207,7 +206,7 @@ export class TransactionService {
           mode: 'purchase'
         }).subscribe()
 
-        if (product.listingID === size_prices[0].listingID && !isNullOrUndefined(size_prices[1])) {
+        if (product.listingID === size_prices[0].listingID && size_prices[1] != undefined) {
           this.http.put(`${environment.cloud.url}lowestAskNotification`, {
             product_id: size_prices[1].productID,
             seller_id: size_prices[1].sellerID,
@@ -340,7 +339,7 @@ export class TransactionService {
     batch.set(tranRef, transactionData)
 
     //remove seller's lowest ask
-    if (!isNullOrUndefined(userAsk)) {
+    if (userAsk != undefined) {
       let p: Ask[] = []
       //get lowest two prices
       await prodRef.collection(`listings`).orderBy(`price`, `asc`).limit(2).get().then(snap => {
@@ -379,7 +378,7 @@ export class TransactionService {
           //console.error(err)
         })
 
-        if (product.offerID === size_prices[0].offerID && !isNullOrUndefined(size_prices[1])) {
+        if (product.offerID === size_prices[0].offerID && size_prices[1] != undefined) {
           this.http.put(`${environment.cloud.url}highestBidNotification`, {
             product_id: size_prices[1].productID,
             buyer_id: size_prices[1].buyerID,
@@ -435,7 +434,7 @@ export class TransactionService {
     });
 
     //add discount if applicable
-    if (!isNullOrUndefined(discount)) {
+    if (discount != undefined) {
       batch.update(tranRef, {
         discount,
         total: firebase.firestore.FieldValue.increment(-discount.amount)

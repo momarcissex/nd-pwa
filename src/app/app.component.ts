@@ -38,6 +38,8 @@ export class AppComponent implements AfterViewInit {
       filter(event => event instanceof NavigationEnd)
     );
 
+    this.modalService.openModal('discount')
+
     if (isPlatformBrowser(this._platformId)) {
       window.Intercom = window.Intercom || {};
       this.auth.isConnected()
@@ -66,9 +68,9 @@ export class AppComponent implements AfterViewInit {
               app_id: "w1p7ooc8"
             });
 
-            setTimeout(() => {
+            /*setTimeout(() => {
               this.modalService.openModal('capture')
-            }, 10000);
+            }, 10000);*/
           }
         }).catch(err => {
           console.error(err);

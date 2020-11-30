@@ -47,20 +47,14 @@
     justify-self: center;
     border-radius: $spacing-xsmall;
     color: $matteblack;
-    height: 60vh;
 
-    img {
+    /*img {
       object-fit: cover;
       border-top-left-radius: $spacing-small;
       border-bottom-left-radius: $spacing-small;
-    }
+    }*/
 
     div {
-      display: grid;
-      padding: $spacing-xsmall $spacing-small;
-      text-align: center;
-      align-items: center;
-
       input {
         width: 80%;
         padding: $spacing-small;
@@ -71,13 +65,19 @@
         font-size: 1;
       }
 
-      img {
-        justify-self: center;
+      #top {
+        display: grid;
+
+        fa-icon {
+          justify-self: end;
+          cursor: pointer;
+        }
       }
 
-      fa-icon {
-        justify-self: end;
-        cursor: pointer;
+      h3,
+      h6 {
+        color: #fff;
+        text-align: center;
       }
 
       .dark-btn {
@@ -90,12 +90,11 @@
       }
 
       button {
-        background: $black;
+        background: $green;
+        border: none;
         text-transform: uppercase;
-
-        &:hover {
-          background: $matteblack;
-        }
+        display: block;
+        border-radius: 2rem;
       }
 
       .error {
@@ -117,194 +116,340 @@
       }
     }
   }
+
+  .discount-background {
+    background: rgb(34, 32, 33);
+    background: -moz-linear-gradient(
+      345deg,
+      rgba(34, 32, 33, 1) 0%,
+      rgba(6, 169, 77, 1) 87%,
+      rgba(204, 255, 0, 1) 100%
+    );
+    background: -webkit-linear-gradient(
+      345deg,
+      rgba(34, 32, 33, 1) 0%,
+      rgba(6, 169, 77, 1) 87%,
+      rgba(204, 255, 0, 1) 100%
+    );
+    background: linear-gradient(345deg, rgba(34, 32, 33, 1) 0%, rgba(6, 169, 77, 1) 87%, rgba(204, 255, 0, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#222021",endColorstr="#ccff00",GradientType=1);
+
+    fa-icon {
+      color: #fff;
+    }
+  }
 }
 
 // MEDIA QUERIES
 
-@media only screen and (min-width: 0px) and (max-width: 400px) {
+@media only screen and (min-width: 0px) and (max-width: 399.9px) {
   .modal-card {
     width: 90%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
 
     div {
       grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
 
-      input {
-        font-size: 0.6rem;
-      }
-
-      img {
-        width: 20px;
+      #top {
+        margin: 0.8rem;
         height: 20px;
+        margin-bottom: 25px;
       }
-
-      h3 {
-        font-size: $font-small;
-      }
-
-      p {
-        font-size: $font-xsmall;
-      }
-
-      button {
-        font-size: $font-xsmall !important;
-        padding: $spacing-normal $spacing-xxsmall;
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: 400px) and (max-width: 800px) {
-  .modal-card {
-    width: 90%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-
-    div {
-      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
 
       input {
         font-size: 0.6rem;
       }
 
       img {
-        width: 40px;
-        height: 40px;
+        object-fit: contain;
+        width: 100%;
+        height: 100px;
       }
 
       h3 {
-        font-size: $font-small;
+        font-size: 1rem;
+        margin: 0.5rem;
       }
 
-      p {
-        font-size: $font-small;
+      h6 {
+        font-size: 0.6rem;
+        margin: 1rem auto;
       }
 
       button {
-        font-size: $font-xsmall !important;
-        padding: $spacing-normal $spacing-xxsmall;
+        width: 70%;
+        margin: 1.5rem auto;
+        font-size: 0.7rem !important;
+        padding: 1rem 0.4rem;
       }
     }
   }
 }
 
-@media only screen and (min-width: 800px) and (max-width: 1200px) {
+@media only screen and (min-width: 400px) and (max-width: 599.9px) {
   .modal-card {
-    width: 60%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
+    width: 70%;
 
     div {
-      grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
+      }
 
       input {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
       }
 
       img {
-        width: 40px;
-        height: 40px;
+        object-fit: contain;
+        width: 100%;
+        height: 100px;
       }
 
       h3 {
-        font-size: $font-normal;
+        font-size: 1rem;
+        margin: 0.5rem;
       }
 
-      p {
-        font-size: $font-normal;
+      h6 {
+        font-size: 0.6rem;
+        margin: 1rem auto;
       }
 
       button {
-        font-size: $font-small !important;
-        padding: $spacing-normal $spacing-xxsmall;
+        width: 70%;
+        margin: 1.5rem auto;
+        font-size: 0.7rem !important;
+        padding: 1rem 0.4rem;
       }
     }
   }
 }
 
-@media only screen and (min-width: 1200px) and (max-width: 1800px) {
-  .modal-card {
-    width: 40%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
-
-    div {
-      grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
-
-      input {
-        font-size: 0.8rem;
-      }
-
-      fa-icon {
-        font-size: $font-large;
-      }
-
-      img {
-        width: 40px;
-        height: 40px;
-      }
-
-      h3 {
-        font-size: $font-normal;
-      }
-
-      p {
-        font-size: $font-normal;
-      }
-
-      button {
-        font-size: $font-small !important;
-        padding: $spacing-normal $spacing-xxsmall;
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: 1800px) and (max-width: 2000px) {
+@media only screen and (min-width: 600px) and (max-width: 799.9px) {
   .modal-card {
     width: 50%;
 
-    img {
-      width: 100%;
-      height: 100%;
-    }
-
     div {
-      grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
+      }
 
       input {
-        font-size: 0.9rem;
+        font-size: 0.6rem;
       }
 
       img {
-        width: 40px;
-        height: 40px;
+        object-fit: contain;
+        width: 100%;
+        height: 150px;
       }
 
       h3 {
-        font-size: $font-normal;
+        font-size: 1.25rem;
+        margin: 0.5rem;
       }
 
-      p {
-        font-size: $font-normal;
+      h6 {
+        font-size: 0.8rem;
+        margin: 1rem auto;
       }
 
       button {
-        font-size: $font-small !important;
-        padding: $spacing-normal $spacing-xxsmall;
+        width: 70%;
+        margin: 1.5rem auto;
+        font-size: 0.7rem !important;
+        padding: 1rem 0.4rem;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 800px) and (max-width: 999.9px) {
+  .modal-card {
+    width: 45%;
+
+    div {
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
+      }
+
+      input {
+        font-size: 0.6rem;
+      }
+
+      img {
+        object-fit: contain;
+        width: 100%;
+        height: 150px;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        margin: 0.5rem;
+      }
+
+      h6 {
+        font-size: 0.8rem;
+        margin: 1rem auto;
+      }
+
+      button {
+        width: 70%;
+        margin: 1.5rem auto;
+        font-size: 0.7rem !important;
+        padding: 1rem 0.4rem;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1000px) and (max-width: 1199.9px) {
+  .modal-card {
+    width: 40%;
+
+    div {
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
+      }
+
+      input {
+        font-size: 0.6rem;
+      }
+
+      img {
+        object-fit: contain;
+        width: 100%;
+        height: 150px;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        margin: 0.5rem;
+      }
+
+      h6 {
+        font-size: 0.8rem;
+        margin: 1rem auto;
+      }
+
+      button {
+        width: 70%;
+        margin: 1.5rem auto;
+        font-size: 0.7rem !important;
+        padding: 1rem 0.4rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1799.9px) {
+  .modal-card {
+    width: 35%;
+
+    div {
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
+      }
+
+      input {
+        font-size: 0.6rem;
+      }
+
+      img {
+        object-fit: contain;
+        width: 100%;
+        height: 200px;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        margin: 0.5rem;
+      }
+
+      h6 {
+        font-size: 1rem;
+        margin: 1rem auto;
+      }
+
+      button {
+        width: 60%;
+        margin: 1.5rem auto;
+        font-size: 0.8rem !important;
+        padding: 1.2rem 0.5rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1800px) and (max-width: 1999.9px) {
+  .modal-card {
+    width: 25%;
+
+    div {
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
+      }
+
+      input {
+        font-size: 0.6rem;
+      }
+
+      img {
+        object-fit: contain;
+        width: 100%;
+        height: 200px;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        margin: 0.5rem;
+      }
+
+      h6 {
+        font-size: 1rem;
+        margin: 1rem auto;
+      }
+
+      button {
+        width: 60%;
+        margin: 1.5rem auto;
+        font-size: 0.8rem !important;
+        padding: 1.2rem 0.6rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
       }
     }
   }
@@ -312,40 +457,91 @@
 
 @media only screen and (min-width: 2000px) {
   .modal-card {
-    width: 50%;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
+    width: 30%;
 
     div {
-      grid-template-rows: 2fr 4fr 4fr 8fr 4fr;
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
 
-      input {
-        font-size: 1rem;
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
       }
 
-      fa-icon {
-        font-size: $font-xxlarge;
+      input {
+        font-size: 0.6rem;
       }
 
       img {
-        width: 100px;
+        object-fit: contain;
+        width: 100%;
+        height: 300px;
+      }
+
+      h3 {
+        font-size: 1.8rem;
+        margin: 0.8rem;
+      }
+
+      h6 {
+        font-size: 1.3rem;
+        margin: 1.3rem auto;
+      }
+
+      button {
+        width: 50%;
+        margin: 1.8rem auto;
+        font-size: 1.1rem !important;
+        padding: 1.3rem 0.9rem;
+
+        &:hover {
+          background: #a3cc00 !important;
+        }
+      }
+    }
+  }
+}
+
+// MEDIA QUERIES LANDSCAPE
+
+@media only screen and (min-width: 400px) and (max-width: 599.9px) and (orientation: landscape) {
+  .modal-card {
+    width: 50%;
+
+    div {
+      grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
+
+      #top {
+        margin: 0.8rem;
+        height: 20px;
+        margin-bottom: 25px;
+      }
+
+      input {
+        font-size: 0.6rem;
+      }
+
+      img {
+        object-fit: contain;
+        width: 100%;
         height: 100px;
       }
 
       h3 {
-        font-size: $font-large;
+        font-size: 1rem;
+        margin: 0.5rem;
       }
 
-      p {
-        font-size: $font-large;
+      h6 {
+        font-size: 0.6rem;
+        margin: 1rem auto;
       }
 
       button {
-        font-size: $font-normal !important;
-        padding: $spacing-normal $spacing-xxsmall;
+        width: 70%;
+        margin: 1.5rem auto;
+        font-size: 0.7rem !important;
+        padding: 1rem 0.4rem;
       }
     }
   }
