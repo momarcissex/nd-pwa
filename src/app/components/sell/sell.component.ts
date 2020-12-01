@@ -13,7 +13,8 @@ import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { User } from 'firebase';
-import { faBox, faCircleNotch, faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faCircleNotch, faEnvelope, faLink, faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
+import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 declare const gtag: any;
 
@@ -28,6 +29,10 @@ export class SellComponent implements OnInit {
   faBox = faBox
   faMoneyBillWave = faMoneyBillWave
   faCircleNotch = faCircleNotch
+  faFacebookF = faFacebookF
+  faTwitter = faTwitter
+  faEnvelope = faEnvelope
+  faLink = faLink
 
   // Algolia Set up
   algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey)
@@ -376,6 +381,61 @@ export class SellComponent implements OnInit {
     return this.ngZone.run(() => {
       return this.router.navigate([`/product/${this.selectedPair.productID}`]);
     });
+  }
+
+  share(social: string) {
+    if (isPlatformBrowser(this._platformId)) {
+      if (social === 'fb') {
+        window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.selectedPair.productID}&utm_source=share-facebook&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
+        gtag('event', 'share_ask_fb', {
+          'event_category': 'engagement',
+          'event_label': this.selectedPair.model
+        });
+        return false;
+      } else if (social === 'twitter') {
+        window.open(`https://twitter.com/intent/tweet?text=I just listed my ${this.selectedPair.model} ${this.selectedSize} for ${this.pairPrice} on @nxtdrop https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-twitter`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
+        gtag('event', 'share_ask_twitter', {
+          'event_category': 'engagement',
+          'event_label': this.selectedPair.model
+        });
+        return false;
+      } else if (social === 'mail') {
+        window.location.href = `mailto:?subject=I listed my ${this.selectedPair.model} ${this.selectedSize} on NXTDROP&body=Hey, I just listed my ${this.selectedPair.model} ${this.selectedSize} for ${this.pairPrice} and thought you'd be interested. Check it out here https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-mail`;
+        gtag('event', 'share_ask_mail', {
+          'event_category': 'engagement',
+          'event_label': this.selectedPair.model
+        });
+        return false;
+      } else if (social === 'copy_link') {
+        this.copyStringToClipboard(`https://nxtdrop.com/product/${this.selectedPair.productID}`);
+        gtag('event', 'share_ask_link', {
+          'event_category': 'engagement',
+          'event_label': this.selectedPair.model
+        });
+      } else {
+        return false;
+      }
+    }
+  }
+
+  copyStringToClipboard(str: string) {
+    if (isPlatformBrowser(this._platformId)) {
+      const el = document.createElement('textarea');
+      el.value = str;
+      el.style.visibility = 'none';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      document.getElementById('tooltiptext').style.visibility = 'visible';
+      document.getElementById('tooltiptext').style.opacity = '1';
+
+      setTimeout(() => {
+        document.getElementById('tooltiptext').style.visibility = 'none';
+        document.getElementById('tooltiptext').style.opacity = '0';
+      }, 3000);
+    }
   }
 
 }

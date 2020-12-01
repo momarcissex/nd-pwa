@@ -150,8 +150,26 @@
 
     <div class="review" *ngIf="listed">
       <div class="review-container">
-        <div>
-          <h2>Your Bid is now live!</h2>
+        <h2>Your Bid is now live!</h2>
+
+        <h3>Want to get your bid accepted faster? Share your Bid.</h3>
+
+        <div class="share-btns">
+          <a href="https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-facebook&display=popup&ref=plugin" class="fb-share-btn" (click)="share('fb')">
+            <fa-icon [icon]="faFacebookF"></fa-icon>
+          </a>
+          <a href="https://twitter.com/intent/tweet?text=I just placed a bid on the ${this.selectedPair.model} on @nxtdrop https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-twitter"
+            class="twitter-share-btn" (click)="share('twitter')">
+            <fa-icon [icon]="faTwitter"></fa-icon>
+          </a>
+          <a href="mailto:?subject=Check out the ${this.selectedPair.model} available on NXTDROP&body=Hey, I just came across the ${this.selectedPair.model} and thought you'd be interested. Check it out here https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-mail"
+            class="mail-share-btn" (click)="share('mail')">
+            <fa-icon [icon]="faEnvelope"></fa-icon>
+          </a>
+          <a class="link-share-btn" (click)="share('copy_link')">
+            <fa-icon [icon]="faLink"></fa-icon>
+            <span class="tooltiptext" id="tooltiptext">Copied!</span>
+          </a>
         </div>
 
         <div class="details">
