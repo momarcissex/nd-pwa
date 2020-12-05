@@ -426,7 +426,7 @@ export class CheckoutComponent implements OnInit {
             this.showShipping()
             this.showCheckoutBtns()
 
-            if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1606842000000) {
+            if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1607749200000) {
               console.log('work')
               this.discounted = true
               this.applyPromo()
