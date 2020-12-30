@@ -64,7 +64,7 @@ export class DiscoveryComponent implements OnInit {
 
       return newPrice
     } else if (oldPrice > 500 && oldPrice <= 750) {
-      const discount = oldPrice * 0.035
+      const discount = oldPrice * 0.036
       const newPrice = oldPrice - discount
 
       return newPrice
@@ -74,7 +74,7 @@ export class DiscoveryComponent implements OnInit {
 
       return newPrice
     } else if (oldPrice > 1000 && oldPrice <= 1250) {
-      const discount = oldPrice * 0.028
+      const discount = oldPrice * 0.029
       const newPrice = oldPrice - discount
 
       return newPrice

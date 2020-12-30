@@ -161,7 +161,6 @@ export class CheckoutComponent implements OnInit {
       style: {
         label: 'paypal',
         layout: 'vertical',
-        color: 'silver',
         shape: 'rect',
         tagline: false
       },
@@ -240,6 +239,8 @@ export class CheckoutComponent implements OnInit {
       onCancel: (data, actions) => {
         //console.log('OnCancel', data, actions);
 
+        (document.getElementById('paypal-checkout') as HTMLInputElement).style.backgroundColor = "transparent"
+
       },
       onError: err => {
         //console.log('OnError', err);
@@ -247,6 +248,12 @@ export class CheckoutComponent implements OnInit {
       },
       onClick: (data, actions) => {
         //console.log('onClick', data, actions);
+
+        (document.getElementById('paypal-checkout') as HTMLInputElement).style.backgroundColor = "white"
+
+        console.log((this.total).toString())
+
+
         gtag('event', 'PP_click', {
           'event_category': 'ecommerce',
           'event_label': this.product.model
@@ -256,7 +263,6 @@ export class CheckoutComponent implements OnInit {
   }
 
   applyPromo() {
-    const code = (document.getElementById('promo-code') as HTMLInputElement).value;
     const now = Date.now();
 
     if (this.discounted) {
@@ -281,7 +287,7 @@ export class CheckoutComponent implements OnInit {
         this.discount.used_by = [this.user.uid]
         this.promoApplied = true
       } else if (this.subtotal > 500 && this.subtotal <= 750) {
-        this.discount.amount = this.total * 0.035
+        this.discount.amount = +(this.subtotal * 0.036).toFixed(2)
         this.total = this.total - this.discount.amount
         this.discount.cardID = "THANKS2020"
         this.discount.expirationDate = now
@@ -301,7 +307,7 @@ export class CheckoutComponent implements OnInit {
         this.discount.used_by = [this.user.uid]
         this.promoApplied = true
       } else if (this.subtotal > 1000 && this.subtotal <= 1250) {
-        this.discount.amount = this.total * 0.028
+        this.discount.amount = +(this.subtotal * 0.029).toFixed(2)
         this.total = this.total - this.discount.amount
         this.discount.cardID = "THANKS2020"
         this.discount.expirationDate = now
@@ -354,6 +360,7 @@ export class CheckoutComponent implements OnInit {
       
       this.showCheckoutBtns()
     } else {
+      const code = (document.getElementById('promo-code') as HTMLInputElement).value;
       if (code.length == 10) {
         this.promoLoading = true;
         this.nxtdropCCService.getPromoCode(code).subscribe(res => {
@@ -426,7 +433,7 @@ export class CheckoutComponent implements OnInit {
             this.showShipping()
             this.showCheckoutBtns()
 
-            if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1607749200000) {
+            if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
               console.log('work')
               this.discounted = true
               this.applyPromo()
