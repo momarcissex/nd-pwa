@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { isUndefined } from 'util';
 import { Observable } from 'rxjs';
 import { Ask } from '../models/ask';
+import { Product } from '../models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class HomeService {
   }
 
   public getDiscovery(after?) {
-    if (isUndefined(after)) {
+    if (after == undefined) {
       after = 0;
     }
 
@@ -45,6 +45,10 @@ export class HomeService {
 
   public getLatestBid() {
     return this.afs.collection(`bids`, ref => ref.orderBy('created_at', 'desc').limit(30)).valueChanges();
+  }
+
+  public getCollection(collection_id: string) {
+    return this.afs.collection('products', ref => ref.where('collections', 'array-contains', collection_id).orderBy('yearMade', 'desc')).valueChanges() as Observable<Product[]>;
   }
 
 }

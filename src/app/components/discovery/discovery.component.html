@@ -1,4 +1,4 @@
-<div class="showcase-container">
+<!--<div class="showcase-container">
   <h2>Discovery</h2>
 
   <div class="showcase-discovery">
@@ -13,4 +13,23 @@
 
   <button class="discovery-btn btn" *ngIf="!loading && !end" (click)="more()">Show More</button>
   <button class="discovery-btn btn" *ngIf="loading" (click)="more()"><fa-icon [icon]="faSpinner" [spin]="true"></fa-icon></button>
+</div>-->
+
+<div class="showcase-container">
+  <h2>Best of 2020: Nike Edition</h2>
+
+  <div class="showcase-discovery">
+    <a *ngFor="let discovery of best_of_nike" class="discovery-card" routerLink="/product/{{ discovery.productID }}">
+      <h6>{{ discovery.lowest_price | currency: 'CAD' }}</h6>
+
+      <img src="{{ discovery.assetURL }}" alt="{{ discovery.model }}">
+
+      <h3>{{ discovery.model }}</h3>
+    </a>
+  </div>
+
+  <button class="discovery-btn btn" *ngIf="!loading && !end" (click)="more()">Show More</button>
+  <button class="discovery-btn btn" *ngIf="loading" (click)="more()">
+    <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
+  </button>
 </div>

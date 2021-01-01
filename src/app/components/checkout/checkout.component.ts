@@ -264,6 +264,7 @@ export class CheckoutComponent implements OnInit {
 
   applyPromo() {
     const now = Date.now();
+    const code = (document.getElementById('promo-code') as HTMLInputElement).value
 
     if (code.length == 10) {
       this.promoLoading = true;
@@ -335,15 +336,12 @@ export class CheckoutComponent implements OnInit {
             this.connected = true
             this.showShipping()
             this.showCheckoutBtns()
-<<<<<<< HEAD
 
             if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
               console.log('work')
               this.discounted = true
               this.applyPromo()
             }
-=======
->>>>>>> dev
           })
         }
 

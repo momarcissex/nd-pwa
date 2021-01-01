@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from 'src/app/services/home.service';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { Product } from 'src/app/models/product';
 
 @Component({
   selector: 'app-discovery',
@@ -11,7 +12,8 @@ export class DiscoveryComponent implements OnInit {
 
   faSpinner = faSpinner
 
-  discoveries = [];
+  discoveries = []
+  best_of_nike = []
 
   loading;
 
@@ -22,17 +24,26 @@ export class DiscoveryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.homeService.getDiscovery().subscribe(data => {
+    this.end = true
+    /*this.homeService.getDiscovery().subscribe(data => {
       data.docs.forEach(element => {
         this.discoveries.push(element.data());
       })
-    });
+    });*/
+
+    this.homeService.getCollection('best-of-2020-nike').subscribe(data => {
+      //console.log(data.length)
+
+      data.forEach(element => {
+        this.best_of_nike.push(element)
+      })
+    })
   }
 
   more() {
     this.loading = true;
     //console.log('more() called');
-    this.homeService.getDiscovery(this.discoveries.length).subscribe(data => {
+    /*this.homeService.getDiscovery(this.discoveries.length).subscribe(data => {
       //console.log(data.docs.length);
       if (data.docs.length == 0) {
         this.loading = false;
@@ -44,7 +55,7 @@ export class DiscoveryComponent implements OnInit {
         });
         this.loading = false;
       }
-    });
+    });*/
   }
 
 }
