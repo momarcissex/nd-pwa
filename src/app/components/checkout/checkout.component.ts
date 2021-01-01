@@ -265,135 +265,38 @@ export class CheckoutComponent implements OnInit {
   applyPromo() {
     const now = Date.now();
 
-    if (this.discounted) {
-      this.discount = {
-        amount: 0,
-        cardID: '',
-        expirationDate: 0,
-        initiationDate: 0,
-        reusable: true,
-        type: 'cash',
-        used_by: []
-      }
-
-      if (this.subtotal <= 500) {
-        this.discount.amount = 17
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 500 && this.subtotal <= 750) {
-        this.discount.amount = +(this.subtotal * 0.036).toFixed(2)
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "percent"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 750 && this.subtotal <= 1000) {
-        this.discount.amount = 25
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1000 && this.subtotal <= 1250) {
-        this.discount.amount = +(this.subtotal * 0.029).toFixed(2)
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "percent"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1250 && this.subtotal <= 1500) {
-        this.discount.amount = 35
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1500 && this.subtotal <= 1750) {
-        this.discount.amount = 40
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1750 && this.subtotal <= 2000) {
-        this.discount.amount = 44
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else {
-        this.discount.amount = 70
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      }
-      
-      this.showCheckoutBtns()
-    } else {
-      const code = (document.getElementById('promo-code') as HTMLInputElement).value;
-      if (code.length == 10) {
-        this.promoLoading = true;
-        this.nxtdropCCService.getPromoCode(code).subscribe(res => {
-          //console.log(res.initiationDate)
-          //console.log(this.user.creation_date)
-          if (!(res === undefined) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
-            this.discount = res
-            if (res.type === 'cash') {
-              if (this.total <= res.amount) {
-                this.total = 0;
-                this.freePair = true;
-              } else {
-                this.total = this.total - res.amount;
-              }
+    if (code.length == 10) {
+      this.promoLoading = true;
+      this.nxtdropCCService.getPromoCode(code).subscribe(res => {
+        //console.log(res.initiationDate)
+        //console.log(this.user.creation_date)
+        if (!(res === undefined) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
+          this.discount = res
+          if (res.type === 'cash') {
+            if (this.total <= res.amount) {
+              this.total = 0;
+              this.freePair = true;
             } else {
-              this.discount.amount = this.total * (this.discount.amount / 100)
-              this.total = this.total - this.discount.amount
+              this.total = this.total - res.amount;
             }
-
-            this.promoLoading = false;
-            this.promoApplied = true;
-
-            this.showCheckoutBtns()
           } else {
-            this.promoLoading = false;
-            this.promoError = true;
-
-            setTimeout(() => {
-              this.promoError = false;
-            }, 2000);
+            this.discount.amount = this.total * (this.discount.amount / 100)
+            this.total = this.total - this.discount.amount
           }
-        })
-      }
+
+          this.promoLoading = false;
+          this.promoApplied = true;
+
+          this.showCheckoutBtns()
+        } else {
+          this.promoLoading = false;
+          this.promoError = true;
+
+          setTimeout(() => {
+            this.promoError = false;
+          }, 2000);
+        }
+      })
     }
   }
 
@@ -432,12 +335,15 @@ export class CheckoutComponent implements OnInit {
             this.connected = true
             this.showShipping()
             this.showCheckoutBtns()
+<<<<<<< HEAD
 
             if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
               console.log('work')
               this.discounted = true
               this.applyPromo()
             }
+=======
+>>>>>>> dev
           })
         }
 

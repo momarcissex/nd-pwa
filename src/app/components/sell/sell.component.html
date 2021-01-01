@@ -169,8 +169,24 @@
 
     <div class="review" *ngIf="listed">
       <div class="review-container">
-        <div>
-          <h2>Your sneakers are now listed for sale!</h2>
+        <h2>Your sneakers are now listed for sale!</h2>
+
+        <h3>Want to sell your sneakers faster? Share your Listing.</h3>
+
+        <div class="share-btns">
+          <a class="fb-share-btn" (click)="share('fb')">
+            <fa-icon [icon]="faFacebookF"></fa-icon>
+          </a>
+          <a class="twitter-share-btn" (click)="share('twitter')">
+            <fa-icon [icon]="faTwitter"></fa-icon>
+          </a>
+          <a class="mail-share-btn" (click)="share('mail')">
+            <fa-icon [icon]="faEnvelope"></fa-icon>
+          </a>
+          <a class="link-share-btn" (click)="share('copy_link')">
+            <fa-icon [icon]="faLink"></fa-icon>
+            <span class="tooltiptext" id="tooltiptext">Copied!</span>
+          </a>
         </div>
 
         <div class="details">
@@ -225,7 +241,7 @@
           </ul>
         </div>
 
-        <button class="btn ripple finish-btn" (click)="finish()">Finish</button>
+        <button class="btn ripple finish-btn" (click)="finish()">Exit</button>
       </div>
     </div>
   </section>

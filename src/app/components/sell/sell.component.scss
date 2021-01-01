@@ -27,7 +27,6 @@
 }
 
 #sell-page-3 {
-  min-height: $productContainerHeight;
   display: grid;
   column-gap: 0;
 
@@ -42,9 +41,6 @@
 
   .product-info {
     text-align: center;
-    display: grid;
-    align-items: center;
-    justify-items: center;
 
     img {
       display: block;
@@ -257,8 +253,6 @@
 
   .review {
     background: $lightergrey;
-    display: grid;
-    align-content: center;
     width: 100%;
 
     .review-container {
@@ -417,7 +411,7 @@
 
 // MEDIA QUERIES
 
-@media only screen and (min-width: 0px) and (max-width: 400px) {
+@media only screen and (min-width: 0px) and (max-width: 399.9px) {
   h3 {
     font-size: $font-large;
   }
@@ -435,13 +429,17 @@
       }
 
       h6 {
-        font-size: $font-xsmall;
+        font-size: 0.6rem;
       }
     }
 
     .sell-btns {
       width: 90%;
       margin: $spacing-large auto;
+
+      button {
+        font-size: 0.8rem;
+      }
     }
   }
 
@@ -474,17 +472,20 @@
 
     .product-info {
       h1 {
-        font-size: $font-large;
+        font-size: 1.4rem;
+        margin: 1rem auto;
       }
 
       .product-stats {
         h4 {
-          font-size: $font-small;
+          font-size: 0.6rem;
+          margin: 0.5rem auto;
         }
       }
 
       img {
-        width: 50%;
+        width: 70%;
+        margin: 1rem auto;
       }
     }
 
@@ -604,24 +605,37 @@
         width: 90%;
         row-gap: 1rem;
 
+        .share-btns {
+          width: 85%;
+          margin: auto;
+        }
+
         .details {
           margin: $spacing-small auto;
 
           div {
             p {
-              font-size: $font-xsmall;
+              font-size: 0.5rem;
             }
           }
 
           .payout {
             p {
-              font-size: $font-small;
+              font-size: 0.7rem;
             }
           }
         }
 
         h2 {
-          font-size: 1.5rem;
+          font-size: 1.2rem;
+          text-align: center;
+          margin: 0.6rem auto;
+        }
+
+        h3 {
+          font-size: 0.6rem;
+          text-align: center;
+          margin: 0rem auto;
         }
 
         h5 {
@@ -638,14 +652,14 @@
   }
 }
 
-@media only screen and (min-width: 400px) and (max-width: 800px) {
+@media only screen and (min-width: 400px) and (max-width: 599.9px) {
   h3 {
     font-size: $font-large;
   }
 
   #sell-page-1 {
     #how-it-works-content {
-      width: 80%;
+      width: 95%;
 
       div {
         grid-template-columns: 1fr 9fr;
@@ -653,17 +667,21 @@
       }
 
       fa-icon {
-        font-size: $font-normal;
+        font-size: 1rem;
       }
 
       h6 {
-        font-size: $font-xsmall;
+        font-size: 0.7rem;
       }
     }
 
     .sell-btns {
       width: 85%;
       margin: $spacing-large auto;
+
+      button {
+        font-size: 0.8rem;
+      }
     }
   }
 
@@ -686,8 +704,8 @@
 
   #sell-page-3 {
     min-height: $productContainerHeight;
-    width: 90vw;
-    margin: 0 5vw;
+    width: 100vw;
+    margin: 0 auto;
 
     .btn {
       font-size: $font-xsmall;
@@ -695,17 +713,20 @@
 
     .product-info {
       h1 {
-        font-size: $font-large;
+        font-size: 1.6rem;
+        margin: 1rem auto;
       }
 
       .product-stats {
         h4 {
-          font-size: $font-small;
+          font-size: 0.8rem;
+          margin: 0.5rem auto;
         }
       }
 
       img {
-        width: 50%;
+        width: 80%;
+        margin: 1rem auto;
       }
     }
 
@@ -825,24 +846,37 @@
         width: 90%;
         row-gap: 1rem;
 
+        share-btns {
+          width: 85%;
+          margin: auto;
+        }
+
         .details {
           margin: $spacing-small auto;
+          width: 95%;
 
           div {
             p {
-              font-size: $font-xsmall;
+              font-size: 0.7rem;
             }
           }
 
           .payout {
             p {
-              font-size: $font-small;
+              font-size: 0.9rem;
             }
           }
         }
 
         h2 {
-          font-size: 1.5rem;
+          font-size: 1.2rem;
+          margin: 0.6rem auto;
+          text-align: center;
+        }
+
+        h3 {
+          font-size: 0.6rem;
+          text-align: center;
         }
 
         h5 {
@@ -859,7 +893,248 @@
   }
 }
 
-@media only screen and (min-width: 800px) and (max-width: 1200px) {
+@media only screen and (min-width: 600px) and (max-width: 799.9px) {
+  h3 {
+    font-size: $font-large;
+  }
+
+  #sell-page-1 {
+    #how-it-works-content {
+      width: 95%;
+
+      div {
+        grid-template-columns: 1fr 9fr;
+        column-gap: $spacing-normal;
+      }
+
+      fa-icon {
+        font-size: 1rem;
+      }
+
+      h6 {
+        font-size: 0.7rem;
+      }
+    }
+
+    .sell-btns {
+      width: 85%;
+      margin: $spacing-large auto;
+
+      button {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .sell-container {
+    padding: 0 !important;
+    width: 90vw;
+    justify-self: center;
+    justify-items: center;
+
+    .search-results .hit .hit-info {
+      h3 {
+        font-size: $font-xsmall;
+      }
+
+      h6 {
+        font-size: $font-xxsmall;
+      }
+    }
+  }
+
+  #sell-page-3 {
+    min-height: $productContainerHeight;
+    width: 100vw;
+    margin: 0 auto;
+
+    .btn {
+      font-size: $font-xsmall;
+    }
+
+    .product-info {
+      h1 {
+        font-size: 1.6rem;
+        margin: 1.4rem auto;
+      }
+
+      .product-stats {
+        h4 {
+          font-size: 0.9rem;
+          margin: 0.5rem auto;
+        }
+      }
+
+      img {
+        width: 60%;
+        margin: 1rem auto;
+      }
+    }
+
+    .sizes {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      padding: $spacing-small $spacing-xsmall;
+      column-gap: $spacing-xsmall;
+      row-gap: $spacing-xsmall;
+
+      .accessibility {
+        grid-column: 1 / 5;
+
+        h2 {
+          font-size: $font-normal;
+        }
+
+        h3 {
+          font-size: $font-xsmall;
+        }
+      }
+
+      .size {
+        height: 60px;
+        width: 60px;
+
+        #highestBid {
+          font-size: $font-xsmall;
+        }
+
+        #size {
+          font-size: $font-normal;
+        }
+      }
+    }
+
+    .selling-form {
+      width: 100%;
+
+      .size-display {
+        width: 80%;
+        padding: $spacing-xsmall;
+
+        h4 {
+          font-size: $font-large;
+        }
+      }
+
+      .offer-display {
+        width: 100%;
+
+        .sell-now-container {
+          width: 80%;
+
+          div {
+            h4 {
+              font-size: $font-small;
+            }
+
+            p {
+              font-size: $font-large;
+            }
+          }
+        }
+
+        .place-ask-container {
+          width: 80%;
+          padding: $spacing-xsmall;
+
+          .seller-input {
+            width: 100%;
+            grid-template-columns: 1fr 5fr;
+            margin: $spacing-small auto;
+
+            input {
+              padding: $spacing-small $spacing-xxsmall;
+              width: calc(100% - #{$spacing-xxsmall} - #{$spacing-xxsmall});
+              font-size: $font-small;
+            }
+
+            button {
+              font-size: $font-small;
+            }
+          }
+
+          .fee-calculator {
+            margin: $spacing-small auto;
+
+            div {
+              p {
+                font-size: $font-xsmall;
+              }
+            }
+
+            .payout {
+              p {
+                font-size: $font-small;
+              }
+            }
+          }
+        }
+
+        .checkboxes {
+          div {
+            column-gap: 0.6rem;
+
+            p {
+              font-size: 0.7rem;
+            }
+          }
+        }
+      }
+    }
+
+    .review {
+      .review-container {
+        margin: $spacing-normal auto;
+        width: 80%;
+        row-gap: 1rem;
+
+        share-btns {
+          width: 60%;
+          margin: auto;
+        }
+
+        .details {
+          margin: $spacing-small auto;
+          width: 95%;
+
+          div {
+            p {
+              font-size: 0.7rem;
+            }
+          }
+
+          .payout {
+            p {
+              font-size: 0.9rem;
+            }
+          }
+        }
+
+        h2 {
+          font-size: 1.6rem;
+          margin: 1rem auto;
+          text-align: center;
+        }
+
+        h3 {
+          font-size: 0.8rem;
+          text-align: center;
+        }
+
+        h5 {
+          font-size: 0.7rem;
+        }
+
+        ul {
+          li {
+            font-size: 0.7rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 800px) and (max-width: 1199.9px) {
   h3 {
     font-size: $font-xlarge;
   }
@@ -869,21 +1144,23 @@
       width: 90%;
       div {
         grid-template-columns: 1fr 9fr;
-        column-gap: $spacing-normal;
+        column-gap: 1rem;
+        margin: 3rem auto;
       }
 
       fa-icon {
-        font-size: $font-normal;
+        font-size: 1.4rem;
       }
 
       h6 {
-        font-size: $font-xsmall;
+        font-size: 1rem;
       }
     }
 
     .sell-btns {
       width: 75%;
-      margin: $spacing-large auto;
+      margin: 1.5rem auto;
+      font-size: 1rem;
     }
   }
 
@@ -915,17 +1192,19 @@
 
     .product-info {
       h1 {
-        font-size: $font-xlarge;
+        font-size: 1.8rem;
+        margin: 2rem auto;
       }
 
       .product-stats {
         h4 {
-          font-size: $font-normal;
+          font-size: 1rem;
+          margin: 2rem;
         }
       }
 
       img {
-        width: 100%;
+        width: 90%;
       }
     }
 
@@ -1042,27 +1321,39 @@
     .review {
       .review-container {
         margin: $spacing-normal auto;
-        width: 80%;
+        width: 90%;
         row-gap: 1rem;
+
+        .share-btns {
+          width: 80%;
+          margin: 1rem auto 0 auto;
+        }
 
         .details {
           margin: $spacing-small auto;
 
           div {
             p {
-              font-size: $font-small;
+              font-size: 0.8rem;
             }
           }
 
           .payout {
             p {
-              font-size: $font-normal;
+              font-size: 0.9rem;
             }
           }
         }
 
         h2 {
-          font-size: 1.5rem;
+          font-size: 1rem;
+          text-align: center;
+          margin: 1rem auto;
+        }
+
+        h3 {
+          font-size: 0.6rem;
+          text-align: center;
         }
 
         h5 {
@@ -1092,11 +1383,11 @@
       }
 
       fa-icon {
-        font-size: $font-large;
+        font-size: 1.4rem;
       }
 
       h6 {
-        font-size: $font-small;
+        font-size: 1rem;
       }
     }
 
@@ -1153,8 +1444,8 @@
 
   #sell-page-3 {
     grid-template-columns: 1fr 1fr;
-    width: 95vw;
-    margin: 0 2.5vw;
+    width: 98vw;
+    margin: auto;
 
     .btn {
       font-size: $font-small;
@@ -1162,17 +1453,19 @@
 
     .product-info {
       h1 {
-        font-size: $font-xxlarge;
+        font-size: 1.8rem;
+        margin: 4rem auto;
       }
 
       .product-stats {
         h4 {
-          font-size: $font-normal;
+          font-size: 1rem;
+          margin: 2rem auto;
         }
       }
 
       img {
-        width: 100%;
+        width: 80%;
       }
     }
 
@@ -1320,36 +1613,48 @@
     .review {
       .review-container {
         margin: $spacing-normal auto;
-        width: 70%;
+        width: 80%;
         row-gap: 1rem;
+
+        .share-btns {
+          width: 80%;
+          margin: 1rem auto 0 auto;
+        }
 
         .details {
           margin: $spacing-small auto;
 
           div {
             p {
-              font-size: $font-small;
+              font-size: 1rem;
             }
           }
 
           .payout {
             p {
-              font-size: $font-normal;
+              font-size: 1rem;
             }
           }
         }
 
         h2 {
-          font-size: 2rem;
+          font-size: 1.6rem;
+          text-align: center;
+          margin: 1rem auto;
+        }
+
+        h3 {
+          font-size: 0.8rem;
+          text-align: center;
         }
 
         h5 {
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
 
         ul {
           li {
-            font-size: 1.1rem;
+            font-size: 1rem;
           }
         }
       }
@@ -1359,7 +1664,7 @@
 
 @media only screen and (min-width: 1800px) and (max-width: 2000px) {
   h3 {
-    font-size: $font-xxlarge;
+    font-size: $font-xlarge;
   }
 
   #sell-page-1 {
@@ -1370,21 +1675,19 @@
       }
 
       fa-icon {
-        font-size: $font-xlarge;
+        font-size: 1.4rem;
       }
 
       h6 {
-        font-size: $font-normal;
+        font-size: 1rem;
       }
     }
 
     .sell-btns {
-      width: 50%;
-      margin: $spacing-xlarge auto;
+      width: 70%;
+      margin: $spacing-large auto;
 
       button {
-        padding: $spacing-normal !important;
-
         &:first-child:hover {
           background: $lightergrey;
         }
@@ -1398,7 +1701,7 @@
 
   .sell-container {
     padding: 0 !important;
-    width: 50vw;
+    width: 60vw;
     justify-self: center;
     justify-items: center;
 
@@ -1406,11 +1709,11 @@
       .hit {
         .hit-info {
           h3 {
-            font-size: $font-normal;
+            font-size: $font-small;
           }
 
           h6 {
-            font-size: $font-small;
+            font-size: $font-xsmall;
           }
         }
 
@@ -1419,7 +1722,7 @@
 
           .hit-info {
             h3 {
-              color: $green;
+              color: $prodBtnPrimary2;
             }
           }
         }
@@ -1433,28 +1736,28 @@
 
   #sell-page-3 {
     grid-template-columns: 1fr 1fr;
-    min-height: $productContainerHeight;
-    width: 95vw;
-    margin: 0 2.5vw;
+    width: 98vw;
+    margin: auto;
 
     .btn {
-      font-size: $font-normal;
-      padding: $spacing-normal !important;
+      font-size: $font-small;
     }
 
     .product-info {
       h1 {
-        font-size: $font-xxlarge;
+        font-size: 1.8rem;
+        margin: 4rem auto;
       }
 
       .product-stats {
         h4 {
-          font-size: $font-normal;
+          font-size: 1rem;
+          margin: 2rem auto;
         }
       }
 
       img {
-        width: 100%;
+        width: 80%;
       }
     }
 
@@ -1477,15 +1780,15 @@
       }
 
       .size {
-        height: 120px;
-        width: 120px;
+        height: 70px;
+        width: 70px;
 
         #highestBid {
-          font-size: $font-normal;
+          font-size: $font-xsmall;
         }
 
         #size {
-          font-size: $font-xlarge;
+          font-size: $font-normal;
         }
 
         &:hover {
@@ -1500,14 +1803,13 @@
 
     .selling-form {
       width: 100%;
-      padding: $spacing-large 0;
 
       .size-display {
         width: 70%;
-        padding: $spacing-large;
+        padding: $spacing-normal;
 
         h4 {
-          font-size: $font-xlarge;
+          font-size: $font-large;
         }
 
         button:hover {
@@ -1523,11 +1825,11 @@
 
           div {
             h4 {
-              font-size: $font-normal;
+              font-size: $font-small;
             }
 
             p {
-              font-size: $font-xlarge;
+              font-size: $font-large;
             }
           }
 
@@ -1538,7 +1840,7 @@
 
         .place-ask-container {
           width: 70%;
-          padding: $spacing-large;
+          padding: $spacing-normal;
 
           .seller-input {
             width: 100%;
@@ -1546,13 +1848,13 @@
             margin: $spacing-small auto;
 
             input {
-              padding: $spacing-normal $spacing-small;
-              width: calc(100% - #{$spacing-small} - #{$spacing-small});
-              font-size: $font-large;
+              padding: $spacing-small $spacing-xsmall;
+              width: calc(100% - #{$spacing-xsmall} - #{$spacing-xsmall});
+              font-size: $font-normal;
             }
 
             button {
-              font-size: $font-large;
+              font-size: $font-normal;
             }
 
             &:hover {
@@ -1564,17 +1866,17 @@
           }
 
           .fee-calculator {
-            margin: $spacing-normal auto;
+            margin: $spacing-small auto;
 
             div {
               p {
-                font-size: $font-normal;
+                font-size: $font-small;
               }
             }
 
             .payout {
               p {
-                font-size: $font-large;
+                font-size: $font-normal;
               }
             }
           }
@@ -1603,36 +1905,48 @@
     .review {
       .review-container {
         margin: $spacing-normal auto;
-        width: 70%;
+        width: 80%;
         row-gap: 1rem;
 
+        .share-btns {
+          width: 80%;
+          margin: 1rem auto 0 auto;
+        }
+
         .details {
-          margin: $spacing-normal auto;
+          margin: $spacing-small auto;
 
           div {
             p {
-              font-size: $font-normal;
+              font-size: 1rem;
             }
           }
 
           .payout {
             p {
-              font-size: $font-large;
+              font-size: 1rem;
             }
           }
         }
 
         h2 {
-          font-size: 2rem;
+          font-size: 1.6rem;
+          text-align: center;
+          margin: 1rem auto;
+        }
+
+        h3 {
+          font-size: 0.8rem;
+          text-align: center;
         }
 
         h5 {
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
 
         ul {
           li {
-            font-size: 1.1rem;
+            font-size: 1rem;
           }
         }
       }
@@ -1642,7 +1956,7 @@
 
 @media only screen and (min-width: 2000px) {
   h3 {
-    font-size: $font-xxlarge;
+    font-size: $font-xlarge;
   }
 
   #sell-page-1 {
@@ -1653,22 +1967,19 @@
       }
 
       fa-icon {
-        font-size: $font-xxlarge;
+        font-size: 1.4rem;
       }
 
       h6 {
-        font-size: $font-large;
+        font-size: 1rem;
       }
     }
 
     .sell-btns {
-      width: 50%;
-      margin: $spacing-xlarge auto;
+      width: 70%;
+      margin: $spacing-large auto;
 
       button {
-        font-size: $font-normal;
-        padding: $spacing-normal !important;
-
         &:first-child:hover {
           background: $lightergrey;
         }
@@ -1680,15 +1991,9 @@
     }
   }
 
-  #sell-page-2,
-  #sell-page-3 {
-    justify-self: center;
-    width: 60vw;
-  }
-
   .sell-container {
     padding: 0 !important;
-    width: 45vw;
+    width: 60vw;
     justify-self: center;
     justify-items: center;
 
@@ -1696,11 +2001,11 @@
       .hit {
         .hit-info {
           h3 {
-            font-size: $font-normal;
+            font-size: $font-small;
           }
 
           h6 {
-            font-size: $font-small;
+            font-size: $font-xsmall;
           }
         }
 
@@ -1709,7 +2014,7 @@
 
           .hit-info {
             h3 {
-              color: $green;
+              color: $prodBtnPrimary2;
             }
           }
         }
@@ -1723,27 +2028,28 @@
 
   #sell-page-3 {
     grid-template-columns: 1fr 1fr;
-    min-height: $productContainerHeight;
-    width: 2000px !important;
+    width: 98vw;
+    margin: auto;
 
     .btn {
-      font-size: $font-normal;
-      padding: $spacing-normal !important;
+      font-size: $font-small;
     }
 
     .product-info {
       h1 {
-        font-size: $font-xxlarge;
+        font-size: 1.8rem;
+        margin: 4rem auto;
       }
 
       .product-stats {
         h4 {
-          font-size: $font-normal;
+          font-size: 1rem;
+          margin: 2rem auto;
         }
       }
 
       img {
-        width: 100%;
+        width: 80%;
       }
     }
 
@@ -1757,24 +2063,24 @@
         grid-column: 1 / 6;
 
         h2 {
-          font-size: $font-xlarge;
+          font-size: $font-large;
         }
 
         h3 {
-          font-size: $font-normal;
+          font-size: $font-small;
         }
       }
 
       .size {
-        height: 120px;
-        width: 120px;
+        height: 70px;
+        width: 70px;
 
         #highestBid {
-          font-size: $font-normal;
+          font-size: $font-xsmall;
         }
 
         #size {
-          font-size: $font-xlarge;
+          font-size: $font-normal;
         }
 
         &:hover {
@@ -1789,14 +2095,13 @@
 
     .selling-form {
       width: 100%;
-      padding: $spacing-large 0;
 
       .size-display {
         width: 70%;
-        padding: $spacing-large;
+        padding: $spacing-normal;
 
         h4 {
-          font-size: $font-xlarge;
+          font-size: $font-large;
         }
 
         button:hover {
@@ -1812,11 +2117,11 @@
 
           div {
             h4 {
-              font-size: $font-normal;
+              font-size: $font-small;
             }
 
             p {
-              font-size: $font-xlarge;
+              font-size: $font-large;
             }
           }
 
@@ -1827,7 +2132,7 @@
 
         .place-ask-container {
           width: 70%;
-          padding: $spacing-large;
+          padding: $spacing-normal;
 
           .seller-input {
             width: 100%;
@@ -1835,13 +2140,13 @@
             margin: $spacing-small auto;
 
             input {
-              padding: $spacing-normal $spacing-small;
-              width: calc(100% - #{$spacing-small} - #{$spacing-small});
-              font-size: $font-large;
+              padding: $spacing-small $spacing-xsmall;
+              width: calc(100% - #{$spacing-xsmall} - #{$spacing-xsmall});
+              font-size: $font-normal;
             }
 
             button {
-              font-size: $font-large;
+              font-size: $font-normal;
             }
 
             &:hover {
@@ -1853,17 +2158,17 @@
           }
 
           .fee-calculator {
-            margin: $spacing-normal auto;
+            margin: $spacing-small auto;
 
             div {
               p {
-                font-size: $font-normal;
+                font-size: $font-small;
               }
             }
 
             .payout {
               p {
-                font-size: $font-large;
+                font-size: $font-normal;
               }
             }
           }
@@ -1882,7 +2187,7 @@
             column-gap: 0.6rem;
 
             p {
-              font-size: 0.9rem;
+              font-size: 0.8rem;
             }
           }
         }
@@ -1892,36 +2197,48 @@
     .review {
       .review-container {
         margin: $spacing-normal auto;
-        width: 70%;
+        width: 80%;
         row-gap: 1rem;
 
+        .share-btns {
+          width: 80%;
+          margin: 1rem auto 0 auto;
+        }
+
         .details {
-          margin: $spacing-normal auto;
+          margin: $spacing-small auto;
 
           div {
             p {
-              font-size: $font-normal;
+              font-size: 1rem;
             }
           }
 
           .payout {
             p {
-              font-size: $font-large;
+              font-size: 1rem;
             }
           }
         }
 
         h2 {
-          font-size: 2rem;
+          font-size: 1.6rem;
+          text-align: center;
+          margin: 1rem auto;
+        }
+
+        h3 {
+          font-size: 0.8rem;
+          text-align: center;
         }
 
         h5 {
-          font-size: 1.1rem;
+          font-size: 1rem;
         }
 
         ul {
           li {
-            font-size: 1.1rem;
+            font-size: 1rem;
           }
         }
       }

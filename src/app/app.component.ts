@@ -38,8 +38,6 @@ export class AppComponent implements AfterViewInit {
       filter(event => event instanceof NavigationEnd)
     );
 
-    this.modalService.openModal('discount')
-
     if (isPlatformBrowser(this._platformId)) {
       window.Intercom = window.Intercom || {};
       this.auth.isConnected()
