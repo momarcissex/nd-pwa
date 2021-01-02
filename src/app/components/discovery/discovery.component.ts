@@ -14,6 +14,7 @@ export class DiscoveryComponent implements OnInit {
 
   discoveries = []
   best_of_nike = []
+  best_of_adidas = []
 
   loading;
 
@@ -36,6 +37,14 @@ export class DiscoveryComponent implements OnInit {
 
       data.forEach(element => {
         this.best_of_nike.push(element)
+      })
+    })
+
+    this.homeService.getCollection('best-of-2020-adidas').subscribe(data => {
+      //console.log(data.length)
+
+      data.forEach(element => {
+        this.best_of_adidas.push(element)
       })
     })
   }
