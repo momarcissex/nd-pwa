@@ -62,6 +62,8 @@ const routes: Routes = [
   // { path: 'cart', component: CartComponent },
   { path: 'checkout', component: CheckoutComponent },
   { path: 'profile', component: ProfileComponent },
+  { path: 'profile/:mode', component: ProfileComponent },
+  { path: 'profile/:mode', component: ProfileComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'settings/profile', component: SettingsProfileComponent },
   { path: 'settings/password', component: SettingsPasswordComponent },
