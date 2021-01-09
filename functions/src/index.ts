@@ -472,6 +472,7 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
             if (data) {
                 const email = data.email;
                 const total = req.body.price + req.body.shippingCost;
+                const est_arrival = `${new Date(Date.now() + (86400000 * 21)).toLocaleString("en-CA", { day: "2-digit", month: "2-digit", year: "numeric" })} - ${new Date(Date.now() + (86400000 * 28)).toLocaleString("en-CA", { day: "2-digit", month: "2-digit", year: "numeric" })}`
 
                 console.log(`Order Email Buyer to ${email}.`);
 
@@ -485,15 +486,16 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                         condition: req.body.condition,
                         subtotal: req.body.price,
                         shipping: req.body.shippingCost,
-                        total: total,
+                        total,
                         assetURL: req.body.assetURL,
+                        est_arrival,
                         link: ''
                     }
                 }
 
                 if (!isUndefined(req.body.discount)) {
-                    msg.dynamic_template_data.discount = req.body.discount;
-                    msg.dynamic_template_data.total = total - req.body.discount;
+                    msg.dynamic_template_data.discount = req.body.discount.amount;
+                    msg.dynamic_template_data.total = total - req.body.discount.amount;
                 }
 
                 if (req.body.type === 'sold') {
