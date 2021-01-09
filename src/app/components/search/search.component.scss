@@ -55,6 +55,19 @@
     }
 }
 
+.loading-container {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    fa-icon {
+        font-size: 3rem;
+        color: $coolgrey;
+        align-self: center;
+        justify-self: center;
+        margin: 5rem auto;
+    }
+}
+
 .search-items {
     display: grid;
     grid-template-columns: 1fr 1fr;

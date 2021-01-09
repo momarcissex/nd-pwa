@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Title } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { MetaService } from 'src/app/services/meta.service';
-import { faFilter, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faTimes, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 declare const fbq: any;
 
@@ -18,6 +18,7 @@ export class SearchComponent implements OnInit {
 
   faTimes = faTimes
   faFilter = faFilter
+  faCircleNotch = faCircleNotch
 
   algoliaClient = algoliasearch(environment.algolia.appId, environment.algolia.apiKey);
   index;
@@ -45,6 +46,8 @@ export class SearchComponent implements OnInit {
     "undefined": ""
   }
 
+  loading: boolean = true
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -65,11 +68,11 @@ export class SearchComponent implements OnInit {
         (element as HTMLInputElement).value = this.queryParam;
       });
       this.index = this.algoliaClient.initIndex(environment.algolia.index);
-      this.search();
+      this.search(true);
     }
   }
 
-  search() {
+  search(showLoading: boolean) {
     //console.log(event.target.value);
 
     const q = (document.getElementById('search-input') as HTMLInputElement).value;
@@ -77,12 +80,17 @@ export class SearchComponent implements OnInit {
 
     clearTimeout(this.typingTimer);
     this.typingTimer = setTimeout(() => {
+
+      if (showLoading) {
+        this.loading = true
+      }
+
       const query: any = {
         q
       }
 
-      console.log(this.categorySelected)
-      console.log(this.sizeSelected)
+      //console.log(this.categorySelected)
+      //console.log(this.sizeSelected)
 
       if (!(this.categorySelected === undefined) || !(this.sizeSelected === undefined)) {
         if (!(this.categorySelected === undefined)) query.category = this.categorySelected
@@ -91,14 +99,14 @@ export class SearchComponent implements OnInit {
         this.buildFilter()
       }
 
-      console.log(query)
+      //console.log(query)
 
       this.router.navigate([],
         {
           queryParams: query
         });
 
-      console.log(this.filters)
+      //console.log(this.filters)
 
       this.index.search({
         query: q,
@@ -117,6 +125,10 @@ export class SearchComponent implements OnInit {
         } else {
           this.searchLimit = false
         }
+
+        setTimeout(() => {
+          this.loading = false
+        }, 500);
 
         //console.log(this.nbPages);
         //console.log(hits);
@@ -174,7 +186,7 @@ export class SearchComponent implements OnInit {
       }
     }
 
-    console.log(this.sizeSelected)
+    //console.log(this.sizeSelected)
 
     //console.log(this.sizeSelected)
   }
@@ -189,7 +201,7 @@ export class SearchComponent implements OnInit {
 
   applyFilters() {
     this.closeFilters()
-    this.search()
+    this.search(true)
     //console.log(`Categories: ${this.categorySelected} & Sizes: ${this.sizeSelected}`)
   }
 
@@ -215,7 +227,7 @@ export class SearchComponent implements OnInit {
 
   moreProducts() {
     this.nbPages++;
-    this.search();
+    this.search(false);
   }
 
 }

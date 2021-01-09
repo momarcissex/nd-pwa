@@ -5,7 +5,7 @@
     <button routerLink="..">
       <fa-icon [icon]="faTimes"></fa-icon>
     </button>
-    <input type="text" id="search-input" placeholder="Search" autofocus (keyup)="search()">
+    <input type="text" id="search-input" placeholder="Search" autofocus (keyup)="search(true)">
   </div>
 
   <div class="search-parameters">
@@ -17,7 +17,7 @@
       </span></h6>
   </div>
 
-  <div class="search-items">
+  <div class="search-items" *ngIf="!loading">
     <a class="search-item" *ngFor="let result of results" routerLink="/product/{{ result.productID }}">
       <section class="item-specs">
         <h5 *ngIf="result.lowest_price" style="color: #222021;">{{ getLowestPrice(result.sizes_lowest_ask, result.lowest_price) | currency: 'CAD' }}</h5>
@@ -28,7 +28,11 @@
     </a>
   </div>
 
-  <button class="btn" (click)="moreProducts()" *ngIf="!searchLimit">More</button>
+  <div class="loading-container" *ngIf="loading">
+    <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
+  </div>
+
+  <button class="btn" (click)="moreProducts()" *ngIf="!searchLimit && !loading">More</button>
 </section>
 
 <section class="filter-modal" id="filter-modal">
