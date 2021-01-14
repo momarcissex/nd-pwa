@@ -147,9 +147,9 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  /*async countView() {
+  async countView() {
     //console.log('countView start')
-    if (!isNullOrUndefined(this.UID)) {
+    if (!(this.UID == null || this.UID == undefined)) {
       this.productService.countView(this.productID).then(() => {
         //console.log('view count updated')
       }).catch(err => {
@@ -158,7 +158,7 @@ export class ProductComponent implements OnInit {
     }
 
     //console.log('countView end')
-  }*/
+  }
 
   buyNow(listing) {
     const data = JSON.stringify(listing);
@@ -181,6 +181,14 @@ export class ProductComponent implements OnInit {
 
   share(social: string) {
     if (isPlatformBrowser(this.platform_id)) {
+
+      this.productService.shareCount(this.productInfo.productID).then(() => {
+        //console.log('trending score update')
+      })
+        .catch(err => {
+          console.error(err)
+        })
+
       if (social === 'fb') {
         window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.productID}&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
         gtag('event', 'share_product_fb', {
@@ -310,7 +318,7 @@ export class ProductComponent implements OnInit {
           if (shoeSizes.length === this.offers.length) {
             this.currentOffer.LowestAsk = this.lowestAsk;
             this.currentOffer.HighestBid = this.highestBid;
-            //this.countView()
+            this.countView()
           }
         });
       });
