@@ -47,6 +47,7 @@ export class SearchComponent implements OnInit {
   }
 
   loading: boolean = true
+  loadingMore: boolean = false
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -137,6 +138,8 @@ export class SearchComponent implements OnInit {
           content_category: 'sneaker',
           search_string: `${q}`
         })
+
+        if (this.loadingMore) this.loadingMore = false
       });
     }, this.doneTypingInterval);
   }
@@ -226,8 +229,9 @@ export class SearchComponent implements OnInit {
   }
 
   moreProducts() {
-    this.nbPages++;
-    this.search(false);
+    this.loadingMore = true
+    this.nbPages++
+    this.search(false)
   }
 
 }

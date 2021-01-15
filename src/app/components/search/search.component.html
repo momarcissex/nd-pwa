@@ -17,7 +17,7 @@
       </span></h6>
   </div>
 
-  <div class="search-items" *ngIf="!loading">
+  <div class="search-items" *ngIf="!loading && results.length > 0">
     <a class="search-item" *ngFor="let result of results" routerLink="/product/{{ result.productID }}">
       <section class="item-specs">
         <h5 *ngIf="result.lowest_price" style="color: #222021;">{{ getLowestPrice(result.sizes_lowest_ask, result.lowest_price) | currency: 'CAD' }}</h5>
@@ -28,11 +28,16 @@
     </a>
   </div>
 
+  <div class="no-results" *ngIf="!loading && results.length < 1">
+    <h2>Oops! No Match. Please try a different search or <span routerLink="/request" style="color: #ef4135; text-decoration: underline; cursor: pointer;">Request a Product</span>.</h2>
+  </div>
+
   <div class="loading-container" *ngIf="loading">
     <fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon>
   </div>
 
-  <button class="btn" (click)="moreProducts()" *ngIf="!searchLimit && !loading">More</button>
+  <button class="btn" (click)="moreProducts()" *ngIf="!searchLimit && !loading && !loadingMore">More</button>
+  <button class="btn" *ngIf="!searchLimit && !loading && loadingMore"><fa-icon [icon]="faCircleNotch" [spin]="true"></fa-icon></button>
 </section>
 
 <section class="filter-modal" id="filter-modal">
