@@ -1,6 +1,6 @@
 <section class="modal" id="modal">
-    <div class="modal-card" id="modal-card">
-        <div *ngIf="capture">
+    <div class="modal-card" id="modal-card" *ngIf="capture">
+        <div>
             <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
             <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59"
                 alt="NXTDROP Logo">
@@ -19,8 +19,10 @@
 
             <p>{{ errorMessage }}</p>
         </div>
+    </div>
 
-        <div *ngIf="giveaway">
+    <div class="modal-card" id="modal-card" *ngIf="giveaway">
+        <div>
             <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
             <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59"
                 alt="NXTDROP Logo">
@@ -30,8 +32,10 @@
 
             <button class="btn" (click)="redirect()">Enter giveaway</button>
         </div>
+    </div>
 
-        <div *ngIf="discount">
+    <div class="modal-card" id="modal-card" *ngIf="discount">
+        <div>
             <div id="top">
                 <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
             </div>
@@ -45,5 +49,9 @@
 
             <button class="btn" (click)="startShopping()">Start Shopping</button>
         </div>
+    </div>
+
+    <div class="exp001-card" *ngIf="exp001">
+        
     </div>
 </section>

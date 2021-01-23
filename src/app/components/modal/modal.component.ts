@@ -25,6 +25,7 @@ export class ModalComponent implements OnInit {
   giveaway: boolean = false
   capture: boolean = false
   discount: boolean = false
+  exp001: boolean = false
 
   constructor(
     private modalService: ModalService,
@@ -48,6 +49,8 @@ export class ModalComponent implements OnInit {
         } else if (res === 'discount') {
           this.discount = true
           document.getElementById('modal-card').classList.add('discount-background')
+        } else if (res === 'exp001') {
+          this.exp001 = true
         } else {
           this.close()
         }

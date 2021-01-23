@@ -70,6 +70,8 @@ export class AppComponent implements AfterViewInit {
               this.modalService.openModal('capture')
             }, 10000);*/
           }
+
+          this.modalService.openModal('exp001')
         }).catch(err => {
           console.error(err);
         })
