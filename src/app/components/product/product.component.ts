@@ -10,6 +10,7 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
+import { ModalService } from 'src/app/services/modal.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -71,6 +72,7 @@ export class ProductComponent implements OnInit {
     private ngZone: NgZone,
     private askService: AskService,
     private bidService: BidService,
+    private modalService: ModalService,
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
@@ -90,6 +92,10 @@ export class ProductComponent implements OnInit {
 
     this.getSizeSuffix();
     //console.log('oninit end')
+
+    setTimeout(() => {
+      this.modalService.openModal('exp002')
+    }, 1000);
   }
 
   /*addToCart(listing) {

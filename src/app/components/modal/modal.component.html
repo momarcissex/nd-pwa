@@ -1,5 +1,5 @@
 <section class="modal" id="modal">
-    <div class="modal-card" id="modal-card">
+    <!--<div class="modal-card" id="modal-card">
         <div *ngIf="capture">
             <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
             <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59"
@@ -44,6 +44,154 @@
             <h6>Get Up To 5% OFF on select items.</h6>
 
             <button class="btn" (click)="startShopping()">Start Shopping</button>
+        </div>
+    </div>-->
+
+    <div class="exp002-card" *ngIf="exp002[0]">
+        <div class="card-body">
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('page1')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>Wondering How NXTDROP Works?</h2>
+
+                <h6>Click on the button below if you wish to get a tour of the marketplace, its main features and perks.
+                </h6>
+
+                <div class="navigation-btn">
+                    <button class="btn next-btn" (click)="nextPage('page2')">Next</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="exp002-card" *ngIf="exp002[1]">
+        <div class="card-body">
+            <div class="content content-img">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('page2')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>How to Purchase on NXTDROP?</h2>
+
+                <img src="https://via.placeholder.com/200" alt="How to Purchase on NXTDROP?">
+
+                <div class="navigation-btn">
+                    <button class="btn back-btn" (click)="previousPage('page1')">Back</button>
+                    <button class="btn next-btn" (click)="nextPage('page3')">Next</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="exp002-card" *ngIf="exp002[2]">
+        <div class="card-body">
+            <div class="content content-img">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('page3')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2 class="headline-text">How To Sell Your Sneakers On NXTDROP?</h2>
+
+                <p>You can list your pair of sneakers for sale so any buyer can purchase them.</p>
+
+                <img src="https://via.placeholder.com/200" alt="How To Sell Your Sneakers On NXTDROP?">
+
+                <div class="navigation-btn">
+                    <button class="btn back-btn" (click)="previousPage('page2')">Back</button>
+                    <button class="btn next-btn" (click)="nextPage('page4')">Next</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="exp002-card" *ngIf="exp002[3]">
+        <div class="card-body">
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('page4')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>How To Sell Your Sneakers On NXTDROP?</h2>
+
+                <p>Instead of listing your sneakers for sale, you can sell to the highest bidder.</p>
+
+                <img src="https://via.placeholder.com/200" alt="How To Sell Your Sneakers On NXTDROP?">
+
+                <div class="navigation-btn">
+                    <button class="btn back-btn" (click)="previousPage('page3')">Back</button>
+                    <button class="btn next-btn" (click)="nextPage('page5')">Next</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="exp002-card" *ngIf="exp002[4]">
+        <div class="card-body">
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('page5')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>How to Place a Bid?</h2>
+
+                <img src="https://via.placeholder.com/200" alt="How to Place a Bid?">
+
+                <div class="navigation-btn">
+                    <button class="btn back-btn" (click)="previousPage('page4')">Back</button>
+                    <button class="btn next-btn" (click)="nextPage('page6')">Next</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="exp002-card" *ngIf="exp002[5]">
+        <div class="card-body">
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('page6')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>Congratulations!</h2>
+
+                <h6>Now, you know how purchase or sell your sneakers on NXTDROP.</h6>
+
+                <div class="navigation-btn">
+                    <button class="btn back-btn" (click)="previousPage('page5')">Back</button>
+                    <button class="btn next-btn" (click)="close('page6')">Done</button>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
