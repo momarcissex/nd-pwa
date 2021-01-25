@@ -15,31 +15,6 @@
   background: rgba(56, 54, 55, 0.5);
   display: grid;
 
-  .one-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .dark {
-    background: $black !important;
-    color: $white !important;
-
-    p,
-    h3,
-    h2,
-    h1 {
-      color: $white;
-    }
-  }
-
-  .disabled {
-    background: $lightgrey;
-    cursor: not-allowed;
-
-    &:hover {
-      background: $lightgrey !important;
-    }
-  }
-
   .modal-card {
     display: grid;
     background: $white;
@@ -97,21 +72,76 @@
         border-radius: 2rem;
       }
 
-      .error {
-        background: $googleRed;
-        cursor: not-allowed;
-
-        &:hover {
-          background: $googleRed !important;
-        }
-      }
-
       .subscribed {
         background: $green;
         cursor: not-allowed;
 
         &:hover {
           background: $green !important;
+        }
+      }
+    }
+  }
+
+  .exp001-card {
+    display: grid;
+    align-self: center;
+    justify-self: center;
+    border-radius: 0.4rem;
+    color: $white;
+
+    .card-top {
+      display: grid;
+
+      .close-icon {
+        justify-self: end;
+        background: $matteblack;
+        display: grid;
+
+        fa-icon {
+          cursor: pointer;
+          align-self: center;
+          justify-self: center;
+        }
+      }
+    }
+
+    .card-body {
+      display: grid;
+
+      .content {
+        text-align: center;
+
+        h2,
+        h6 {
+          color: $white;
+        }
+
+        input {
+          width: 80%;
+          padding: 0.8rem;
+          border: 1px solid $lightgrey;
+          border-radius: 4px;
+          display: block;
+          margin: 0 auto;
+        }
+
+        .error {
+          background: $white;
+          cursor: not-allowed;
+          color: $black;
+
+          &:hover {
+            background: $white !important;
+          }
+        }
+
+        button {
+          background: $googleRed;
+          color: $white;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          cursor: pointer;
         }
       }
     }
@@ -143,6 +173,66 @@
 // MEDIA QUERIES
 
 @media only screen and (min-width: 0px) and (max-width: 399.9px) {
+  .exp001-card {
+    width: 90%;
+    //background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+    background-position: center;
+    background-size: contain;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 1fr;
+
+      .image {
+        display: none;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 2rem auto;
+        }
+
+        h2 {
+          font-size: 1.4rem;
+          width: 90%;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+          width: 70%;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 90%;
 
@@ -186,6 +276,66 @@
 }
 
 @media only screen and (min-width: 400px) and (max-width: 599.9px) {
+  .exp001-card {
+    width: 80%;
+    //background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+    background-position: center;
+    background-size: contain;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 1fr;
+
+      .image {
+        display: none;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 2rem auto;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+          width: 80%;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+          width: 70%;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 70%;
 
@@ -229,6 +379,65 @@
 }
 
 @media only screen and (min-width: 600px) and (max-width: 799.9px) {
+  .exp001-card {
+    width: 65%;
+    //background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+    background-position: center;
+    background-size: contain;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 1fr;
+
+      .image {
+        display: none;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 2rem auto;
+        }
+
+        h2 {
+          font-size: 1.6rem;
+          width: 85%;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 50%;
 
@@ -272,6 +481,70 @@
 }
 
 @media only screen and (min-width: 800px) and (max-width: 999.9px) {
+  .exp001-card {
+    width: 70%;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 45% 55%;
+
+      .image {
+        justify-self: center;
+        align-self: center;
+        width: 80%;
+        height: 100%;
+        background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+        background-position: center;
+        background-size: cover;
+        background-color: $black;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 2rem auto;
+        }
+
+        h2 {
+          font-size: 1.7rem;
+          width: 90%;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+          width: 80%;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 45%;
 
@@ -315,6 +588,70 @@
 }
 
 @media only screen and (min-width: 1000px) and (max-width: 1199.9px) {
+  .exp001-card {
+    width: 55%;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 45% 55%;
+
+      .image {
+        justify-self: center;
+        align-self: center;
+        width: 80%;
+        height: 100%;
+        background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+        background-position: center;
+        background-size: cover;
+        background-color: $black;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 2rem auto;
+        }
+
+        h2 {
+          font-size: 1.7rem;
+          width: 90%;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+          width: 80%;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 40%;
 
@@ -362,6 +699,75 @@
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1799.9px) {
+  .exp001-card {
+    width: 50%;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 45% 55%;
+
+      .image {
+        justify-self: center;
+        align-self: center;
+        width: 80%;
+        height: 100%;
+        background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+        background-position: center;
+        background-size: cover;
+        background-color: $black;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 2rem auto;
+        }
+
+        h2 {
+          font-size: 1.7rem;
+          width: 90%;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+          width: 80%;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.8rem;
+
+          &:hover {
+            background-color: $white !important;
+            color: $black !important;
+          }
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 35%;
 
@@ -409,6 +815,75 @@
 }
 
 @media only screen and (min-width: 1800px) and (max-width: 1999.9px) {
+  .exp001-card {
+    width: 35%;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 45% 55%;
+
+      .image {
+        justify-self: center;
+        align-self: center;
+        width: 80%;
+        height: 100%;
+        background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+        background-position: center;
+        background-size: cover;
+        background-color: $black;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 3rem auto;
+        }
+
+        h2 {
+          font-size: 1.9rem;
+          width: 90%;
+        }
+
+        h6 {
+          font-size: 0.8rem;
+          width: 80%;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 1rem;
+
+          &:hover {
+            background-color: $white !important;
+            color: $black !important;
+          }
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 25%;
 
@@ -456,6 +931,75 @@
 }
 
 @media only screen and (min-width: 2000px) {
+  .exp001-card {
+    width: 35%;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 45% 55%;
+
+      .image {
+        justify-self: center;
+        align-self: center;
+        width: 80%;
+        height: 100%;
+        background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+        background-position: center;
+        background-size: cover;
+        background-color: $black;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 3rem auto;
+        }
+
+        h2 {
+          font-size: 1.9rem;
+          width: 90%;
+        }
+
+        h6 {
+          font-size: 0.8rem;
+          width: 80%;
+        }
+
+        input {
+          font-size: 0.8rem;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 1rem;
+
+          &:hover {
+            background-color: $white !important;
+            color: $black !important;
+          }
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 30%;
 
@@ -503,8 +1047,62 @@
 }
 
 // MEDIA QUERIES LANDSCAPE
-
 @media only screen and (min-width: 400px) and (max-width: 599.9px) and (orientation: landscape) {
+  .exp001-card {
+    width: 80%;
+    //background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+    background-position: center;
+    background-size: contain;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 1fr;
+
+      .image {
+        display: none;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 1rem auto;
+        }
+
+        h2 {
+          font-size: 1.4rem;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+          width: 70%;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
   .modal-card {
     width: 50%;
 
@@ -542,6 +1140,71 @@
         margin: 1.5rem auto;
         font-size: 0.7rem !important;
         padding: 1rem 0.4rem;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 800px) and (max-width: 999.9px) and (orientation: landscape) {
+  .exp001-card {
+    width: 70%;
+    //background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+    background-position: center;
+    background-size: contain;
+    background-color: $black;
+
+    .card-top {
+      padding: 0.5rem;
+
+      .close-icon {
+        padding: 0.1rem;
+        height: 25px;
+        width: 25px;
+
+        fa-icon {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .card-body {
+      grid-template-columns: 45% 55%;
+
+      .image {
+        justify-self: center;
+        align-self: center;
+        width: 80%;
+        height: 100%;
+        background-image: url("https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2F20210108-Capture-Email.gif?alt=media&token=5bfaa7a5-ac35-464a-98c5-1cbcffc56473");
+        background-position: center;
+        background-size: cover;
+        background-color: $black;
+      }
+
+      .content {
+        display: grid;
+
+        h2,
+        h6,
+        button {
+          margin: 1rem auto;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+          width: 90%;
+        }
+
+        h6 {
+          font-size: 0.7rem;
+          width: 70%;
+        }
+
+        button {
+          padding: 1.2rem 0.8rem;
+          width: 80%;
+          font-size: 0.8rem;
+        }
       }
     }
   }

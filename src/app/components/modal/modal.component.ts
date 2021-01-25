@@ -25,7 +25,7 @@ export class ModalComponent implements OnInit {
   giveaway: boolean = false
   capture: boolean = false
   discount: boolean = false
-  exp001: boolean = false
+  exp001: boolean[] = [false, false, false, false]
 
   constructor(
     private modalService: ModalService,
@@ -50,7 +50,17 @@ export class ModalComponent implements OnInit {
           this.discount = true
           document.getElementById('modal-card').classList.add('discount-background')
         } else if (res === 'exp001') {
-          this.exp001 = true
+          const draw = Math.random()
+
+          if (draw >= 0 && draw <= .25) {
+            this.exp001[0] = true
+          } else if (draw > .25 && draw <= .5) {
+            this.exp001[1] = true
+          } else if (draw > .5 && draw <= .75) {
+            this.exp001[2] = true
+          } else {
+            this.exp001[3] = true
+          }
         } else {
           this.close()
         }
@@ -68,7 +78,7 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  redirect() {
+  redirect(destination: string) {
     if (this.isOpen) {
       document.getElementById('modal').style.background = 'transparent'
       document.getElementById('modal').style.top = '100%';
@@ -76,7 +86,11 @@ export class ModalComponent implements OnInit {
       this.giveaway = false
       document.body.style.overflow = 'auto'
 
-      this.router.navigateByUrl('giveaway')
+      if (destination === 'giveaway') {
+        this.router.navigateByUrl('giveaway')
+      } else if (destination === 'home') {
+        this.router.navigateByUrl('/')
+      }
     }
   }
 
