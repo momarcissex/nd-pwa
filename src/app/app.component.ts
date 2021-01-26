@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { IpService } from './services/ip.service';
 import { ModalService } from './services/modal.service';
+import { Globals } from './globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -30,8 +31,24 @@ export class AppComponent implements AfterViewInit {
     private http: HttpClient,
     private ipService: IpService,
     private modalService: ModalService,
+    public globals: Globals,
     @Inject(PLATFORM_ID) private _platformId: Object
-  ) { }
+  ) {
+    /** Display EXP001 Pop-Ups
+      * Get random number and decide what version to display
+    */
+    const draw = Math.floor(Math.random() * Math.floor(3))
+
+    if (draw == 0) {
+      this.globals.exp001_version = 'exp001a'
+    } else if (draw == 1) {
+      this.globals.exp001_version = 'exp001b'
+    } else if (draw == 2) {
+      this.globals.exp001_version = 'exp001c'
+    } else {
+      this.globals.exp001_version = 'exp001d'
+    }
+  }
 
   ngAfterViewInit() {
     const navEndEvents = this.router.events.pipe(
@@ -71,7 +88,12 @@ export class AppComponent implements AfterViewInit {
             }, 10000);*/
           }
 
-          this.modalService.openModal('exp001')
+          const pattern = new RegExp(/^\/news\/.+/gm)
+          if (pattern.test(this.router.url)) {
+            setTimeout(() => {
+              this.modalService.openModal('exp001')
+            }, 5000);
+          }
         }).catch(err => {
           console.error(err);
         })

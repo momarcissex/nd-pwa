@@ -55,7 +55,7 @@
     <!-- EXP #001 Pop-Ups -->
 
     <!-- Pop-Up #1: Duties and Taxes -->
-    <div class="exp001-card" *ngIf="exp001[0]">
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001a'">
         <div class="card-body">
 
             <div class="image">
@@ -66,7 +66,7 @@
                 <div class="card-top">
 
                     <div class="close-icon">
-                        <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
                     </div>
 
                 </div>
@@ -76,7 +76,7 @@
                 <h6>Visit our Marketplace to Buy and Sell Sneakers</h6>
 
                 <div>
-                    <button class="btn" (click)="redirect('home')">Visit Marketplace</button>
+                    <button class="btn" (click)="redirect('home', 'exp001')">Visit Marketplace</button>
                 </div>
             </div>
 
@@ -84,7 +84,7 @@
     </div>
 
     <!-- Pop-Up #2: Buy and Sell Sneakers in Canada -->
-    <div class="exp001-card" *ngIf="exp001[1]">
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001b'">
         <div class="card-body">
 
             <div class="image">
@@ -95,7 +95,7 @@
                 <div class="card-top">
 
                     <div class="close-icon">
-                        <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
                     </div>
 
                 </div>
@@ -105,7 +105,7 @@
                 <h6>Visit our Canadian-based Sneaker Marketplace</h6>
 
                 <div>
-                    <button class="btn" (click)="redirect('home')">Browse Sneakers</button>
+                    <button class="btn" (click)="redirect('home', 'exp001')">Browse Sneakers</button>
                 </div>
             </div>
 
@@ -113,7 +113,7 @@
     </div>
 
     <!-- Pop-Up #3: New Releases -->
-    <div class="exp001-card" *ngIf="exp001[2]">
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001c'">
         <div class="card-body">
 
             <div class="image">
@@ -124,7 +124,7 @@
                 <div class="card-top">
 
                     <div class="close-icon">
-                        <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
                     </div>
 
                 </div>
@@ -153,7 +153,7 @@
     </div>
 
     <!-- Pop-Up #4: Promotional Offers -->
-    <div class="exp001-card" *ngIf="exp001[3]">
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001d'">
         <div class="card-body">
 
             <div class="image">
@@ -164,7 +164,7 @@
                 <div class="card-top">
 
                     <div class="close-icon">
-                        <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
                     </div>
 
                 </div>
