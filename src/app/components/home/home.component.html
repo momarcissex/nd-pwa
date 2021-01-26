@@ -29,11 +29,55 @@
         </div>
     </section>
 
-    <app-trending></app-trending>
+    <!-- EXP 003 START -->
+    <div *ngIf="exp003[0]">
+        <app-listings [configuration]="config"></app-listings>
 
-    <app-listings></app-listings>
+        <app-trending [configuration]="config"></app-trending>
 
-    <app-new-releases></app-new-releases>
+        <app-new-releases [configuration]="config"></app-new-releases>
+    </div>
+
+    <div *ngIf="exp003[1]">
+        <app-listings [configuration]="config"></app-listings>
+
+        <app-new-releases [configuration]="config"></app-new-releases>
+
+        <app-trending [configuration]="config"></app-trending>
+    </div>
+
+    <div *ngIf="exp003[2]">
+        <app-trending [configuration]="config"></app-trending>
+
+        <app-listings [configuration]="config"></app-listings>
+
+        <app-new-releases [configuration]="config"></app-new-releases>
+    </div>
+
+    <div *ngIf="exp003[3]">
+        <app-trending [configuration]="config"></app-trending>
+
+        <app-new-releases [configuration]="config"></app-new-releases>
+
+        <app-listings [configuration]="config"></app-listings>
+    </div>
+
+    <div *ngIf="exp003[4]">
+        <app-new-releases [configuration]="config"></app-new-releases>
+
+        <app-trending [configuration]="config"></app-trending>
+
+        <app-listings [configuration]="config"></app-listings>
+    </div>
+
+    <div *ngIf="exp003[5]">
+        <app-new-releases [configuration]="config"></app-new-releases>
+
+        <app-listings [configuration]="config"></app-listings>
+
+        <app-trending [configuration]="config"></app-trending>
+    </div>
+    <!-- EXP 003 END-->
 
     <app-discovery></app-discovery>
 

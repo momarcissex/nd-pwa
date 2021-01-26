@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HomeService } from 'src/app/services/home.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { HomeService } from 'src/app/services/home.service';
 export class ListingsComponent implements OnInit {
 
   latestAsks = [];
+
+  @Input() configuration: string;
 
   constructor(
     private homeService: HomeService

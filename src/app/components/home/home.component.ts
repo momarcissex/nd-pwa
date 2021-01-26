@@ -23,6 +23,9 @@ export class HomeComponent implements OnInit {
 
   loadIframe: boolean = true
 
+  exp003: boolean[] = [false, false, false, false, false, false]
+  config: string = ''
+
   constructor(
     private title: Title,
     private afs: AngularFirestore,
@@ -36,6 +39,28 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle(`NXTDROP: Buy and Sell Sneakers in Canada`);
     this.seo.addTags('Home');
+
+    const draw = Math.ceil(Math.random() * 6)
+
+    if (draw == 1) {
+      this.exp003[0] = true
+      this.config = 'config1'
+    } else if (draw == 2) {
+      this.exp003[1] = true
+      this.config = 'config2'
+    } else if (draw == 3) {
+      this.exp003[2] = true
+      this.config = 'config3'
+    } else if (draw == 4) {
+      this.exp003[3] = true
+      this.config = 'config4'
+    } else if (draw == 5) {
+      this.exp003[4] = true
+      this.config = 'config5'
+    } else if (draw == 6) {
+      this.exp003[5] = true
+      this.config = 'config6'
+    }
 
     /*this.route.queryParams.subscribe(r => {
       if (r.holidaysales && r.holidaysales != undefined) {

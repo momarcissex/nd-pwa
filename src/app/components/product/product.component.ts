@@ -76,7 +76,7 @@ export class ProductComponent implements OnInit {
 
   async ngOnInit() {
     //console.log('oninit start')
-    this.productID = this.route.snapshot.params.id;
+    this.productID = this.route.snapshot.params.id
 
     this.auth.isConnected().then((res) => {
       //console.log('isConnected start')
@@ -90,6 +90,13 @@ export class ProductComponent implements OnInit {
 
     this.getSizeSuffix();
     //console.log('oninit end')
+
+    if (this.route.snapshot.queryParams.config != undefined) {
+      gtag('event', `product_click`, {
+        'event_category': `exp003_${this.route.snapshot.queryParams.config}`,
+        'event_label': this.productID
+      })
+    }
   }
 
   /*addToCart(listing) {
@@ -163,11 +170,20 @@ export class ProductComponent implements OnInit {
   buyNow(listing) {
     const data = JSON.stringify(listing);
     clearTimeout(this.modalTimeout);
-    this.ngZone.run(() => {
-      this.router.navigate([`../../checkout`], {
-        queryParams: { product: data, sell: false }
+
+    if (this.route.snapshot.queryParams.config != undefined) {
+      this.ngZone.run(() => {
+        this.router.navigate([`../../checkout`], {
+          queryParams: { product: data, sell: false, config: this.route.snapshot.queryParams.config }
+        });
       });
-    });
+    } else {
+      this.ngZone.run(() => {
+        this.router.navigate([`../../checkout`], {
+          queryParams: { product: data, sell: false }
+        });
+      });
+    }
   }
 
   sell(offer) {

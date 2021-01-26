@@ -206,6 +206,13 @@ export class CheckoutComponent implements OnInit {
               'event_value': this.product.price
             });
 
+            if (this.route.snapshot.queryParams.config != undefined) {
+              gtag('event', `product_purchased`, {
+                'event_category': `exp003_${this.route.snapshot.queryParams.config}`,
+                'event_label': this.product.productID
+              })
+            }
+
             fbq('track', 'Purchase', {
               content_ids: [`${this.product.productID}`],
               content_name: this.product.model,
@@ -314,7 +321,14 @@ export class CheckoutComponent implements OnInit {
           gtag('event', 'begin_checkout', {
             'event_category': 'ecommerce',
             'event_label': this.product.model
-          });
+          })
+
+          if (this.route.snapshot.queryParams.config != undefined) {
+            gtag('event', `product_click`, {
+              'event_category': `exp003_${this.route.snapshot.queryParams.config}`,
+              'event_label': this.product.productID
+            })
+          }
 
           if (!(user === undefined)) {
             this.updateLastCartItem(this.product.productID, this.product.size, user)
@@ -494,7 +508,13 @@ export class CheckoutComponent implements OnInit {
     const id = this.product.productID;
 
     if (this.route.snapshot.queryParams.redirectTo === undefined) {
-      this.router.navigate([`product/${id}`]);
+      if (this.route.snapshot.queryParams.config != undefined) {
+        this.router.navigate([`product/${id}`], {
+          queryParams: { config: this.route.snapshot.queryParams.config }
+        });
+      } else {
+        this.router.navigate([`product/${id}`]);
+      }
     } else {
       this.router.navigateByUrl(this.route.snapshot.queryParams.redirectTo)
     }
