@@ -37,12 +37,12 @@ export class HomeComponent implements OnInit {
     this.title.setTitle(`NXTDROP: Buy and Sell Sneakers in Canada`);
     this.seo.addTags('Home');
 
-    this.route.queryParams.subscribe(r => {
+    /*this.route.queryParams.subscribe(r => {
       if (r.holidaysales && r.holidaysales != undefined) {
         const el = document.getElementById('discount')
         el.scrollIntoView()
       }
-    })
+    })*/
 
     this.auth.isConnected()
       .then(res => {
