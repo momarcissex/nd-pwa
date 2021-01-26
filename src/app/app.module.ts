@@ -1,10 +1,15 @@
 /** Modules */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { Globals } from './globals';
+
+export function appInit(globals: Globals) {
+  return () => globals.load()
+}
 
 /** Components */
 import { AppComponent } from './app.component';
@@ -69,7 +74,6 @@ import { TrustboxComponent } from './components/trustbox/trustbox.component';
 
 /** Font Awesome */
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library, dom } from '@fortawesome/fontawesome-svg-core';
 
 /** Icons imports */
 // tslint:disable-next-line: max-line-length
@@ -193,7 +197,14 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [
-    CookieService
+    CookieService,
+    Globals,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInit,
+      multi: true,
+      deps: [Globals]
+    }
   ],
   bootstrap: [AppComponent]
 })

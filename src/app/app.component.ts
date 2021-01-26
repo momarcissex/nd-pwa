@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { IpService } from './services/ip.service';
 import { ModalService } from './services/modal.service';
+import { Globals } from './globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -30,6 +31,7 @@ export class AppComponent implements AfterViewInit {
     private http: HttpClient,
     private ipService: IpService,
     private modalService: ModalService,
+    public globals: Globals,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 

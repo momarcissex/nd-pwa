@@ -63,32 +63,48 @@ export class ModalComponent implements OnInit {
     })
   }
 
-  close(current_page?: string) {
+  close() {
+    if (this.isOpen) {
+      document.getElementById('modal').style.background = 'transparent'
+      document.getElementById('modal').style.top = '100%';
+      this.isOpen = false
+      this.giveaway = false
+      document.body.style.overflow = 'auto'
+    }
+  }
+
+  closeExp002(current_page?: string) {
     if (this.isOpen) {
       if (current_page != undefined && current_page === 'page1') {
         gtag('event', 'page1_close_btn', {
           'event_category': 'exp002',
         });
+        this.exp002[0] = false
       } else if (current_page != undefined && current_page === 'page2') {
         gtag('event', 'page2_close_btn', {
           'event_category': 'exp002',
         });
+        this.exp002[1] = false
       } else if (current_page != undefined && current_page === 'page3') {
         gtag('event', 'page3_close_btn', {
           'event_category': 'exp002',
         });
+        this.exp002[2] = false
       } else if (current_page != undefined && current_page === 'page4') {
         gtag('event', 'page4_close_btn', {
           'event_category': 'exp002',
         });
+        this.exp002[3] = false
       } else if (current_page != undefined && current_page === 'page5') {
         gtag('event', 'page5_close_btn', {
           'event_category': 'exp002',
         });
+        this.exp002[4] = false
       } else if (current_page != undefined && current_page === 'page6') {
         gtag('event', 'page6_close_btn', {
           'event_category': 'exp002',
         });
+        this.exp002[5] = false
       }
 
 

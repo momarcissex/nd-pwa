@@ -218,4 +218,13 @@ export class UserService {
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').startAfter(startAfter).limit(60)).get()
     }
   }
+
+  exp002(uid: string) {
+    return this.afs.collection('users').doc(uid).set({
+      exp002: {
+        timestamp: Date.now(),
+        viewed: true
+      }
+    }, { merge: true })
+  }
 }

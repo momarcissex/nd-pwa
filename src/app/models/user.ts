@@ -39,4 +39,8 @@ export interface User {
             country: string
         }
     }
+    exp002?: {
+        timestamp: number;
+        viewed: number;
+    }
 }

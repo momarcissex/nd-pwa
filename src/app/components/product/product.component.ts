@@ -11,6 +11,10 @@ import { BidService } from 'src/app/services/bid.service';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 import { ModalService } from 'src/app/services/modal.service';
+import { UserService } from 'src/app/services/user.service';
+import { SlackService } from 'src/app/services/slack.service';
+import { User } from 'src/app/models/user';
+import { Globals } from 'src/app/globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -65,7 +69,6 @@ export class ProductComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private auth: AuthService,
     private router: Router,
     private title: Title,
     private seo: MetaService,
@@ -73,29 +76,31 @@ export class ProductComponent implements OnInit {
     private askService: AskService,
     private bidService: BidService,
     private modalService: ModalService,
+    private userService: UserService,
+    private slackService: SlackService,
+    public globals: Globals,
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     //console.log('oninit start')
     this.productID = this.route.snapshot.params.id;
 
-    this.auth.isConnected().then((res) => {
-      //console.log('isConnected start')
-      if (!(res === undefined)) {
-        this.UID = res.uid;
-      }
-      //console.log('isConnected end')
-    });
+    this.UID = this.globals.uid
 
-    await this.getItemInformation()
+    setTimeout(() => {
+      if (this.globals.user_data.exp002 == undefined) {
+        this.modalService.openModal('exp002')
+        this.userService.exp002(this.UID).catch(err => {
+          this.slackService.sendAlert('bugreport', err)
+        })
+      }
+    }, 5000);
+
+    this.getItemInformation()
 
     this.getSizeSuffix();
     //console.log('oninit end')
-
-    setTimeout(() => {
-      this.modalService.openModal('exp002')
-    }, 1000);
   }
 
   /*addToCart(listing) {
@@ -111,13 +116,13 @@ export class ProductComponent implements OnInit {
   async getItemInformation() {
     //console.log('getItemInformation start')
     this.productService.getProductInfo(this.productID).subscribe(data => {
-      console.log('getProductInfo start')
-      console.log(data)
+      //console.log('getProductInfo start')
+      //console.log(data)
       if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
         if (this.productInfo.assetURL === '') {
-          console.log('seo etc')
+          //console.log('seo etc')
           this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
           this.seo.addTags('Product', data);
 
