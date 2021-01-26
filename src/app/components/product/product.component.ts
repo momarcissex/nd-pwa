@@ -86,16 +86,16 @@ export class ProductComponent implements OnInit {
     //console.log('oninit start')
     this.productID = this.route.snapshot.params.id;
 
-    this.UID = this.globals.uid
+    if (this.globals.uid != undefined) this.UID = this.globals.uid
 
-    setTimeout(() => {
-      if (this.globals.user_data.exp002 == undefined) {
+    if (this.globals.uid != undefined && this.globals.user_data.exp002 == undefined) {
+      setTimeout(() => {
         this.modalService.openModal('exp002')
         this.userService.exp002(this.UID).catch(err => {
           this.slackService.sendAlert('bugreport', err)
         })
-      }
-    }, 5000);
+      }, 5000);
+    }
 
     this.getItemInformation()
 
@@ -113,7 +113,7 @@ export class ProductComponent implements OnInit {
     });
   }*/
 
-  async getItemInformation() {
+  getItemInformation() {
     //console.log('getItemInformation start')
     this.productService.getProductInfo(this.productID).subscribe(data => {
       //console.log('getProductInfo start')
