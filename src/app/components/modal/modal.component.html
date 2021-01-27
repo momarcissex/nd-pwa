@@ -1,6 +1,6 @@
 <section class="modal" id="modal">
-    <div class="modal-card" id="modal-card">
-        <div *ngIf="capture">
+    <!--<div class="modal-card" id="modal-card" *ngIf="capture">
+        <div>
             <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
             <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59"
                 alt="NXTDROP Logo">
@@ -19,8 +19,10 @@
 
             <p>{{ errorMessage }}</p>
         </div>
+    </div>
 
-        <div *ngIf="giveaway">
+    <div class="modal-card" id="modal-card" *ngIf="giveaway">
+        <div>
             <fa-icon [icon]="['fas', 'times']" (click)="close()"></fa-icon>
             <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/web_assets%2FColor.png?alt=media&token=b69f5671-a5c5-4204-9c71-df4fb3e5cb59"
                 alt="NXTDROP Logo">
@@ -30,8 +32,10 @@
 
             <button class="btn" (click)="redirect()">Enter giveaway</button>
         </div>
+    </div>
 
-        <div *ngIf="discount">
+    <div class="modal-card" id="modal-card" *ngIf="discount">
+        <div>
             <div id="top">
                 <fa-icon [icon]="faTimes" (click)="close()"></fa-icon>
             </div>
@@ -45,5 +49,148 @@
 
             <button class="btn" (click)="startShopping()">Start Shopping</button>
         </div>
+    </div>-->
+
+
+    <!-- EXP #001 Pop-Ups -->
+
+    <!-- Pop-Up #1: Duties and Taxes -->
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001a'">
+        <div class="card-body">
+
+            <div class="image">
+
+            </div>
+
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>Never Pay Duties & Import Taxes Again</h2>
+
+                <h6>Visit our Marketplace to Buy and Sell Sneakers</h6>
+
+                <div>
+                    <button class="btn" (click)="redirect('home', 'exp001')">Visit Marketplace</button>
+                </div>
+            </div>
+
+        </div>
     </div>
+
+    <!-- Pop-Up #2: Buy and Sell Sneakers in Canada -->
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001b'">
+        <div class="card-body">
+
+            <div class="image">
+
+            </div>
+
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>Looking to Buy and Sell Sneakers in Canada?</h2>
+
+                <h6>Visit our Canadian-based Sneaker Marketplace</h6>
+
+                <div>
+                    <button class="btn" (click)="redirect('home', 'exp001')">Browse Sneakers</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Pop-Up #3: New Releases -->
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001c'">
+        <div class="card-body">
+
+            <div class="image">
+
+            </div>
+
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>Never Miss New Releases on NXTDROP</h2>
+
+                <h6>Subscribe to our Newsletter</h6>
+
+                <div>
+                    <input type="text" name="email" id="subscription-email" placeholder="Email Address">
+                </div>
+
+                <div>
+                    <button class="btn" *ngIf="!subscribeLoading && !subscribeError && !subscribed"
+                        (click)="subscribe()">Subscribe</button>
+
+                    <button class="btn" *ngIf="subscribeLoading">Subscribing...</button>
+
+                    <button class="btn error" *ngIf="subscribeError">Error</button>
+
+                    <button class="btn" *ngIf="subscribed">Subscribed</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Pop-Up #4: Promotional Offers -->
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001d'">
+        <div class="card-body">
+
+            <div class="image">
+
+            </div>
+
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>Never Miss Promotional Offers on NXTDROP</h2>
+
+                <h6>Subscribe to our Newsletter</h6>
+
+                <div>
+                    <input type="text" name="email" id="subscription-email" placeholder="Email Address">
+                </div>
+
+                <div>
+                    <button class="btn" *ngIf="!subscribeLoading && !subscribeError && !subscribed"
+                        (click)="subscribe()">Subscribe</button>
+
+                    <button class="btn" *ngIf="subscribeLoading">Subscribing...</button>
+
+                    <button class="btn error" *ngIf="subscribeError">Error</button>
+
+                    <button class="btn" *ngIf="subscribed">Subscribed</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- EXP #001 Pop-Ups END -->
 </section>

@@ -18,6 +18,7 @@ import { BidService } from 'src/app/services/bid.service';
 import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
 import { NxtdropCcService } from 'src/app/services/nxtdrop-cc.service';
 import { faCheckCircle, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -84,7 +85,8 @@ export class CheckoutComponent implements OnInit {
     private tranService: TransactionService,
     private askService: AskService,
     private bidService: BidService,
-    private nxtdropCCService: NxtdropCcService
+    private nxtdropCCService: NxtdropCcService,
+    public globals: Globals
   ) { }
 
   ngOnInit() {
@@ -215,6 +217,34 @@ export class CheckoutComponent implements OnInit {
               num_items: 1,
               value: this.product.price + this.shippingPrice
             })
+
+            if (this.globals.exp001_version != undefined) {
+              if (this.globals.exp001_version == 'exp001a') {
+                gtag('event', 'exp001a_purchase', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.product.model}`,
+                  'event_value': `${this.product.price}`
+                })
+              } else if (this.globals.exp001_version == 'exp001b') {
+                gtag('event', 'exp001b_purchase', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.product.model}`,
+                  'event_value': `${this.product.price}`
+                })
+              } else if (this.globals.exp001_version == 'exp001c') {
+                gtag('event', 'exp001c_purchase', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.product.model}`,
+                  'event_value': `${this.product.price}`
+                })
+              } else if (this.globals.exp001_version == 'exp001d') {
+                gtag('event', 'exp001d_purchase', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.product.model}`,
+                  'event_value': `${this.product.price}`
+                })
+              }
+            }
           }
 
           if (typeof res === 'boolean') {
@@ -432,6 +462,34 @@ export class CheckoutComponent implements OnInit {
           'event_label': this.product.model,
           'event_value': this.product.price
         });
+
+        if (this.globals.exp001_version != undefined) {
+          if (this.globals.exp001_version == 'exp001a') {
+            gtag('event', 'exp001a_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001b') {
+            gtag('event', 'exp001b_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001c') {
+            gtag('event', 'exp001c_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001d') {
+            gtag('event', 'exp001d_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          }
+        }
       }
 
       if (typeof res === 'boolean') {
