@@ -16,6 +16,7 @@ import { User } from 'firebase';
 import { response } from 'express';
 import { faBox, faCircleNotch, faEnvelope, faHandHoldingUsd, faLink, faShippingFast, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare var gtag: any;
 
@@ -100,7 +101,8 @@ export class MakeAnOfferComponent implements OnInit {
     private title: Title,
     private slack: SlackService,
     @Inject(PLATFORM_ID) private _platformId: Object,
-    private meta: MetaService
+    private meta: MetaService,
+    public globals: Globals
   ) { }
 
   ngOnInit() {
@@ -282,6 +284,34 @@ export class MakeAnOfferComponent implements OnInit {
               'event_label': this.selectedPair.model,
               'event_value': this.pairPrice
             });
+
+            if (this.globals.exp001_version != undefined) {
+              if (this.globals.exp001_version == 'exp001a') {
+                gtag('event', 'exp001a_bid_placed', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.selectedPair.model}`,
+                  'event_value': `${this.pairPrice}`
+                })
+              } else if (this.globals.exp001_version == 'exp001b') {
+                gtag('event', 'exp001b_bid_placed', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.selectedPair.model}`,
+                  'event_value': `${this.pairPrice}`
+                })
+              } else if (this.globals.exp001_version == 'exp001c') {
+                gtag('event', 'exp001c_bid_placed', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.selectedPair.model}`,
+                  'event_value': `${this.pairPrice}`
+                })
+              } else if (this.globals.exp001_version == 'exp001d') {
+                gtag('event', 'exp001d_bid_placed', {
+                  'event_category': 'exp001',
+                  'event_label': `${this.selectedPair.model}`,
+                  'event_value': `${this.pairPrice}`
+                })
+              }
+            }
           }
 
           const msg = `${this.user.uid} placed an offer for ${this.selectedPair.model}, size ${this.pairSize} at ${this.pairPrice}`;
