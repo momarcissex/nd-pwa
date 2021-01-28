@@ -83,16 +83,12 @@ export class AppComponent implements AfterViewInit {
               app_id: "w1p7ooc8"
             });
 
-            /*setTimeout(() => {
-              this.modalService.openModal('capture')
-            }, 10000);*/
-          }
-
-          const pattern = new RegExp(/^\/news\/.+/gm)
-          if (pattern.test(this.router.url)) {
-            setTimeout(() => {
-              this.modalService.openModal('exp001')
-            }, 5000);
+            const pattern = new RegExp(/^\/news\/.+/gm)
+            if (pattern.test(this.router.url)) {
+              setTimeout(() => {
+                this.modalService.openModal('exp001')
+              }, 5000);
+            }
           }
         }).catch(err => {
           console.error(err);
