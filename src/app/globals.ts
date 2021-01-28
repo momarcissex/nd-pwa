@@ -15,6 +15,26 @@ export class Globals {
     constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private slack: SlackService) { }
 
     load() {
+        this.pickExp003Config()
+
+        return this.auth.authState.pipe(first()).toPromise().then(res => {
+            if (res != undefined) {
+                this.uid = res.uid
+
+                this.updateUserInfo()
+
+                return this.afs.collection('users').doc(this.uid).get().pipe(
+                    map(user => this.user_data = user.data() as User),
+                    first()
+                ).toPromise()
+            }
+        }).catch(err => {
+            this.slack.sendAlert('bugreport', err)
+        })
+    }
+
+    /** Pick a configuration for exp003 */
+    pickExp003Config() {
         const draw = Math.floor(Math.random() * Math.floor(6))
 
         if (draw == 0) {
@@ -30,18 +50,11 @@ export class Globals {
         } else if (draw == 5) {
             this.exp003_version = 'config6'
         }
+    }
 
-        return this.auth.currentUser.then(res => {
-            if (res != undefined) {
-                this.uid = res.uid
-
-                return this.afs.collection('users').doc(this.uid).get().pipe(
-                    map(user => this.user_data = user.data() as User),
-                    first()
-                ).toPromise()
-            }
-        }).catch(err => {
-            this.slack.sendAlert('bugreport', err)
+    updateUserInfo() {
+        this.afs.collection('users').doc(this.uid).valueChanges().subscribe(res => {
+            this.user_data = res as User
         })
     }
 }

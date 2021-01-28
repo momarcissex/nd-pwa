@@ -11,6 +11,7 @@ import { BidService } from 'src/app/services/bid.service';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 import { Globals } from 'src/app/globals';
+import { UserService } from 'src/app/services/user.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -73,47 +74,26 @@ export class ProductComponent implements OnInit {
     private askService: AskService,
     private bidService: BidService,
     @Inject(PLATFORM_ID) private platform_id: Object,
-    private globals: Globals
+    private globals: Globals,
+    private userService: UserService
   ) { }
 
-  async ngOnInit() {
-    //console.log('oninit start')
+  ngOnInit() {
     this.productID = this.route.snapshot.params.id
 
-    this.auth.isConnected().then((res) => {
-      //console.log('isConnected start')
-      if (!(res === undefined)) {
-        this.UID = res.uid;
-      }
-      //console.log('isConnected end')
-    });
+    this.UID = this.globals.uid
 
-    await this.getItemInformation()
-
+    this.getItemInformation() //Get the product's information
     this.getSizeSuffix();
-    //console.log('oninit end')
+    this.addToRecentlyViewed()
   }
 
-  /*addToCart(listing) {
-    this.productService.addToCart(listing).then(res => {
-      if (res) {
-        // console.log('Added to cart');
-      } else {
-        // console.log('Cannot add to cart');
-      }
-    });
-  }*/
-
-  async getItemInformation() {
-    //console.log('getItemInformation start')
+  getItemInformation() {
     this.productService.getProductInfo(this.productID).subscribe(data => {
-      //console.log('getProductInfo start')
-      //console.log(data)
       if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
         if (this.productInfo.assetURL === '') {
-          //console.log('seo etc')
           this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
           this.seo.addTags('Product', data);
 
@@ -139,7 +119,6 @@ export class ProductComponent implements OnInit {
       if (this.offers.length === 0) {
         this.getOffers();
       }
-      //console.log('getProductInfo end')
     });
   }
 
@@ -148,25 +127,19 @@ export class ProductComponent implements OnInit {
     const patternGS = new RegExp(/.+\-GS$/);
 
     if (patternW.test(this.productID.toUpperCase())) {
-      //console.log('Woman Size');
       this.sizeSuffix = 'W';
     } else if (patternGS.test(this.productID.toUpperCase())) {
-      //console.log(`GS size`);
       this.sizeSuffix = 'Y';
     }
   }
 
-  async countView() {
-    //console.log('countView start')
+  countView() {
     if (!(this.UID == null || this.UID == undefined)) {
       this.productService.countView(this.productID).then(() => {
-        //console.log('view count updated')
       }).catch(err => {
         console.error(err);
       })
     }
-
-    //console.log('countView end')
   }
 
   buyNow(listing) {
@@ -193,7 +166,6 @@ export class ProductComponent implements OnInit {
     if (isPlatformBrowser(this.platform_id)) {
 
       this.productService.shareCount(this.productInfo.productID).then(() => {
-        //console.log('trending score update')
       })
         .catch(err => {
           console.error(err)
@@ -253,7 +225,6 @@ export class ProductComponent implements OnInit {
   }
 
   getOffers() {
-    //console.log('getOffers start')
     let suffix: string;
     let shoeSizes: Array<string> | Array<number>;
     this.offers.length = 0
@@ -276,8 +247,6 @@ export class ProductComponent implements OnInit {
       }
     }
 
-    //console.log(this.sizes[suffix]);
-    //console.log(this.productInfo.sizes)
     if (!(this.productInfo.sizes === undefined)) {
       shoeSizes = this.productInfo.sizes
     } else {
@@ -333,7 +302,6 @@ export class ProductComponent implements OnInit {
         });
       });
     });
-    //console.log('getOffers end')
   }
 
   selectSize(selected: any) {
@@ -365,6 +333,12 @@ export class ProductComponent implements OnInit {
     } else {
       alert('Please select a size below')
     }
+  }
+
+  addToRecentlyViewed() {
+    this.userService.addToRecentlyViewed(this.productID, this.UID).catch(err => {
+      console.error(err)
+    })
   }
 
 }
