@@ -89,13 +89,15 @@ export class ProductComponent implements OnInit {
     if (this.globals.uid != undefined) this.UID = this.globals.uid
 
     if (this.globals.uid != undefined && this.globals.user_data.exp002 == undefined) {
-      setTimeout(() => {
+      /*setTimeout(() => {
         this.modalService.openModal('exp002')
         this.userService.exp002(this.UID).catch(err => {
           this.slackService.sendAlert('bugreport', err)
         })
-      }, 5000);
+      }, 5000);*/
     }
+
+    this.modalService.openModal('exp002')
 
     this.getItemInformation()
 
