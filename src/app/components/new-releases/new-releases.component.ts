@@ -10,8 +10,6 @@ export class NewReleasesComponent implements OnInit {
 
   newReleases = [];
 
-  @Input() configuration: string;
-
   constructor(
     private homeService: HomeService
   ) { }

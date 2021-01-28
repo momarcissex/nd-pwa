@@ -1,10 +1,15 @@
 /** Modules */
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { Globals } from './globals';
+
+export function appInit(globals: Globals) {
+  return () => globals.load()
+}
 
 /** Components */
 import { AppComponent } from './app.component';
@@ -103,7 +108,6 @@ import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bi
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlyNumberDirective } from './directives/only-number.directive';
-import { Globals } from './globals';
 
 @NgModule({
   declarations: [
@@ -195,7 +199,13 @@ import { Globals } from './globals';
   ],
   providers: [
     CookieService,
-    Globals
+    Globals,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInit,
+      multi: true,
+      deps: [Globals]
+    }
   ],
   bootstrap: [AppComponent]
 })

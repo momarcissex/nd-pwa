@@ -26,18 +26,17 @@
           </div>
 
           <div>
-            <a *ngIf="sizeSelected && currentOffer.LowestAsk && !route.snapshot.queryParams.config"
-              [routerLink]="['/checkout']"
+            <a *ngIf="sizeSelected && currentOffer.LowestAsk" [routerLink]="['/checkout']"
               [queryParams]="{ product: currentOffer.LowestAsk.listingID, sell: false }">Buy Now</a>
-            <a *ngIf="sizeSelected && currentOffer.LowestAsk && route.snapshot.queryParams.config"
-              [routerLink]="['/checkout']"
-              [queryParams]="{ product: currentOffer.LowestAsk.listingID, sell: false, config: route.snapshot.queryParams.config }">Buy Now</a>
+
             <a *ngIf="sizeSelected && !currentOffer.LowestAsk" class="disabled">Buy Now</a>
+
             <a *ngIf="!sizeSelected && (currentOffer.LowestAsk || !currentOffer.LowestAsk)" (click)="sizeAlert()"
               class="disabled">Buy Now</a>
 
             <a *ngIf="!sizeSelected" [routerLink]="['/make-an-offer']"
               [queryParams]="{ sneaker: productInfo | json }">Place Bid</a>
+
             <a *ngIf=sizeSelected [routerLink]="['/make-an-offer']"
               [queryParams]="{ sneaker: productInfo | json, size: sizeSelected }">Place Bid</a>
           </div>
@@ -67,7 +66,9 @@
           <div>
             <a *ngIf="sizeSelected && currentOffer.HighestBid" [routerLink]="['/checkout']"
               [queryParams]="{ product: currentOffer.HighestBid.offerID, sell: true }">Sell Now</a>
+
             <a *ngIf="sizeSelected && !currentOffer.HighestBid" class="disabled">Sell Now</a>
+
             <a *ngIf="!sizeSelected && (currentOffer.HighestBid || !currentOffer.HighestBid)" (click)="sizeAlert()"
               class="disabled">Sell Now</a>
 

@@ -86,7 +86,7 @@ export class CheckoutComponent implements OnInit {
     private askService: AskService,
     private bidService: BidService,
     private nxtdropCCService: NxtdropCcService,
-    public globals: Globals
+    private globals: Globals
   ) { }
 
   ngOnInit() {
@@ -208,10 +208,19 @@ export class CheckoutComponent implements OnInit {
               'event_value': this.product.price
             });
 
-            if (this.route.snapshot.queryParams.config != undefined) {
-              gtag('event', `product_purchased`, {
-                'event_category': `exp003_${this.route.snapshot.queryParams.config}`,
-                'event_label': this.product.productID
+            if (this.globals.exp003_version != undefined) {
+              gtag('event', `${this.globals.exp003_version}_purchase`, {
+                'event_category': `exp003`,
+                'event_label': `${this.product.model}`,
+                'event_value': `${this.product.price}`
+              })
+            }
+
+            if (this.globals.exp001_version != undefined) {
+              gtag('event', `${this.globals.exp001_version}_purchase`, {
+                'event_category': 'exp001',
+                'event_label': `${this.product.model}`,
+                'event_value': `${this.product.price}`
               })
             }
 
@@ -224,34 +233,6 @@ export class CheckoutComponent implements OnInit {
               num_items: 1,
               value: this.product.price + this.shippingPrice
             })
-
-            if (this.globals.exp001_version != undefined) {
-              if (this.globals.exp001_version == 'exp001a') {
-                gtag('event', 'exp001a_purchase', {
-                  'event_category': 'exp001',
-                  'event_label': `${this.product.model}`,
-                  'event_value': `${this.product.price}`
-                })
-              } else if (this.globals.exp001_version == 'exp001b') {
-                gtag('event', 'exp001b_purchase', {
-                  'event_category': 'exp001',
-                  'event_label': `${this.product.model}`,
-                  'event_value': `${this.product.price}`
-                })
-              } else if (this.globals.exp001_version == 'exp001c') {
-                gtag('event', 'exp001c_purchase', {
-                  'event_category': 'exp001',
-                  'event_label': `${this.product.model}`,
-                  'event_value': `${this.product.price}`
-                })
-              } else if (this.globals.exp001_version == 'exp001d') {
-                gtag('event', 'exp001d_purchase', {
-                  'event_category': 'exp001',
-                  'event_label': `${this.product.model}`,
-                  'event_value': `${this.product.price}`
-                })
-              }
-            }
           }
 
           if (typeof res === 'boolean') {
@@ -353,13 +334,6 @@ export class CheckoutComponent implements OnInit {
             'event_label': this.product.model
           })
 
-          if (this.route.snapshot.queryParams.config != undefined) {
-            gtag('event', `product_click`, {
-              'event_category': `exp003_${this.route.snapshot.queryParams.config}`,
-              'event_label': this.product.productID
-            })
-          }
-
           if (!(user === undefined)) {
             this.updateLastCartItem(this.product.productID, this.product.size, user)
 
@@ -382,7 +356,7 @@ export class CheckoutComponent implements OnInit {
             this.showCheckoutBtns()
 
             if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
-              console.log('work')
+              //console.log('work')
               this.discounted = true
               this.applyPromo()
             }
@@ -566,13 +540,7 @@ export class CheckoutComponent implements OnInit {
     const id = this.product.productID;
 
     if (this.route.snapshot.queryParams.redirectTo === undefined) {
-      if (this.route.snapshot.queryParams.config != undefined) {
-        this.router.navigate([`product/${id}`], {
-          queryParams: { config: this.route.snapshot.queryParams.config }
-        });
-      } else {
-        this.router.navigate([`product/${id}`]);
-      }
+      this.router.navigate([`product/${id}`]);
     } else {
       this.router.navigateByUrl(this.route.snapshot.queryParams.redirectTo)
     }

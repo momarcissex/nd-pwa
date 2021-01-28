@@ -170,31 +170,19 @@ export class SellComponent implements OnInit {
           });
 
           if (this.globals.exp001_version != undefined) {
-            if (this.globals.exp001_version == 'exp001a') {
-              gtag('event', 'exp001a_ask_placed', {
-                'event_category': 'exp001',
-                'event_label': `${this.selectedPair.model}`,
-                'event_value': `${this.pairPrice}`
-              })
-            } else if (this.globals.exp001_version == 'exp001b') {
-              gtag('event', 'exp001b_ask_placed', {
-                'event_category': 'exp001',
-                'event_label': `${this.selectedPair.model}`,
-                'event_value': `${this.pairPrice}`
-              })
-            } else if (this.globals.exp001_version == 'exp001c') {
-              gtag('event', 'exp001c_ask_placed', {
-                'event_category': 'exp001',
-                'event_label': `${this.selectedPair.model}`,
-                'event_value': `${this.pairPrice}`
-              })
-            } else if (this.globals.exp001_version == 'exp001d') {
-              gtag('event', 'exp001d_ask_placed', {
-                'event_category': 'exp001',
-                'event_label': `${this.selectedPair.model}`,
-                'event_value': `${this.pairPrice}`
-              })
-            }
+            gtag('event', `${this.globals.exp001_version}_ask_placed`, {
+              'event_category': 'exp001',
+              'event_label': `${this.selectedPair.model}`,
+              'event_value': `${this.pairPrice}`
+            })
+          }
+
+          if (this.globals.exp003_version != undefined) {
+            gtag('event', `${this.globals.exp003_version}_ask_placed`, {
+              'event_category': 'exp003',
+              'event_label': `${this.selectedPair.model}`,
+              'event_value': `${this.pairPrice}`
+            })
           }
         }
 

@@ -10,8 +10,6 @@ export class TrendingComponent implements OnInit {
 
   trends = [];
 
-  @Input() configuration: string;
-
   constructor(
     private homeService: HomeService
   ) { }

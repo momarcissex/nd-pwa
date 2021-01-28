@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AuthService } from 'src/app/services/auth.service';
 import { MetaService } from 'src/app/services/meta.service';
-import { UserService } from 'src/app/services/user.service';
-import { SlackService } from 'src/app/services/slack.service';
 import { User } from 'src/app/models/user';
-import { ActivatedRoute } from '@angular/router';
+import { Globals } from 'src/app/globals';
 
+declare const gtag: any;
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -29,64 +27,42 @@ export class HomeComponent implements OnInit {
   constructor(
     private title: Title,
     private afs: AngularFirestore,
-    private auth: AuthService,
     private seo: MetaService,
-    private userService: UserService,
-    private slackService: SlackService,
-    private route: ActivatedRoute
+    public globals: Globals
   ) { }
 
   ngOnInit() {
     this.title.setTitle(`NXTDROP: Buy and Sell Sneakers in Canada`);
     this.seo.addTags('Home');
 
-    const draw = Math.ceil(Math.random() * 6)
+    this.userInfo = this.globals.user_data
+    if (this.globals.uid != undefined) this.connected = true
 
-    if (draw == 1) {
-      this.exp003[0] = true
-      this.config = 'config1'
-    } else if (draw == 2) {
-      this.exp003[1] = true
-      this.config = 'config2'
-    } else if (draw == 3) {
-      this.exp003[2] = true
-      this.config = 'config3'
-    } else if (draw == 4) {
-      this.exp003[3] = true
-      this.config = 'config4'
-    } else if (draw == 5) {
-      this.exp003[4] = true
-      this.config = 'config5'
-    } else if (draw == 6) {
-      this.exp003[5] = true
-      this.config = 'config6'
+    if (this.globals.exp003_version == 'config1') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config2') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config3') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config4') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config5') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config6') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
     }
-
-    /*this.route.queryParams.subscribe(r => {
-      if (r.holidaysales && r.holidaysales != undefined) {
-        const el = document.getElementById('discount')
-        el.scrollIntoView()
-      }
-    })*/
-
-    this.auth.isConnected()
-      .then(res => {
-        if (res != null || res != undefined) {
-          this.connected = true;
-
-          this.userService.getUserInfo(res.uid).subscribe(
-            data => {
-              this.userInfo = data
-            },
-            err => {
-              //console.error(err)
-              this.slackService.sendAlert('bugreport', err)
-            }
-          )
-        } else {
-          this.connected = false
-        }
-      });
 
     this.afs.collection(`transactions`).get().subscribe(res => {
       let prices: number = 0;
