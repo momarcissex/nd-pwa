@@ -2079,13 +2079,13 @@ exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone
 
 exports.reset_score = functions.pubsub.schedule('every monday, thursday of month 12:30').timeZone('America/Edmonton').onRun((context: any) => {
     // get all the products with a score and set the score to 0
-    return admin.firestore().collection('products').where('score', '>=', 0).get().then(response => {
+    return admin.firestore().collection('products').where('trending_score', '>=', 0).get().then(response => {
         if (response.empty) {
             return null;
         } else {
             response.docs.forEach(ele => {
                 admin.firestore().collection('products').doc(ele.id).update({
-                    score: 0
+                    trending_score: 0
                 })
                     .catch(err => {
                         const payload = { "text": `Reset Score (Update Score) Cloud Function Error: ${err}` }
@@ -2154,7 +2154,7 @@ exports.update_rank = functions.pubsub.schedule('every 3 hours').timeZone('Ameri
 
         // get all the products with a score and order them by score
         // have a counter to rank the products incrementally starting from 1
-        return admin.firestore().collection('products').where('score', '>=', 0).orderBy('score', 'asc').get().then(res => {
+        return admin.firestore().collection('products').where('trending_score', '>=', 0).orderBy('trending_score', 'asc').get().then(res => {
             if (res.empty) {
                 return null;
             } else {
