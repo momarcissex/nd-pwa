@@ -10,6 +10,7 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -71,12 +72,13 @@ export class ProductComponent implements OnInit {
     private ngZone: NgZone,
     private askService: AskService,
     private bidService: BidService,
-    @Inject(PLATFORM_ID) private platform_id: Object
+    @Inject(PLATFORM_ID) private platform_id: Object,
+    private globals: Globals
   ) { }
 
   async ngOnInit() {
     //console.log('oninit start')
-    this.productID = this.route.snapshot.params.id;
+    this.productID = this.route.snapshot.params.id
 
     this.auth.isConnected().then((res) => {
       //console.log('isConnected start')
@@ -105,15 +107,22 @@ export class ProductComponent implements OnInit {
   async getItemInformation() {
     //console.log('getItemInformation start')
     this.productService.getProductInfo(this.productID).subscribe(data => {
-      console.log('getProductInfo start')
-      console.log(data)
+      //console.log('getProductInfo start')
+      //console.log(data)
       if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
         if (this.productInfo.assetURL === '') {
-          console.log('seo etc')
+          //console.log('seo etc')
           this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
           this.seo.addTags('Product', data);
+
+          if (this.globals.exp003_version != undefined) {
+            gtag('event', `${this.globals.exp003_version}_product_click`, {
+              'event_category': `exp003`,
+              'event_label': data.model
+            })
+          }
 
           fbq('track', 'ViewContent', {
             content_ids: [`${this.productID}`],
@@ -147,9 +156,9 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  /*async countView() {
+  async countView() {
     //console.log('countView start')
-    if (!isNullOrUndefined(this.UID)) {
+    if (!(this.UID == null || this.UID == undefined)) {
       this.productService.countView(this.productID).then(() => {
         //console.log('view count updated')
       }).catch(err => {
@@ -158,11 +167,12 @@ export class ProductComponent implements OnInit {
     }
 
     //console.log('countView end')
-  }*/
+  }
 
   buyNow(listing) {
     const data = JSON.stringify(listing);
     clearTimeout(this.modalTimeout);
+
     this.ngZone.run(() => {
       this.router.navigate([`../../checkout`], {
         queryParams: { product: data, sell: false }
@@ -181,6 +191,14 @@ export class ProductComponent implements OnInit {
 
   share(social: string) {
     if (isPlatformBrowser(this.platform_id)) {
+
+      this.productService.shareCount(this.productInfo.productID).then(() => {
+        //console.log('trending score update')
+      })
+        .catch(err => {
+          console.error(err)
+        })
+
       if (social === 'fb') {
         window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.productID}&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
         gtag('event', 'share_product_fb', {
@@ -310,7 +328,7 @@ export class ProductComponent implements OnInit {
           if (shoeSizes.length === this.offers.length) {
             this.currentOffer.LowestAsk = this.lowestAsk;
             this.currentOffer.HighestBid = this.highestBid;
-            //this.countView()
+            this.countView()
           }
         });
       });

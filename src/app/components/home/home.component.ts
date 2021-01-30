@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AuthService } from 'src/app/services/auth.service';
 import { MetaService } from 'src/app/services/meta.service';
-import { UserService } from 'src/app/services/user.service';
-import { SlackService } from 'src/app/services/slack.service';
 import { User } from 'src/app/models/user';
-import { ActivatedRoute } from '@angular/router';
+import { Globals } from 'src/app/globals';
 
+declare const gtag: any;
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -23,45 +21,48 @@ export class HomeComponent implements OnInit {
 
   loadIframe: boolean = true
 
+  exp003: boolean[] = [false, false, false, false, false, false]
+  config: string = ''
+
   constructor(
     private title: Title,
     private afs: AngularFirestore,
-    private auth: AuthService,
     private seo: MetaService,
-    private userService: UserService,
-    private slackService: SlackService,
-    private route: ActivatedRoute
+    public globals: Globals
   ) { }
 
   ngOnInit() {
     this.title.setTitle(`NXTDROP: Buy and Sell Sneakers in Canada`);
     this.seo.addTags('Home');
 
-    this.route.queryParams.subscribe(r => {
-      if (r.holidaysales && r.holidaysales != undefined) {
-        const el = document.getElementById('discount')
-        el.scrollIntoView()
-      }
-    })
+    this.userInfo = this.globals.user_data
+    if (this.globals.uid != undefined) this.connected = true
 
-    this.auth.isConnected()
-      .then(res => {
-        if (res != null || res != undefined) {
-          this.connected = true;
-
-          this.userService.getUserInfo(res.uid).subscribe(
-            data => {
-              this.userInfo = data
-            },
-            err => {
-              //console.error(err)
-              this.slackService.sendAlert('bugreport', err)
-            }
-          )
-        } else {
-          this.connected = false
-        }
-      });
+    if (this.globals.exp003_version == 'config1') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config2') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config3') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config4') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config5') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    } else if (this.globals.exp003_version == 'config6') {
+      gtag('event', `exp003_view`, {
+        'event_category': `exp003_${this.globals.exp003_version}`
+      })
+    }
 
     this.afs.collection(`transactions`).get().subscribe(res => {
       let prices: number = 0;

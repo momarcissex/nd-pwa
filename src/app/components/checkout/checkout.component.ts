@@ -18,6 +18,7 @@ import { BidService } from 'src/app/services/bid.service';
 import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
 import { NxtdropCcService } from 'src/app/services/nxtdrop-cc.service';
 import { faCheckCircle, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -84,7 +85,8 @@ export class CheckoutComponent implements OnInit {
     private tranService: TransactionService,
     private askService: AskService,
     private bidService: BidService,
-    private nxtdropCCService: NxtdropCcService
+    private nxtdropCCService: NxtdropCcService,
+    private globals: Globals
   ) { }
 
   ngOnInit() {
@@ -161,7 +163,6 @@ export class CheckoutComponent implements OnInit {
       style: {
         label: 'paypal',
         layout: 'vertical',
-        color: 'silver',
         shape: 'rect',
         tagline: false
       },
@@ -207,6 +208,22 @@ export class CheckoutComponent implements OnInit {
               'event_value': this.product.price
             });
 
+            if (this.globals.exp003_version != undefined) {
+              gtag('event', `${this.globals.exp003_version}_purchase`, {
+                'event_category': `exp003`,
+                'event_label': `${this.product.model}`,
+                'event_value': `${this.product.price}`
+              })
+            }
+
+            if (this.globals.exp001_version != undefined) {
+              gtag('event', `${this.globals.exp001_version}_purchase`, {
+                'event_category': 'exp001',
+                'event_label': `${this.product.model}`,
+                'event_value': `${this.product.price}`
+              })
+            }
+
             fbq('track', 'Purchase', {
               content_ids: [`${this.product.productID}`],
               content_name: this.product.model,
@@ -240,6 +257,8 @@ export class CheckoutComponent implements OnInit {
       onCancel: (data, actions) => {
         //console.log('OnCancel', data, actions);
 
+        (document.getElementById('paypal-checkout') as HTMLInputElement).style.backgroundColor = "transparent"
+
       },
       onError: err => {
         //console.log('OnError', err);
@@ -247,6 +266,12 @@ export class CheckoutComponent implements OnInit {
       },
       onClick: (data, actions) => {
         //console.log('onClick', data, actions);
+
+        (document.getElementById('paypal-checkout') as HTMLInputElement).style.backgroundColor = "white"
+
+        console.log((this.total).toString())
+
+
         gtag('event', 'PP_click', {
           'event_category': 'ecommerce',
           'event_label': this.product.model
@@ -256,137 +281,41 @@ export class CheckoutComponent implements OnInit {
   }
 
   applyPromo() {
-    const code = (document.getElementById('promo-code') as HTMLInputElement).value;
     const now = Date.now();
+    const code = (document.getElementById('promo-code') as HTMLInputElement).value
 
-    if (this.discounted) {
-      this.discount = {
-        amount: 0,
-        cardID: '',
-        expirationDate: 0,
-        initiationDate: 0,
-        reusable: true,
-        type: 'cash',
-        used_by: []
-      }
-
-      if (this.subtotal <= 500) {
-        this.discount.amount = 17
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 500 && this.subtotal <= 750) {
-        this.discount.amount = this.total * 0.035
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "percent"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 750 && this.subtotal <= 1000) {
-        this.discount.amount = 25
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1000 && this.subtotal <= 1250) {
-        this.discount.amount = this.total * 0.028
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "percent"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1250 && this.subtotal <= 1500) {
-        this.discount.amount = 35
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1500 && this.subtotal <= 1750) {
-        this.discount.amount = 40
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else if (this.subtotal > 1750 && this.subtotal <= 2000) {
-        this.discount.amount = 44
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      } else {
-        this.discount.amount = 70
-        this.total = this.total - this.discount.amount
-        this.discount.cardID = "THANKS2020"
-        this.discount.expirationDate = now
-        this.discount.initiationDate = now
-        this.discount.reusable = true
-        this.discount.type = "cash"
-        this.discount.used_by = [this.user.uid]
-        this.promoApplied = true
-      }
-      
-      this.showCheckoutBtns()
-    } else {
-      if (code.length == 10) {
-        this.promoLoading = true;
-        this.nxtdropCCService.getPromoCode(code).subscribe(res => {
-          //console.log(res.initiationDate)
-          //console.log(this.user.creation_date)
-          if (!(res === undefined) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
-            this.discount = res
-            if (res.type === 'cash') {
-              if (this.total <= res.amount) {
-                this.total = 0;
-                this.freePair = true;
-              } else {
-                this.total = this.total - res.amount;
-              }
+    if (code.length == 10) {
+      this.promoLoading = true;
+      this.nxtdropCCService.getPromoCode(code).subscribe(res => {
+        //console.log(res.initiationDate)
+        //console.log(this.user.creation_date)
+        if (!(res === undefined) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
+          this.discount = res
+          if (res.type === 'cash') {
+            if (this.total <= res.amount) {
+              this.total = 0;
+              this.freePair = true;
             } else {
-              this.discount.amount = this.total * (this.discount.amount / 100)
-              this.total = this.total - this.discount.amount
+              this.total = this.total - res.amount;
             }
-
-            this.promoLoading = false;
-            this.promoApplied = true;
-
-            this.showCheckoutBtns()
           } else {
-            this.promoLoading = false;
-            this.promoError = true;
-
-            setTimeout(() => {
-              this.promoError = false;
-            }, 2000);
+            this.discount.amount = this.total * (this.discount.amount / 100)
+            this.total = this.total - this.discount.amount
           }
-        })
-      }
+
+          this.promoLoading = false;
+          this.promoApplied = true;
+
+          this.showCheckoutBtns()
+        } else {
+          this.promoLoading = false;
+          this.promoError = true;
+
+          setTimeout(() => {
+            this.promoError = false;
+          }, 2000);
+        }
+      })
     }
   }
 
@@ -403,7 +332,7 @@ export class CheckoutComponent implements OnInit {
           gtag('event', 'begin_checkout', {
             'event_category': 'ecommerce',
             'event_label': this.product.model
-          });
+          })
 
           if (!(user === undefined)) {
             this.updateLastCartItem(this.product.productID, this.product.size, user)
@@ -426,8 +355,8 @@ export class CheckoutComponent implements OnInit {
             this.showShipping()
             this.showCheckoutBtns()
 
-            if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1606842000000) {
-              console.log('work')
+            if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
+              //console.log('work')
               this.discounted = true
               this.applyPromo()
             }
@@ -521,6 +450,34 @@ export class CheckoutComponent implements OnInit {
           'event_label': this.product.model,
           'event_value': this.product.price
         });
+
+        if (this.globals.exp001_version != undefined) {
+          if (this.globals.exp001_version == 'exp001a') {
+            gtag('event', 'exp001a_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001b') {
+            gtag('event', 'exp001b_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001c') {
+            gtag('event', 'exp001c_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001d') {
+            gtag('event', 'exp001d_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${this.product.model}`,
+              'event_value': `${this.product.price}`
+            })
+          }
+        }
       }
 
       if (typeof res === 'boolean') {

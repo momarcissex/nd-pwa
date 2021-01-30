@@ -9,6 +9,7 @@ import { BidService } from 'src/app/services/bid.service';
 import { Ask } from 'src/app/models/ask';
 import { AskService } from 'src/app/services/ask.service';
 import { faChevronDown, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -52,7 +53,8 @@ export class ProfileComponent implements OnInit {
     private bidService: BidService,
     private askService: AskService,
     @Inject(PLATFORM_ID) private _platoformId: Object,
-    private meta: MetaService
+    private meta: MetaService,
+    private activeRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -89,7 +91,15 @@ export class ProfileComponent implements OnInit {
         }
       });
 
-      this.showListings();
+      this.activeRoute.params.subscribe(res => {
+        if (res.mode === 'listings') {
+          this.showListings()
+        } else if (res.mode === 'bids') {
+          this.showOffers()
+        } else {
+          this.showListings()
+        }
+      })
     }
   }
 

@@ -14,4 +14,5 @@ export class Product {
     product_type: string;
     sizes_available?: Array<string>;
     sizes_lowest_ask?: { [key: string]: number };
+    collections?: Array<string>;
 }

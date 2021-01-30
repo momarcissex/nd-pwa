@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Bid } from '../models/bid';
 import { Product } from '../models/product';
@@ -35,7 +34,7 @@ export class BidService {
   public getHighestBid(productID: string, condition: string, size?: string) {
     let offerRef: firebase.firestore.Query<firebase.firestore.DocumentData>;
 
-    isNullOrUndefined(size) ? offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `desc`).limit(1) : offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `desc`).limit(1);
+    (size == undefined || size == null) ? offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `desc`).limit(1) : offerRef = this.afs.collection(`products`).doc(`${productID}`).collection(`offers`).ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `desc`).limit(1);
 
     return offerRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>;
   }
@@ -71,10 +70,15 @@ export class BidService {
     batch.set(offersValRef, {
       offers: firebase.firestore.FieldValue.increment(1)
     }, { merge: true })
+    
+    //update trending score
+    batch.update(this.afs.firestore.collection('products').doc(pair.productID), {
+      trending_score: firebase.firestore.FieldValue.increment(0.46)
+    })
 
     // update highestBid in products Document
     return this.afs.collection('products').doc(`${pair.productID}`).get().subscribe(res => {
-      if (isNullOrUndefined(res.data().highest_bid) || res.data().highest_bid < price) {
+      if ((res.data().highest_bid == undefined || res.data().highest_bid == null) || res.data().highest_bid < price) {
         const prodRef = this.afs.firestore.collection('products').doc(`${pair.productID}`);
 
         batch.set(prodRef, {
@@ -88,7 +92,7 @@ export class BidService {
 
           console.log(`size highest_bid: ${size_highest_bid} and price: ${price}`)
 
-          if (isNullOrUndefined(size_highest_bid) || price > size_highest_bid) {
+          if ((size_highest_bid == undefined || size_highest_bid == null) || price > size_highest_bid) {
             this.http.put(`${environment.cloud.url}highestBidNotification`, {
               product_id: pair.productID,
               buyer_id: UID,
@@ -158,7 +162,7 @@ export class BidService {
         console.log(`offerID: ${bid.offerID}; size[0]: ${size_prices[0].offerID}`)
         console.log(`size[1]: ${size_prices[1]}`)
 
-        if (bid.offerID === size_prices[0].offerID && !isNullOrUndefined(size_prices[1])) {
+        if (bid.offerID === size_prices[0].offerID && !(size_prices[1] == undefined || size_prices[1] == null)) {
           console.log(size_prices[1])
           this.http.put(`${environment.cloud.url}highestBidNotification`, {
             product_id: size_prices[1].productID,
@@ -254,6 +258,11 @@ export class BidService {
       expiration_date
     })
 
+    //update trending score
+    batch.update(this.afs.firestore.collection('products').doc(bid.productID), {
+      trending_score: firebase.firestore.FieldValue.increment(0.46)
+    })
+
     return batch.commit()
       .then(() => {
         //console.log('Offer updated');
@@ -291,7 +300,7 @@ export class BidService {
         offer_id,
         price
       }).subscribe()
-    } else if (!isNullOrUndefined(size_prices[1]) && offer_id === size_prices[0].offerID && price < size_prices[0].price) {
+    } else if (!(size_prices[1] == undefined || size_prices[1] == null) && offer_id === size_prices[0].offerID && price < size_prices[0].price) {
       if (price <= size_prices[1].price) {
         this.http.put(`${environment.cloud.url}highestBidNotification`, {
           product_id,
@@ -311,7 +320,7 @@ export class BidService {
           price
         }).subscribe()
       }
-    } else if (isNullOrUndefined(size_prices[1])) {
+    } else if (size_prices[1] == undefined || size_prices[1] == null) {
       this.http.put(`${environment.cloud.url}highestBidNotification`, {
         product_id,
         buyer_id: UID,

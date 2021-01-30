@@ -125,7 +125,7 @@
 
   <div class="checkout-btns" *ngIf="product">
     <!--user viewing an ask-->
-    <div *ngIf="showPaypal">
+    <div *ngIf="showPaypal" style="padding: .5rem;" id="paypal-checkout">
       <h2>Select Payment Method</h2>
       <ngx-paypal [config]="payPalConfig"></ngx-paypal>
     </div>

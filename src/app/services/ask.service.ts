@@ -4,7 +4,6 @@ import { Product } from '../models/product';
 import { AuthService } from './auth.service';
 import { Ask } from '../models/ask';
 import * as firebase from 'firebase/app';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -29,7 +28,7 @@ export class AskService {
   getLowestAsk(productID: string, condition: string, size?: string) {
     let listingRef: firebase.firestore.Query<firebase.firestore.DocumentData>;
 
-    isNullOrUndefined(size) ? listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`).ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `asc`).limit(1) : listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`).ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `asc`).limit(1);
+    size == undefined || size == null ? listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`).ref.where(`condition`, `==`, `${condition}`).orderBy(`price`, `asc`).limit(1) : listingRef = this.afs.collection(`products`).doc(`${productID}`).collection(`listings`).ref.where(`condition`, `==`, `${condition}`).where(`size`, `==`, `${size}`).orderBy(`price`, `asc`).limit(1);
 
     return listingRef.get() as Promise<firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>>
   }
@@ -77,7 +76,7 @@ export class AskService {
     }, { merge: true }) // increment 'listed' field by one
 
     //update lowest_price
-    if (isNullOrUndefined(pair.lowest_price) || price < pair.lowest_price) {
+    if ((pair.lowest_price == undefined || pair.lowest_price == null) || price < pair.lowest_price) {
       batch.update(prodRef, {
         lowest_price: price
       })
@@ -102,7 +101,8 @@ export class AskService {
       //update sizes_lowest_ask and sizes_available
       batch.update(prodRef, {
         sizes_lowest_ask: data,
-        sizes_available: firebase.firestore.FieldValue.arrayUnion(size)
+        sizes_available: firebase.firestore.FieldValue.arrayUnion(size),
+        trending_score: firebase.firestore.FieldValue.increment(1)
       })
     }
 
@@ -111,7 +111,7 @@ export class AskService {
         //console.log('New Listing Added');
         //console.log(`size_lowest: ${pair.sizes_lowest_ask[size]} and price: ${price}`)
 
-        if (!isNullOrUndefined(sizeLowestAskNotif)) sizeLowestAskNotif.subscribe()
+        if (!(sizeLowestAskNotif == undefined || sizeLowestAskNotif == null)) sizeLowestAskNotif.subscribe()
 
         this.http.post(`${environment.cloud.url}askNotification`, this.ask_data).subscribe() //send ask email
 
@@ -183,7 +183,7 @@ export class AskService {
     }
 
     //lowest ask email notification and product document updates
-    if (ask.listingID === size_prices[0].listingID && !isNullOrUndefined(size_prices[1])) {
+    if (ask.listingID === size_prices[0].listingID && !(size_prices[1] == undefined || size_prices[1] == null)) {
       sendLowestAskNotification = this.http.put(`${environment.cloud.url}lowestAskNotification`, {
         product_id: size_prices[1].productID,
         seller_id: size_prices[1].sellerID,
@@ -198,7 +198,7 @@ export class AskService {
       batch.update(prodRef, {
         sizes_lowest_ask: data
       })
-    } else if (ask.listingID === size_prices[0].listingID && isNullOrUndefined(size_prices[1])) {
+    } else if (ask.listingID === size_prices[0].listingID && (size_prices[1] == undefined || size_prices[1] == null)) {
       const data = product.sizes_lowest_ask
       data[ask.size] = 0
       batch.update(prodRef, {
@@ -212,7 +212,7 @@ export class AskService {
       .then(() => {
         //console.log('listing deleted');
 
-        if (!isNullOrUndefined(sendLowestAskNotification)) sendLowestAskNotification.subscribe() //send lowest ask email
+        if (!(sendLowestAskNotification == undefined || sendLowestAskNotification == null)) sendLowestAskNotification.subscribe() //send lowest ask email
 
         this.http.put(`${environment.cloud.url}askNotification`, this.ask_data).subscribe() //send email notification when we ask deleted
 
@@ -258,7 +258,7 @@ export class AskService {
     await prodRef.get().then(snap => {
       product = snap.data() as Product
 
-      if (isNullOrUndefined(prices[1]) || price <= product.lowest_price) {
+      if ((prices[1] == undefined || prices[1] == null) || price <= product.lowest_price) {
         batch.update(prodRef, { lowest_price: price })
       } else {
         if (price < prices[1].price) batch.update(prodRef, { lowest_price: price })
@@ -291,6 +291,10 @@ export class AskService {
       size: ask.size,
       last_updated,
       expiration_date
+    })
+
+    batch.update(prodRef, {
+      trending_score: firebase.firestore.FieldValue.increment(1)
     })
 
     // commit the updates
@@ -337,7 +341,7 @@ export class AskService {
       this.afs.collection('products').doc(product_id).update({
         sizes_lowest_ask: data
       })
-    } else if (!isNullOrUndefined(size_prices[1]) && listing_id === size_prices[0].listingID && price > size_prices[0].price) { // new ask was lowest ask and is now higher
+    } else if (!(size_prices[1] == undefined || size_prices[1] == null) && listing_id === size_prices[0].listingID && price > size_prices[0].price) { // new ask was lowest ask and is now higher
       if (price >= size_prices[1].price) { // send email notif when new ask is higher than second lowest ask
         this.http.put(`${environment.cloud.url}lowestAskNotification`, {
           product_id: product_id,
@@ -369,7 +373,7 @@ export class AskService {
           sizes_lowest_ask: data
         })
       }
-    } else if (isNullOrUndefined(size_prices[1])) { // send email notif when new ask is the only ask for this size
+    } else if ((size_prices[1] == undefined || size_prices[1] == null)) { // send email notif when new ask is the only ask for this size
       this.http.put(`${environment.cloud.url}lowestAskNotification`, {
         product_id: product_id,
         seller_id: UID,

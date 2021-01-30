@@ -53,7 +53,7 @@
             *ngIf="!validEntry && !entrySubmitError && !entrySubmitted && !entrySubmitting">Submit Entry</button>
 
         <button class="btn ripple" *ngIf="entrySubmitting">
-            <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+            <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
         </button>
 
         <button class="btn submitted ripple" *ngIf="entrySubmitted">Entry Submitted</button>

@@ -472,6 +472,7 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
             if (data) {
                 const email = data.email;
                 const total = req.body.price + req.body.shippingCost;
+                const est_arrival = `${new Date(Date.now() + (86400000 * 21)).toLocaleString("en-CA", { day: "2-digit", month: "2-digit", year: "numeric" })} - ${new Date(Date.now() + (86400000 * 28)).toLocaleString("en-CA", { day: "2-digit", month: "2-digit", year: "numeric" })}`
 
                 console.log(`Order Email Buyer to ${email}.`);
 
@@ -485,15 +486,16 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                         condition: req.body.condition,
                         subtotal: req.body.price,
                         shipping: req.body.shippingCost,
-                        total: total,
+                        total,
                         assetURL: req.body.assetURL,
+                        est_arrival,
                         link: ''
                     }
                 }
 
                 if (!isUndefined(req.body.discount)) {
-                    msg.dynamic_template_data.discount = req.body.discount;
-                    msg.dynamic_template_data.total = total - req.body.discount;
+                    msg.dynamic_template_data.discount = req.body.discount.amount;
+                    msg.dynamic_template_data.total = total - req.body.discount.amount;
                 }
 
                 if (req.body.type === 'sold') {
@@ -2072,5 +2074,145 @@ exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone
     })
         .catch(err => {
             console.error('Get Active Users error: ', err)
+        })
+})
+
+exports.reset_score = functions.pubsub.schedule('every monday, thursday of month 12:30').timeZone('America/Edmonton').onRun((context: any) => {
+    // get all the products with a score and set the score to 0
+    return admin.firestore().collection('products').where('trending_score', '>=', 0).get().then(response => {
+        if (response.empty) {
+            return null;
+        } else {
+            response.docs.forEach(ele => {
+                admin.firestore().collection('products').doc(ele.id).update({
+                    trending_score: 0
+                })
+                    .catch(err => {
+                        const payload = { "text": `Reset Score (Update Score) Cloud Function Error: ${err}` }
+
+                        return axios.default({
+                            method: 'POST',
+                            url: env.slack.bug_report,
+                            data: JSON.stringify(payload)
+                        }).then((r: any) => {
+                            console.log(`Status code: ${r.status}`)
+                            return null
+                        }).catch((error: any) => {
+                            console.log(`Error: ${error}`)
+                            return null
+                        })
+                    })
+            })
+
+            return null;
+        }
+    })
+        .catch(err => {
+            const payload = { "text": `Reset Score (Get Products) Cloud Function Error: ${err}` }
+
+            return axios.default({
+                method: 'POST',
+                url: env.slack.bug_report,
+                data: JSON.stringify(payload)
+            }).then((r: any) => {
+                console.log(`Status code: ${r.status}`)
+                return null
+            }).catch((error: any) => {
+                console.log(`Error: ${error}`)
+                return null
+            })
+        })
+})
+
+exports.update_rank = functions.pubsub.schedule('every 3 hours').timeZone('America/Edmonton').onRun((context: any) => {
+    let count = 1
+
+    // reset the current rank
+    return admin.firestore().collection('products').where('trending_rank', '>=', 0).get().then(response => {
+        if (!response.empty) {
+            response.docs.forEach(ele => {
+                admin.firestore().collection('products').doc(ele.id).update({
+                    trending_rank: admin.firestore.FieldValue.delete()
+                })
+                    .catch(err => {
+                        const payload = { "text": `Update Rank (Reset Rank) Cloud Function Error: ${err}` }
+
+                        return axios.default({
+                            method: 'POST',
+                            url: env.slack.bug_report,
+                            data: JSON.stringify(payload)
+                        }).then((r: any) => {
+                            console.log(`Status code: ${r.status}`)
+                            return null
+                        }).catch((error: any) => {
+                            console.log(`Error: ${error}`)
+                            return null
+                        })
+                    })
+            })
+        }
+
+        // get all the products with a score and order them by score
+        // have a counter to rank the products incrementally starting from 1
+        return admin.firestore().collection('products').where('trending_score', '>=', 0).orderBy('trending_score', 'asc').get().then(res => {
+            if (res.empty) {
+                return null;
+            } else {
+                res.docs.forEach(ele => {
+                    admin.firestore().collection('products').doc(ele.id).set({
+                        trending_rank: count
+                    }, { merge: true })
+                        .catch(err => {
+                            const payload = { "text": `Update Rank (Update Rank) Cloud Function Error: ${err}` }
+
+                            return axios.default({
+                                method: 'POST',
+                                url: env.slack.bug_report,
+                                data: JSON.stringify(payload)
+                            }).then((r: any) => {
+                                console.log(`Status code: ${r.status}`)
+                                return null
+                            }).catch((error: any) => {
+                                console.log(`Error: ${error}`)
+                                return null
+                            })
+                        })
+
+                    count++
+                })
+
+                return null;
+            }
+        })
+            .catch(err => {
+                const payload = { "text": `Update Rank (Get Products based on score) Cloud Function Error: ${err}` }
+
+                return axios.default({
+                    method: 'POST',
+                    url: env.slack.bug_report,
+                    data: JSON.stringify(payload)
+                }).then((r: any) => {
+                    console.log(`Status code: ${r.status}`)
+                    return null
+                }).catch((error: any) => {
+                    console.log(`Error: ${error}`)
+                    return null
+                })
+            })
+    })
+        .catch(err => {
+            const payload = { "text": `Update Rank (Get Products based on rank) Cloud Function Error: ${err}` }
+
+            return axios.default({
+                method: 'POST',
+                url: env.slack.bug_report,
+                data: JSON.stringify(payload)
+            }).then((r: any) => {
+                console.log(`Status code: ${r.status}`)
+                return null
+            }).catch((error: any) => {
+                console.log(`Error: ${error}`)
+                return null
+            })
         })
 })

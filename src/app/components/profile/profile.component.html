@@ -33,8 +33,8 @@
   </div>
 
   <div class="profile-navigation">
-    <button class="btn" id="listingsBtn" (click)="showListings()">Selling</button>
-    <button class="btn" id="offersBtn" (click)="showOffers()">Buying</button>
+    <button class="btn" id="listingsBtn" routerLink="/profile/listings">Your Listings</button>
+    <button class="btn" id="offersBtn" routerLink="/profile/bids">Your Bids</button>
   </div>
 
   <div *ngIf="listingNav else showOffer" class="container">

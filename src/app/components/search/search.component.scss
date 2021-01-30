@@ -55,6 +55,19 @@
     }
 }
 
+.loading-container {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    fa-icon {
+        font-size: 3rem;
+        color: $coolgrey;
+        align-self: center;
+        justify-self: center;
+        margin: 5rem auto;
+    }
+}
+
 .search-items {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -236,6 +249,17 @@
     }
 }
 
+.no-results {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+
+    h2 {
+        text-transform: uppercase;
+        text-align: center;
+    }
+}
+
 // MEDIA QUERIES
 
 @media only screen and (min-width: 0px) and (max-width: 400px) {
@@ -324,6 +348,16 @@
                     font-size: 0.7rem;
                 }
             }
+        }
+    }
+
+    .no-results {
+        width: 95%;
+        height: 100px;
+        margin: 2rem auto;
+
+        h2 {
+            font-size: 0.8rem;
         }
     }
 }
@@ -415,6 +449,16 @@
                     font-size: 0.8rem;
                 }
             }
+        }
+    }
+
+    .no-results {
+        width: 95%;
+        height: 100px;
+        margin: 2.2rem auto;
+
+        h2 {
+            font-size: 1rem;
         }
     }
 }
@@ -520,6 +564,16 @@
             }
         }
     }
+
+    .no-results {
+        width: 85%;
+        height: 200px;
+        margin: 2.4rem auto;
+
+        h2 {
+            font-size: 1.2rem;
+        }
+    }
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1800px) {
@@ -619,6 +673,16 @@
                     font-size: 0.8rem;
                 }
             }
+        }
+    }
+
+    .no-results {
+        width: 85%;
+        height: 200px;
+        margin: 2.4rem auto;
+
+        h2 {
+            font-size: 1.2rem;
         }
     }
 }
@@ -722,6 +786,16 @@
             }
         }
     }
+
+    .no-results {
+        width: 85%;
+        height: 200px;
+        margin: 2.6rem auto;
+
+        h2 {
+            font-size: 1.3rem;
+        }
+    }
 }
 
 @media only screen and (min-width: 2000px) {
@@ -821,6 +895,16 @@
                     font-size: 0.8rem;
                 }
             }
+        }
+    }
+
+    .no-results {
+        width: 85%;
+        height: 200px;
+        margin: 2.6rem auto;
+
+        h2 {
+            font-size: 1.5rem;
         }
     }
 }
