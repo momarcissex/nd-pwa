@@ -31,17 +31,30 @@ export class Globals {
             this.exp003_version = 'config6'
         }
 
-        return this.auth.currentUser.then(res => {
-            if (res != undefined) {
-                this.uid = res.uid
+        return this.auth.authState.pipe(
+            map(auth_response => {
+                if (auth_response != undefined) {
+                    this.uid = auth_response.uid
+                }
+            }),
+            first()
+        ).toPromise()
+            .then(() => {
+                this.updateUserData()
 
-                return this.afs.collection('users').doc(this.uid).get().pipe(
+                this.afs.collection('users').doc(this.uid).get().pipe(
                     map(user => this.user_data = user.data() as User),
                     first()
                 ).toPromise()
-            }
-        }).catch(err => {
-            this.slack.sendAlert('bugreport', err)
+            })
+            .catch(err => {
+                this.slack.sendAlert('bugreport', err)
+            })
+    }
+
+    updateUserData() {
+        this.afs.collection('users').doc(this.uid).valueChanges().subscribe(res => {
+            this.user_data = res as User
         })
     }
 }

@@ -1,7 +1,6 @@
-import { Component, OnInit, NgZone, PLATFORM_ID, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 import { ProductService } from 'src/app/services/product.service';
-import { AuthService } from 'src/app/services/auth.service';
 import { Title } from '@angular/platform-browser';
 import { Product } from 'src/app/models/product';
 import { MetaService } from 'src/app/services/meta.service';
@@ -11,6 +10,8 @@ import { BidService } from 'src/app/services/bid.service';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
 import { Globals } from 'src/app/globals';
+import { Ask } from 'src/app/models/ask';
+import { Bid } from 'src/app/models/bid';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -62,10 +63,12 @@ export class ProductComponent implements OnInit {
 
   UID: string
 
+  user_asks: Ask[] = []
+  user_bids: Bid[] = []
+
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private auth: AuthService,
     private router: Router,
     private title: Title,
     private seo: MetaService,
@@ -76,44 +79,24 @@ export class ProductComponent implements OnInit {
     private globals: Globals
   ) { }
 
-  async ngOnInit() {
-    //console.log('oninit start')
+  ngOnInit() {
     this.productID = this.route.snapshot.params.id
+    console.log(this.globals.uid)
 
-    this.auth.isConnected().then((res) => {
-      //console.log('isConnected start')
-      if (!(res === undefined)) {
-        this.UID = res.uid;
-      }
-      //console.log('isConnected end')
-    });
+    if (this.globals.uid != undefined) this.UID = this.globals.uid
 
-    await this.getItemInformation()
-
+    this.getItemInformation()
     this.getSizeSuffix();
-    //console.log('oninit end')
+    this.getUserAsks()
+    this.getUserBids()
   }
 
-  /*addToCart(listing) {
-    this.productService.addToCart(listing).then(res => {
-      if (res) {
-        // console.log('Added to cart');
-      } else {
-        // console.log('Cannot add to cart');
-      }
-    });
-  }*/
-
-  async getItemInformation() {
-    //console.log('getItemInformation start')
+  getItemInformation() {
     this.productService.getProductInfo(this.productID).subscribe(data => {
-      //console.log('getProductInfo start')
-      //console.log(data)
       if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
         if (this.productInfo.assetURL === '') {
-          //console.log('seo etc')
           this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
           this.seo.addTags('Product', data);
 
@@ -139,7 +122,6 @@ export class ProductComponent implements OnInit {
       if (this.offers.length === 0) {
         this.getOffers();
       }
-      //console.log('getProductInfo end')
     });
   }
 
@@ -148,25 +130,19 @@ export class ProductComponent implements OnInit {
     const patternGS = new RegExp(/.+\-GS$/);
 
     if (patternW.test(this.productID.toUpperCase())) {
-      //console.log('Woman Size');
       this.sizeSuffix = 'W';
     } else if (patternGS.test(this.productID.toUpperCase())) {
-      //console.log(`GS size`);
       this.sizeSuffix = 'Y';
     }
   }
 
-  async countView() {
-    //console.log('countView start')
+  countView() {
     if (!(this.UID == null || this.UID == undefined)) {
       this.productService.countView(this.productID).then(() => {
-        //console.log('view count updated')
       }).catch(err => {
         console.error(err);
       })
     }
-
-    //console.log('countView end')
   }
 
   buyNow(listing) {
@@ -192,12 +168,9 @@ export class ProductComponent implements OnInit {
   share(social: string) {
     if (isPlatformBrowser(this.platform_id)) {
 
-      this.productService.shareCount(this.productInfo.productID).then(() => {
-        //console.log('trending score update')
+      this.productService.shareCount(this.productInfo.productID).catch(err => {
+        console.error(err)
       })
-        .catch(err => {
-          console.error(err)
-        })
 
       if (social === 'fb') {
         window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.productID}&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
@@ -253,7 +226,6 @@ export class ProductComponent implements OnInit {
   }
 
   getOffers() {
-    //console.log('getOffers start')
     let suffix: string;
     let shoeSizes: Array<string> | Array<number>;
     this.offers.length = 0
@@ -276,8 +248,6 @@ export class ProductComponent implements OnInit {
       }
     }
 
-    //console.log(this.sizes[suffix]);
-    //console.log(this.productInfo.sizes)
     if (!(this.productInfo.sizes === undefined)) {
       shoeSizes = this.productInfo.sizes
     } else {
@@ -333,7 +303,6 @@ export class ProductComponent implements OnInit {
         });
       });
     });
-    //console.log('getOffers end')
   }
 
   selectSize(selected: any) {
@@ -365,6 +334,43 @@ export class ProductComponent implements OnInit {
     } else {
       alert('Please select a size below')
     }
+  }
+
+  /**
+   * Get the user's asks for this product if any
+   */
+  getUserAsks(): void {
+    this.productService.getUserAsks(this.productID, this.UID).subscribe(res => {
+      res.docs.forEach(ele => {
+        this.user_asks.push(ele.data() as Ask)
+      })
+    })
+
+    return;
+  }
+
+  /**
+   * Get the user's bids for this product if any
+   */
+  getUserBids(): void {
+    this.productService.getUserBids(this.productID, this.UID).subscribe(res => {
+      res.docs.forEach(ele => {
+        this.user_bids.push(ele.data() as Bid)
+      })
+    })
+
+    return;
+  }
+
+  /**
+   * Scroll to a given element
+   * @param id the element's ID
+   */
+  scrollTo(id: string): void {
+    const ele = document.getElementById(id)
+    ele.scrollIntoView()
+
+    return;
   }
 
 }
