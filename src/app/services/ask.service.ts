@@ -102,7 +102,7 @@ export class AskService {
       batch.update(prodRef, {
         sizes_lowest_ask: data,
         sizes_available: firebase.firestore.FieldValue.arrayUnion(size),
-        trending_score: firebase.firestore.FieldValue.increment(1)
+        trending_score: firebase.firestore.FieldValue.increment(10)
       })
     }
 
@@ -294,7 +294,7 @@ export class AskService {
     })
 
     batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(1)
+      trending_score: firebase.firestore.FieldValue.increment(10)
     })
 
     // commit the updates

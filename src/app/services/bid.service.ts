@@ -73,7 +73,7 @@ export class BidService {
     
     //update trending score
     batch.update(this.afs.firestore.collection('products').doc(pair.productID), {
-      trending_score: firebase.firestore.FieldValue.increment(0.46)
+      trending_score: firebase.firestore.FieldValue.increment(5)
     })
 
     // update highestBid in products Document
@@ -260,7 +260,7 @@ export class BidService {
 
     //update trending score
     batch.update(this.afs.firestore.collection('products').doc(bid.productID), {
-      trending_score: firebase.firestore.FieldValue.increment(0.46)
+      trending_score: firebase.firestore.FieldValue.increment(5)
     })
 
     return batch.commit()

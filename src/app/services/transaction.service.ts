@@ -191,7 +191,7 @@ export class TransactionService {
 
     //update product trending score
     batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(7)
+      trending_score: firebase.firestore.FieldValue.increment(100)
     })
 
     //commit the transaction
@@ -232,8 +232,9 @@ export class TransactionService {
 
   /**
    * Create a transaction when a seller accepts a bid
-   * UID: seller's user ID
-   * product: buyer's Bid
+   * @param UID the seller's user ID
+   * @param product the buyer's Bid
+   * @returns a promise contaning a boolean when the transaction failed and the transaction's ID if sucessful
    */
   async sellTransactionApproved(UID: string, product: Bid): Promise<string | boolean> {
     const batch = firebase.firestore().batch()
@@ -375,7 +376,7 @@ export class TransactionService {
 
     //update product trending score
     batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(7)
+      trending_score: firebase.firestore.FieldValue.increment(100)
     })
 
     //commit the transaction
@@ -411,11 +412,13 @@ export class TransactionService {
 
   /**
    * Update a transaction when a buyer checkout after his bid was accepted
-   * paymentID: the id from paypal representing the payment
-   * shippingCost: amount paid for shipping
-   * transaction_id: id of transaction
-   * discount: amount discounted from total
-   * discountCardID: ID of discount card used to make purchase
+   * @param userID the buyer's user ID
+   * @param paymentID the id from paypal representing the payment
+   * @param shippingInfo the buyer's shipping address
+   * @param shippingCost amount paid for shipping
+   * @param transaction_id the transaction's ID
+   * @param discount the discount card used during this transaction (Optional)
+   * @returns a promise contaning a boolean when the transaction failed and the transaction's ID if sucessful
    */
   async updateTransaction(userID: string, paymentID: string, shippingInfo: User['shippingAddress']['buying'], shippingCost: number, transaction_id: string, discount?: NxtdropCC): Promise<string | boolean> {
     const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transaction_id}`); //transaction doc ref

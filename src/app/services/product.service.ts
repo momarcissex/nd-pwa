@@ -76,13 +76,13 @@ export class ProductService {
 
   countView(productID: string) {
     return this.afs.firestore.collection('products').doc(`${productID}`).update({
-      trending_score: firebase.firestore.FieldValue.increment(0.14)
+      trending_score: firebase.firestore.FieldValue.increment(2)
     });
   }
 
   shareCount(productID: string) {
     return this.afs.firestore.collection('products').doc(productID).update({
-      trending_score: firebase.firestore.FieldValue.increment(1)
+      trending_score: firebase.firestore.FieldValue.increment(8)
     })
   }
 }
