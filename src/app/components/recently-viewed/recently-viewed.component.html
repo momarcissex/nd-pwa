@@ -1,1 +1,10 @@
-<p>recently-viewed works!</p>
+<section class="container" *ngIf="recently_viewed.length > 0">
+    <h2>Recently Viewed</h2>
+
+    <section class="products-container">
+        <a class="product-container" *ngFor="let product of recently_viewed" [routerLink]="['product', product.productID]">
+            <img src="{{ product.assetURL }}" alt="{{ product.model }}">
+            <h4>{{ product.model }}</h4>
+        </a>
+    </section>
+</section>
