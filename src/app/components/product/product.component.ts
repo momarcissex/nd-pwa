@@ -373,4 +373,18 @@ export class ProductComponent implements OnInit {
     return;
   }
 
+  trackUpdateClick(isAsk: boolean) {
+    if (isAsk) {
+      gtag('event', 'prod_page_ask_update_click', {
+        'event_category': 'engagement',
+        'event_label': this.productInfo.model
+      })
+    } else {
+      gtag('event', 'prod_page_bid_update_click', {
+        'event_category': 'engagement',
+        'event_label': this.productInfo.model
+      })
+    }
+  }
+
 }
