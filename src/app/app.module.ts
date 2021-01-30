@@ -108,6 +108,7 @@ import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bi
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlyNumberDirective } from './directives/only-number.directive';
+import { UpcomingReleasesComponent } from './components/upcoming-releases/upcoming-releases.component';
 
 @NgModule({
   declarations: [
@@ -177,7 +178,8 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     ReferralProgramComponent,
     ContestComponent,
     ExtendAskBidComponent,
-    OnlyNumberDirective
+    OnlyNumberDirective,
+    UpcomingReleasesComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
