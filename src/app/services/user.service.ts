@@ -221,13 +221,10 @@ export class UserService {
 
   public addToRecentlyViewed(product_id: string, user_id: string) {
     let recently_viewed = this.globals.user_data.recently_viewed
-    console.log(recently_viewed)
 
     if (recently_viewed != undefined) {
       recently_viewed.reverse()
-      console.log('defined')
       if (recently_viewed.includes(product_id)) {
-        console.log('included')
         const index = recently_viewed.indexOf(product_id)
         recently_viewed.splice(index, 1)
         recently_viewed.push(product_id)
@@ -237,7 +234,6 @@ export class UserService {
         recently_viewed.reverse()
         recently_viewed.push(product_id)
       } else {
-        console.log('else')
         recently_viewed.push(product_id)
       }
 

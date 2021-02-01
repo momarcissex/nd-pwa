@@ -33,16 +33,14 @@
         }
 
         .products-container {
+            border-bottom: none !important;
+
             .product-container {
                 border-bottom: 1px solid $lightgrey;
                 padding: 1rem;
                 grid-template-columns: 2fr 4fr;
                 height: 80px;
                 column-gap: 1rem;
-
-                &:last-child {
-                    border-bottom: none;
-                }
 
                 img {
                     height: 100%;
@@ -68,16 +66,14 @@
         }
 
         .products-container {
+            border-bottom: none !important;
+
             .product-container {
                 border-bottom: 1px solid $lightgrey;
                 padding: 1.2rem;
                 grid-template-columns: 2fr 4fr;
                 height: 80px;
                 column-gap: 1rem;
-
-                &:last-child {
-                    border-bottom: none;
-                }
 
                 img {
                     height: 100%;
@@ -109,22 +105,29 @@
             border-radius: 0.25rem;
 
             .product-container {
-                border-right: 1px solid $lightgrey;
-                border-bottom: 1px solid $lightgrey;
                 padding: 1.2rem;
                 height: 180px;
                 grid-template-rows: 2fr 1fr;
 
+                &:nth-child(odd) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
+
+                    &:nth-last-child(2) {
+                        border-bottom: none;
+                    }
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+
                 &:nth-child(even) {
-                    border-right: none;
-                }
+                    border-bottom: 1px solid $lightgrey;
 
-                &:nth-child(7) {
-                    border-bottom: none;
-                }
-
-                &:nth-child(8) {
-                    border-bottom: none;
+                    &:last-child {
+                        border-bottom: none;
+                    }
                 }
 
                 img {
@@ -157,19 +160,60 @@
             grid-template-columns: 1fr 1fr 1fr;
             margin: 0 4.5rem;
             border-radius: 0.25rem;
-            border: none !important;
-            border-top: 1px solid $lightgrey !important;
-            border-left: 1px solid $lightgrey !important;
 
             .product-container {
-                border-right: 1px solid $lightgrey;
-                border-bottom: 1px solid $lightgrey;
                 padding: 2rem;
                 height: 220px;
                 grid-template-rows: 2fr 1fr;
 
-                &:nth-child(7) {
-                    border-bottom-left-radius: 0.25rem;
+                &:nth-child(odd) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
+
+                    &:nth-child(3n) {
+                        border-right: none;
+                    }
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:nth-last-child(2):nth-child(7) {
+                        border-bottom: none;
+                    }
+
+                    &:nth-last-child(2):nth-child(5) {
+                        border-bottom: none;
+                    }
+
+                    &:nth-last-child(3):nth-child(1) {
+                        border-bottom: none;
+                    }
+
+                    &:nth-last-child(2):nth-child(1) {
+                        border-bottom: none;
+                    }
+                }
+
+                &:nth-child(even) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
+
+                    &:nth-child(3n) {
+                        border-right: none;
+                    }
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:nth-last-child(2):nth-child(2) {
+                        border-bottom: none;
+                    }
+
+                    &:nth-last-child(3):nth-child(4) {
+                        border-bottom: none;
+                    }
                 }
 
                 img {
@@ -204,30 +248,68 @@
             border-radius: 0.25rem;
 
             .product-container {
-                border-right: 1px solid $lightgrey;
-                border-bottom: 1px solid $lightgrey;
                 padding: 2rem;
                 height: 200px;
                 grid-template-rows: 2fr 1fr;
 
-                &:nth-child(4n) {
-                    border-right: none;
+                &:nth-child(odd) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:nth-child(1) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-last-child(2) {
+                        &:nth-child(7),
+                        &:nth-child(3),
+                        &:nth-child(1) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-child(5) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
-                &:nth-child(5) {
-                    border-bottom: none;
-                }
+                &:nth-child(even) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
 
-                &:nth-child(6) {
-                    border-bottom: none;
-                }
+                    &:nth-child(4n) {
+                        border-right: none;
+                    }
 
-                &:nth-child(7) {
-                    border-bottom: none;
-                }
+                    &:last-child {
+                        border-bottom: none;
+                    }
 
-                &:nth-child(8) {
-                    border-bottom: none;
+                    &:nth-child(2) {
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-child(6) {
+                        &:nth-last-child(2),
+                        &:nth-last-child(3) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
                 img {
@@ -262,30 +344,68 @@
             border-radius: 0.25rem;
 
             .product-container {
-                border-right: 1px solid $lightgrey;
-                border-bottom: 1px solid $lightgrey;
                 padding: 2rem;
                 height: 200px;
                 grid-template-rows: 2fr 1fr;
 
-                &:nth-child(4n) {
-                    border-right: none;
+                &:nth-child(odd) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:nth-child(1) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-last-child(2) {
+                        &:nth-child(7),
+                        &:nth-child(3),
+                        &:nth-child(1) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-child(5) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
-                &:nth-child(5) {
-                    border-bottom: none;
-                }
+                &:nth-child(even) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
 
-                &:nth-child(6) {
-                    border-bottom: none;
-                }
+                    &:nth-child(4n) {
+                        border-right: none;
+                    }
 
-                &:nth-child(7) {
-                    border-bottom: none;
-                }
+                    &:last-child {
+                        border-bottom: none;
+                    }
 
-                &:nth-child(8) {
-                    border-bottom: none;
+                    &:nth-child(2) {
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-child(6) {
+                        &:nth-last-child(2),
+                        &:nth-last-child(3) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
                 img {
@@ -320,30 +440,68 @@
             border-radius: 0.25rem;
 
             .product-container {
-                border-right: 1px solid $lightgrey;
-                border-bottom: 1px solid $lightgrey;
                 padding: 2rem;
                 height: 220px;
                 grid-template-rows: 2fr 1fr;
 
-                &:nth-child(4n) {
-                    border-right: none;
+                &:nth-child(odd) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:nth-child(1) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-last-child(2) {
+                        &:nth-child(7),
+                        &:nth-child(3),
+                        &:nth-child(1) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-child(5) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
-                &:nth-last-child(4) {
-                    border-bottom: none;
-                }
+                &:nth-child(even) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
 
-                &:nth-last-child(3) {
-                    border-bottom: none;
-                }
+                    &:nth-child(4n) {
+                        border-right: none;
+                    }
 
-                &:nth-last-child(2) {
-                    border-bottom: none;
-                }
+                    &:last-child {
+                        border-bottom: none;
+                    }
 
-                &:last-child {
-                    border-bottom: none;
+                    &:nth-child(2) {
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-child(6) {
+                        &:nth-last-child(2),
+                        &:nth-last-child(3) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
                 img {
@@ -378,35 +536,68 @@
             border-radius: 0.25rem;
 
             .product-container {
-                border-right: 1px solid $lightgrey;
-                border-bottom: 1px solid $lightgrey;
                 padding: 2rem;
                 height: 275px;
                 grid-template-rows: 2fr 1fr;
 
-                &:nth-child(4n) {
-                    border-right: none;
+                &:nth-child(odd) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:nth-child(1) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-last-child(2) {
+                        &:nth-child(7),
+                        &:nth-child(3),
+                        &:nth-child(1) {
+                            border-bottom: none;
+                        }
+                    }
+
+                    &:nth-child(5) {
+                        &:nth-last-child(4),
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
-                &:nth-child(5) {
-                    border-bottom: none;
-                }
+                &:nth-child(even) {
+                    border-bottom: 1px solid $lightgrey;
+                    border-right: 1px solid $lightgrey;
 
-                &:nth-child(6) {
-                    border-bottom: none;
-                }
+                    &:nth-child(4n) {
+                        border-right: none;
+                    }
 
-                &:nth-child(7) {
-                    border-bottom: none;
-                }
+                    &:last-child {
+                        border-bottom: none;
+                    }
 
-                &:nth-child(8) {
-                    border-bottom: none;
-                }
+                    &:nth-child(2) {
+                        &:nth-last-child(3),
+                        &:nth-last-child(2) {
+                            border-bottom: none;
+                        }
+                    }
 
-                img {
-                    height: 75%;
-                    width: 75%;
+                    &:nth-child(6) {
+                        &:nth-last-child(2),
+                        &:nth-last-child(3) {
+                            border-bottom: none;
+                        }
+                    }
                 }
 
                 h4 {
