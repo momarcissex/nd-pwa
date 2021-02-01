@@ -47,9 +47,11 @@ export class RecentlyViewedComponent implements OnInit {
   }
 
   /**
-   * Track click on product with Google Analytics
+   * Track click on product with Google Analytics and update Globals.recently_viewed_clicks for conversion
    */
-  public googAnalyticsTracking(product_id: string): void {
+  public clickTracking(product_id: string): void {
+    this.globals.recently_viewed_clicks.push(product_id)
+
     gtag('event', 'product_click', {
       'event-category': 'exp004',
       'event-label': product_id

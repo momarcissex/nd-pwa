@@ -7,7 +7,9 @@ import * as firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Globals } from '../globals';
 
+declare const gtag: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +20,8 @@ export class AskService {
   constructor(
     private afs: AngularFirestore,
     private auth: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private globals: Globals
   ) { }
 
   public getAsk(listing_id: string): Observable<Ask> {
@@ -103,6 +106,14 @@ export class AskService {
         sizes_lowest_ask: data,
         sizes_available: firebase.firestore.FieldValue.arrayUnion(size),
         trending_score: firebase.firestore.FieldValue.increment(1)
+      })
+    }
+
+    // track if ask submited on a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(pair.productID)) {
+      gtag('event', 'ask_placed_recently_viewed', {
+        'event-category': 'exp004',
+        'event-label': pair.productID
       })
     }
 

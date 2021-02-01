@@ -11,7 +11,9 @@ import { Bid } from '../models/bid';
 import { User } from '../models/user';
 import { Ask } from '../models/ask';
 import { NxtdropCC } from '../models/nxtdrop_cc';
+import { Globals } from '../globals';
 
+declare const gtag: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +23,8 @@ export class TransactionService {
     private afs: AngularFirestore,
     private auth: AuthService,
     private http: HttpClient,
-    private slack: SlackService
+    private slack: SlackService,
+    private globals: Globals
   ) { }
 
   /**
@@ -193,6 +196,14 @@ export class TransactionService {
     batch.update(prodRef, {
       trending_score: firebase.firestore.FieldValue.increment(7)
     })
+
+    // track if item purchased is a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(product.productID)) {
+      gtag('event', 'purchase_recently_viewed', {
+        'event-category': 'exp004',
+        'event-label': product.productID
+      })
+    }
 
     //commit the transaction
     return batch.commit()
@@ -377,6 +388,14 @@ export class TransactionService {
     batch.update(prodRef, {
       trending_score: firebase.firestore.FieldValue.increment(7)
     })
+
+    // track if bid accepted on a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(product.productID)) {
+      gtag('event', 'bid_accepted_recently_viewed', {
+        'event-category': 'exp004',
+        'event-label': product.productID
+      })
+    }
 
     //commit the transaction
     return batch.commit()

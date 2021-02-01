@@ -9,6 +9,9 @@ import { SlackService } from './services/slack.service';
 export class Globals {
     exp001_version: string;
     exp003_version: string;
+    recently_viewed_clicks: string[] = []
+
+
     user_data: User;
     uid: string;
 

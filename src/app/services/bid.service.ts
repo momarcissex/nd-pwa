@@ -8,7 +8,9 @@ import * as firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Globals } from '../globals';
 
+declare const gtag: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -19,8 +21,8 @@ export class BidService {
   constructor(
     private afs: AngularFirestore,
     private auth: AuthService,
-    private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private globals: Globals
   ) { }
 
   public getBid(offerID): Observable<Bid> {
@@ -75,6 +77,14 @@ export class BidService {
     batch.update(this.afs.firestore.collection('products').doc(pair.productID), {
       trending_score: firebase.firestore.FieldValue.increment(0.46)
     })
+
+    // track if bid was placed on a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(pair.productID)) {
+      gtag('event', 'bid_placed_recently_viewed', {
+        'event-category': 'exp004',
+        'event-label': pair.productID
+      })
+    }
 
     // update highestBid in products Document
     return this.afs.collection('products').doc(`${pair.productID}`).get().subscribe(res => {
