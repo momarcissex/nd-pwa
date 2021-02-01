@@ -3,6 +3,7 @@ import { Globals } from 'src/app/globals';
 import { Product } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
 
+declare const gtag: any;
 @Component({
   selector: 'app-recently-viewed',
   templateUrl: './recently-viewed.component.html',
@@ -48,7 +49,11 @@ export class RecentlyViewedComponent implements OnInit {
   /**
    * Track click on product with Google Analytics
    */
-  public googAnalyticsTracking(): void {
+  public googAnalyticsTracking(product_id: string): void {
+    gtag('event', 'product_click', {
+      'event-category': 'exp004',
+      'event-label': product_id
+    })
   }
 
 }
