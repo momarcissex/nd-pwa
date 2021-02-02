@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare const gtag: any;
 @Component({
@@ -26,6 +27,7 @@ export class ModalComponent implements OnInit {
   giveaway: boolean = false
   capture: boolean = false
   discount: boolean = false
+  exp001_version: string;
 
   exp002: boolean[] = [false, false, false, false, false, false]
 
@@ -33,6 +35,7 @@ export class ModalComponent implements OnInit {
     private modalService: ModalService,
     private http: HttpClient,
     private router: Router,
+    public globals: Globals,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
@@ -56,6 +59,9 @@ export class ModalComponent implements OnInit {
           gtag('event', 'page1_view', {
             'event_category': 'exp002',
           });
+        } else if (res === 'exp001') {
+          this.exp001_version = this.globals.exp001_version
+          this.trackVersion('exp001')
         } else {
           this.close()
         }
@@ -63,13 +69,40 @@ export class ModalComponent implements OnInit {
     })
   }
 
-  close() {
+  close(experiment?: string) {
     if (this.isOpen) {
       document.getElementById('modal').style.background = 'transparent'
       document.getElementById('modal').style.top = '100%';
       this.isOpen = false
       this.giveaway = false
       document.body.style.overflow = 'auto'
+
+      //btn click tracking
+      if (experiment != undefined) {
+        if (experiment == 'exp001') {
+          if (this.globals.exp001_version == 'exp001a') {
+            gtag('event', 'exp001a_close_btn', {
+              'event_category': 'exp001',
+              'event_label': `${this.router.url}`
+            })
+          } else if (this.globals.exp001_version == 'exp001b') {
+            gtag('event', 'exp001b_close_btn', {
+              'event_category': 'exp001',
+              'event_label': `${this.router.url}`
+            })
+          } else if (this.globals.exp001_version == 'exp001c') {
+            gtag('event', 'exp001c_close_btn', {
+              'event_category': 'exp001',
+              'event_label': `${this.router.url}`
+            })
+          } else if (this.globals.exp001_version == 'exp001d') {
+            gtag('event', 'exp001d_close_btn', {
+              'event_category': 'exp001',
+              'event_label': `${this.router.url}`
+            })
+          }
+        }
+      }
     }
   }
 
@@ -116,7 +149,7 @@ export class ModalComponent implements OnInit {
     }
   }
 
-  redirect() {
+  redirect(destination: string, experiment?: string) {
     if (this.isOpen) {
       document.getElementById('modal').style.background = 'transparent'
       document.getElementById('modal').style.top = '100%';
@@ -124,7 +157,28 @@ export class ModalComponent implements OnInit {
       this.giveaway = false
       document.body.style.overflow = 'auto'
 
-      this.router.navigateByUrl('giveaway')
+      if (destination === 'giveaway') {
+        this.router.navigateByUrl('giveaway')
+      } else if (destination === 'home') {
+        this.router.navigateByUrl('/')
+
+        //btn click tracking
+        if (experiment != undefined) {
+          if (experiment == 'exp001') {
+            if (this.globals.exp001_version == 'exp001a') {
+              gtag('event', 'exp001a_cta_btn', {
+                'event_category': 'exp001',
+                'event_label': `${this.router.url}`
+              })
+            } else if (this.globals.exp001_version == 'exp001b') {
+              gtag('event', 'exp001b_cta_btn', {
+                'event_category': 'exp001',
+                'event_label': `${this.router.url}`
+              })
+            }
+          }
+        }
+      }
     }
   }
 
@@ -158,6 +212,19 @@ export class ModalComponent implements OnInit {
           if (res) {
             this.subscribeLoading = false;
             this.subscribed = true;
+
+            /** Track email capture */
+            if (this.globals.exp001_version == 'exp001c') {
+              gtag('event', 'exp001c_email_capture', {
+                'event_category': 'exp001',
+                'event_label': `${this.router.url}`
+              })
+            } else if (this.globals.exp001_version == 'exp001d') {
+              gtag('event', 'exp001d_email_capture', {
+                'event_category': 'exp001',
+                'event_label': `${this.router.url}`
+              })
+            }
 
             setTimeout(() => {
               this.close()
@@ -314,6 +381,32 @@ export class ModalComponent implements OnInit {
       gtag('event', 'page5_next_btn', {
         'event_category': 'exp002',
       });
+    }
+  }
+
+  trackVersion(experiment: string) {
+    if (experiment === 'exp001') {
+      if (this.globals.exp001_version == 'exp001a') {
+        gtag('event', 'exp001a_view', {
+          'event_category': 'exp001',
+          'event_label': `${this.router.url}`
+        })
+      } else if (this.globals.exp001_version == 'exp001b') {
+        gtag('event', 'exp001b_view', {
+          'event_category': 'exp001',
+          'event_label': `${this.router.url}`
+        })
+      } else if (this.globals.exp001_version == 'exp001c') {
+        gtag('event', 'exp001c_view', {
+          'event_category': 'exp001',
+          'event_label': `${this.router.url}`
+        })
+      } else if (this.globals.exp001_version == 'exp001d') {
+        gtag('event', 'exp001d_view', {
+          'event_category': 'exp001',
+          'event_label': `${this.router.url}`
+        })
+      }
     }
   }
 

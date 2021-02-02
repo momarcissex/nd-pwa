@@ -4,6 +4,9 @@ import { IpService } from 'src/app/services/ip.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
+import { Meta, Title } from '@angular/platform-browser';
 
 declare const gtag: any;
 
@@ -13,6 +16,11 @@ declare const gtag: any;
   styleUrls: ['./contest.component.scss']
 })
 export class ContestComponent implements OnInit {
+
+  faFacebookF = faFacebookF
+  faTwitter = faTwitter
+  faEnvelope = faEnvelope
+  faLink = faLink
 
   // boolean
   validEntry: boolean = false
@@ -33,10 +41,16 @@ export class ContestComponent implements OnInit {
     private afs: AngularFirestore,
     private ipService: IpService,
     private http: HttpClient,
+    private meta: Meta,
+    private title: Title,
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
   ngOnInit() {
+    this.title.setTitle('AJ1 Dark Mocha & YZY Carbon Giveaway | NXTDROP')
+    this.addMetaTags()
+
+
     this.ipService.getIPAddress().subscribe(
       (data: any) => {
         this.ip_address = data.ip
@@ -181,6 +195,22 @@ export class ContestComponent implements OnInit {
         document.getElementById('tooltiptext').style.opacity = '0';
       }, 3000);
     }
+  }
+
+  addMetaTags() {
+    this.meta.addTags([
+      { name: `title`, content: `AJ1 Dark Mocha & YZY Carbon Giveaway | NXTDROP` },
+      { name: `description`, content: 'Win a free pair of Air Jordan 1 Retro High OG Dark Mocha and Yeezy Boost 350 V2 Carbon on NXTDROP.' },
+      { name: `keywords`, content: 'nxtdrop, next drop, stockx canada, goat canada, consignment canada, sneakers canada, deadstock, jordans, yeezys, adidas' },
+      { property: `og:title`, content: `AJ1 Dark Mocha & YZY Carbon Giveaway | NXTDROP` },
+      { property: `og:url`, content: 'https://nxtdrop.com/' },
+      { property: `og:image`, content: 'https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/CarouselDuplicata3.png?alt=media&token=4b96304e-b8c9-4761-8154-bdf27591c4c5' },
+      { property: `og:description`, content: 'Win a free pair of Air Jordan 1 Retro High OG Dark Mocha and Yeezy Boost 350 V2 Carbon on NXTDROP.' },
+      { property: `twitter:title`, content: `AJ1 Dark Mocha & YZY Carbon Giveaway | NXTDROP` },
+      { property: `twitter:card`, content: 'summary_large_image' },
+      { property: `twitter:image`, content: 'https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/CarouselDuplicata3.png?alt=media&token=4b96304e-b8c9-4761-8154-bdf27591c4c5' },
+      { property: `twitter:description`, content: 'Win a free pair of Air Jordan 1 Retro High OG Dark Mocha and Yeezy Boost 350 V2 Carbon on NXTDROP.' }
+    ], true);
   }
 
 }

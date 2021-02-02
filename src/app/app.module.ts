@@ -75,12 +75,6 @@ import { TrustboxComponent } from './components/trustbox/trustbox.component';
 /** Font Awesome */
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-/** Icons imports */
-// tslint:disable-next-line: max-line-length
-/*import { faBell, faTimes, faShoppingCart, faUserCircle, faBars, faSearch, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCog, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCircleNotch, faCheck, faFilter, faChevronDown, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
-import { faClock } from '@fortawesome/free-regular-svg-icons';
-import { faFacebook, faTwitter, faInstagram, faGoogle, faPaypal, faCcVisa, faCcMastercard, faCcAmex, faFacebookF, faCanadianMapleLeaf, faYoutube } from '@fortawesome/free-brands-svg-icons';*/
-
 // Firebase Setup
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -93,7 +87,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // Mask Module
 import { NgxMaskModule } from 'ngx-mask';
-// export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
 import { NgxPayPalModule } from 'ngx-paypal';
 import { SafeHtmlPipe } from './pipes/safeHtml.pipes';
@@ -107,6 +100,7 @@ import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bi
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlyNumberDirective } from './directives/only-number.directive';
+import { UpcomingReleasesComponent } from './components/upcoming-releases/upcoming-releases.component';
 
 @NgModule({
   declarations: [
@@ -176,7 +170,8 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     ReferralProgramComponent,
     ContestComponent,
     ExtendAskBidComponent,
-    OnlyNumberDirective
+    OnlyNumberDirective,
+    UpcomingReleasesComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -210,8 +205,5 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
 })
 export class AppModule {
   constructor() {
-    // add icon to library to be used in components
-    // tslint:disable-next-line: max-line-length
-    //library.add(faBell, faBars, faShoppingCart, faUserCircle, faFacebook, faInstagram, faTwitter, faTimes, faGoogle, faSearch, faPaypal, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCcVisa, faCcMastercard, faCcAmex, faCog, faClock, faFacebookF, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCanadianMapleLeaf, faYoutube, faCircleNotch, faCheck, faFilter, faChevronDown, faSortUp, faSortDown);
   }
 }

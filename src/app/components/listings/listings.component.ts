@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Globals } from 'src/app/globals';
 import { HomeService } from 'src/app/services/home.service';
 
+declare const gtag: any;
 @Component({
   selector: 'app-listings',
   templateUrl: './listings.component.html',
@@ -11,7 +13,8 @@ export class ListingsComponent implements OnInit {
   latestAsks = [];
 
   constructor(
-    private homeService: HomeService
+    private homeService: HomeService,
+    private globals: Globals
   ) { }
 
   ngOnInit() {
@@ -22,9 +25,20 @@ export class ListingsComponent implements OnInit {
         }
       })
     },
-    err => {
-      console.error(err)
-    })
+      err => {
+        console.error(err)
+      })
+  }
+
+  track(productID: string) {
+    //console.log('work')
+    //console.log(this.globals.exp003_version)
+    if (this.globals.exp003_version != undefined) {
+      gtag('event', `${this.globals.exp003_version}_listing_click`, {
+        'event_category': `exp003`,
+        'event_label': productID
+      })
+    }
   }
 
 }

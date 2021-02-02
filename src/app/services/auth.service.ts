@@ -22,6 +22,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { IpService } from './ip.service';
 import { SlackService } from './slack.service';
+import { Globals } from '../globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -44,18 +45,22 @@ export class AuthService {
     private http: HttpClient,
     private ipService: IpService,
     private slack: SlackService,
+    public globals: Globals,
     @Inject(PLATFORM_ID) private _platformId: Object
   ) { }
 
   async signOut(redirect: boolean) {
     await this.afAuth.signOut()
       .then(() => {
-        //console.log('Signed Out')
-        //alert('signed out')
+        this.globals.uid = undefined
+        this.globals.user_data = undefined
+        this.globals.user_subscription.unsubscribe()
+
         window.Intercom('shutdown')
         window.Intercom("boot", {
           app_id: "w1p7ooc8"
         });
+
         if (redirect) {
           return this.ngZone.run(() => {
             return this.router.navigate(['/bye']);
@@ -175,6 +180,30 @@ export class AuthService {
               'event_category': 'engagement',
               'event_label': 'Email_SignUp'
             });
+
+            if (this.globals.exp001_version != undefined) {
+              if (this.globals.exp001_version == 'exp001a') {
+                gtag('event', 'exp001a_signup', {
+                  'event_category': 'exp001',
+                  'event_label': `Email_SignUp`
+                })
+              } else if (this.globals.exp001_version == 'exp001b') {
+                gtag('event', 'exp001b_signup', {
+                  'event_category': 'exp001',
+                  'event_label': `Email_SignUp`
+                })
+              } else if (this.globals.exp001_version == 'exp001c') {
+                gtag('event', 'exp001c_signup', {
+                  'event_category': 'exp001',
+                  'event_label': `Email_SignUp`
+                })
+              } else if (this.globals.exp001_version == 'exp001d') {
+                gtag('event', 'exp001d_signup', {
+                  'event_category': 'exp001',
+                  'event_label': `Email_SignUp`
+                })
+              }
+            }
           }
 
           return this.createUserData(userData, user);
@@ -368,6 +397,30 @@ export class AuthService {
                 'event_category': 'engagement',
                 'event_label': 'Social_Media_SignUp'
               });
+
+              if (this.globals.exp001_version != undefined) {
+                if (this.globals.exp001_version == 'exp001a') {
+                  gtag('event', 'exp001a_signup', {
+                    'event_category': 'exp001',
+                    'event_label': `google_signup`
+                  })
+                } else if (this.globals.exp001_version == 'exp001b') {
+                  gtag('event', 'exp001b_signup', {
+                    'event_category': 'exp001',
+                    'event_label': `google_signup`
+                  })
+                } else if (this.globals.exp001_version == 'exp001c') {
+                  gtag('event', 'exp001c_signup', {
+                    'event_category': 'exp001',
+                    'event_label': `google_signup`
+                  })
+                } else if (this.globals.exp001_version == 'exp001d') {
+                  gtag('event', 'exp001d_signup', {
+                    'event_category': 'exp001',
+                    'event_label': `google_signup`
+                  })
+                }
+              }
             }
 
             return this.createUserData(userData, userCredential);

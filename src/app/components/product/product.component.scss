@@ -3,6 +3,66 @@
 .main-container {
   display: grid;
   align-content: center;
+
+  .user-listings {
+    h3 {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    .listing {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      justify-items: center;
+      border-bottom: 1px solid $lightgrey;
+      padding: 0.6rem;
+
+      p {
+        color: $prodBtnPrimary;
+      }
+
+      .btn {
+        background: $black;
+        text-transform: uppercase;
+
+        &:hover {
+          background: $matteblack;
+          color: $white;
+        }
+      }
+    }
+  }
+
+  .user-bids {
+    h3 {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    .bid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: center;
+      justify-items: center;
+      border-bottom: 1px solid $lightgrey;
+      padding: 0.6rem;
+
+      p {
+        color: $prodBtnPrimary2;
+      }
+
+      .btn {
+        background: $black;
+        text-transform: uppercase;
+
+        &:hover {
+          background: $matteblack;
+          color: $white;
+        }
+      }
+    }
+  }
 }
 
 .product-container {
@@ -64,6 +124,32 @@
     .product-btns {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      row-gap: 0.8rem;
+
+      #user-asks-btn,
+      #user-bids-btn {
+        cursor: pointer;
+        justify-self: center;
+        @include vendor(transition, 0.2s ease-in);
+      }
+
+      #user-asks-btn {
+        color: $prodBtnPrimary;
+        grid-column: 1/2;
+
+        &:hover {
+          color: $prodBtnSecondary;
+        }
+      }
+
+      #user-bids-btn {
+        color: $prodBtnPrimary2;
+        grid-column: 2/3;
+
+        &:hover {
+          color: $prodBtnSecondary2;
+        }
+      }
 
       .buy-bid {
         background: $prodBtnPrimary;
@@ -271,10 +357,36 @@
 
 @media only screen and (min-width: 0px) and (max-width: 399.5px) {
   .discounts {
-    width: 100%!important;
+    width: 100% !important;
 
     img {
-      margin-top: 0rem!important;
+      margin-top: 0rem !important;
+    }
+  }
+
+  .user-listings,
+  .user-bids {
+    width: 90%;
+    margin: 1.5rem auto;
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    .listing,
+    .bid {
+      h4 {
+        font-size: 0.8rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .btn {
+        padding: 1rem;
+        font-size: 0.6rem;
+      }
     }
   }
 
@@ -282,6 +394,11 @@
     width: 100%;
     column-gap: $spacing-xsmall;
     margin-bottom: $spacing-small;
+
+    #user-asks-btn,
+    #user-bids-btn {
+      font-size: 0.8rem;
+    }
 
     .buy-bid,
     .sell-ask {
@@ -399,10 +516,36 @@
 
 @media only screen and (min-width: 400px) and (max-width: 799.5px) {
   .discounts {
-    width: 90%!important;
+    width: 90% !important;
 
     img {
-      margin-top: .2rem!important;
+      margin-top: 0.2rem !important;
+    }
+  }
+
+  .user-listings,
+  .user-bids {
+    width: 90%;
+    margin: 1.5rem auto;
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    .listing,
+    .bid {
+      h4 {
+        font-size: 0.8rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .btn {
+        padding: 1rem;
+        font-size: 0.6rem;
+      }
     }
   }
 
@@ -410,6 +553,11 @@
     width: 90%;
     column-gap: $spacing-xsmall;
     margin-bottom: $spacing-small;
+
+    #user-asks-btn,
+    #user-bids-btn {
+      font-size: 0.8rem;
+    }
 
     .buy-bid,
     .sell-ask {
@@ -536,10 +684,41 @@
     max-height: $productContainerHeight;
   }
 
+  .user-listings,
+  .user-bids {
+    width: 70%;
+    margin: 1.5rem auto;
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    .listing,
+    .bid {
+      h4 {
+        font-size: 1rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        padding: 1rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
   .product-btns {
     width: 100%;
     column-gap: $spacing-xsmall;
     margin-bottom: $spacing-small;
+
+    #user-asks-btn,
+    #user-bids-btn {
+      font-size: 0.8rem;
+    }
 
     .buy-bid,
     .sell-ask {
@@ -659,10 +838,41 @@
     height: $productContainerHeight;
   }
 
+  .user-listings,
+  .user-bids {
+    width: 50%;
+    margin: 2rem auto;
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    .listing,
+    .bid {
+      h4 {
+        font-size: 1rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        padding: 1rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
   .product-btns {
     width: 90%;
     column-gap: $spacing-small;
     margin-bottom: $spacing-small;
+
+    #user-asks-btn,
+    #user-bids-btn {
+      font-size: 0.8rem;
+    }
 
     .buy-bid,
     .sell-ask {
@@ -690,7 +900,7 @@
   .product-info {
     .auth {
       margin: $spacing-xxsmall auto;
-      font-size: .6rem;
+      font-size: 0.6rem;
       width: 35%;
     }
 
@@ -776,10 +986,41 @@
     height: $productContainerHeight;
   }
 
+  .user-listings,
+  .user-bids {
+    width: 50%;
+    margin: 2rem auto;
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    .listing,
+    .bid {
+      h4 {
+        font-size: 1rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        padding: 1rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
   .product-btns {
     width: 85%;
     column-gap: $spacing-xsmall;
     margin-bottom: $spacing-normal;
+
+    #user-asks-btn,
+    #user-bids-btn {
+      font-size: 0.8rem;
+    }
 
     .buy-bid,
     .sell-ask {
@@ -893,10 +1134,41 @@
     height: $productContainerHeight;
   }
 
+  .user-listings,
+  .user-bids {
+    width: 30%;
+    margin: 2rem auto;
+
+    h3 {
+      font-size: 1.2rem;
+    }
+
+    .listing,
+    .bid {
+      h4 {
+        font-size: 1.2rem;
+      }
+
+      p {
+        font-size: 1.4rem;
+      }
+
+      .btn {
+        padding: 1.2rem;
+        font-size: 1rem;
+      }
+    }
+  }
+
   .product-btns {
     width: 80%;
     column-gap: $spacing-small;
     margin-bottom: $spacing-normal;
+
+    #user-asks-btn,
+    #user-bids-btn {
+      font-size: 1rem;
+    }
 
     .buy-bid,
     .sell-ask {

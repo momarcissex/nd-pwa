@@ -29,11 +29,57 @@
         </div>
     </section>
 
-    <app-trending></app-trending>
+    <!-- EXP 003 START -->
+    <div *ngIf="globals.exp003_version == 'config1'">
+        <app-listings></app-listings>
 
-    <app-listings></app-listings>
+        <app-trending></app-trending>
 
-    <app-new-releases></app-new-releases>
+        <app-new-releases></app-new-releases>
+    </div>
+
+    <div *ngIf="globals.exp003_version == 'config2'">
+        <app-listings></app-listings>
+
+        <app-new-releases></app-new-releases>
+
+        <app-trending></app-trending>
+    </div>
+
+    <div *ngIf="globals.exp003_version == 'config3'">
+        <app-trending></app-trending>
+
+        <app-listings></app-listings>
+
+        <app-new-releases></app-new-releases>
+    </div>
+
+    <div *ngIf="globals.exp003_version == 'config4'">
+        <app-trending></app-trending>
+
+        <app-new-releases></app-new-releases>
+
+        <app-listings></app-listings>
+    </div>
+
+    <div *ngIf="globals.exp003_version == 'config5'">
+        <app-new-releases></app-new-releases>
+
+        <app-trending></app-trending>
+
+        <app-listings></app-listings>
+    </div>
+
+    <div *ngIf="globals.exp003_version == 'config6'">
+        <app-new-releases></app-new-releases>
+
+        <app-listings></app-listings>
+
+        <app-trending></app-trending>
+    </div>
+    <!-- EXP 003 END-->
+
+    <app-upcoming-releases></app-upcoming-releases>
 
     <app-discovery></app-discovery>
 
