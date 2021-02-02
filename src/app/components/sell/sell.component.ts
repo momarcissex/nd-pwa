@@ -123,12 +123,10 @@ export class SellComponent implements OnInit {
     });
 
     // check if the user is connected and redirect if not
-    this.auth.isConnected().then(res => {
-      if (!(res === null)) {
-        this.user = res;
-
+    if (this.globals.uid != undefined) {
+      this.auth.isConnected().then(res => {
         // redirect is phone number verification not verified
-        if (res.phoneNumber === undefined && res.email != "momarcisse0@gmail.com") {
+        if (res.phoneNumber == undefined && res.email != "momarcisse0@gmail.com") {
           if (this.activatedRoute.snapshot.queryParams.sneaker) {
             this.router.navigate(['../phone-verification'], {
               queryParams: { redirectTo: `product/${this.selectedPair.productID}` }
@@ -139,8 +137,8 @@ export class SellComponent implements OnInit {
             });
           }
         }
-      }
-    });
+      })
+    }
   }
 
   submitListing() {
