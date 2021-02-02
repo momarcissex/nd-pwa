@@ -1,6 +1,6 @@
 /** Modules */
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
@@ -71,16 +71,11 @@ import { FaqCategoryComponent } from './components/faq/faq-category/faq-category
 import { FaqPostComponent } from './components/faq/faq-post/faq-post.component';
 import { SaleConfirmationComponent } from './components/sale-confirmation/sale-confirmation.component';
 import { TrustboxComponent } from './components/trustbox/trustbox.component';
+import { RecentlyViewedComponent } from './components/recently-viewed/recently-viewed.component';
+import { UpcomingReleasesComponent } from './components/upcoming-releases/upcoming-releases.component';
 
 /** Font Awesome */
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { library, dom } from '@fortawesome/fontawesome-svg-core';
-
-/** Icons imports */
-// tslint:disable-next-line: max-line-length
-/*import { faBell, faTimes, faShoppingCart, faUserCircle, faBars, faSearch, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCog, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCircleNotch, faCheck, faFilter, faChevronDown, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
-import { faClock } from '@fortawesome/free-regular-svg-icons';
-import { faFacebook, faTwitter, faInstagram, faGoogle, faPaypal, faCcVisa, faCcMastercard, faCcAmex, faFacebookF, faCanadianMapleLeaf, faYoutube } from '@fortawesome/free-brands-svg-icons';*/
 
 // Firebase Setup
 import { AngularFireModule } from '@angular/fire';
@@ -94,7 +89,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 // Mask Module
 import { NgxMaskModule } from 'ngx-mask';
-// export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
 import { NgxPayPalModule } from 'ngx-paypal';
 import { SafeHtmlPipe } from './pipes/safeHtml.pipes';
@@ -108,7 +102,6 @@ import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bi
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlyNumberDirective } from './directives/only-number.directive';
-import { RecentlyViewedComponent } from './components/recently-viewed/recently-viewed.component';
 
 @NgModule({
   declarations: [
@@ -179,7 +172,8 @@ import { RecentlyViewedComponent } from './components/recently-viewed/recently-v
     ContestComponent,
     ExtendAskBidComponent,
     OnlyNumberDirective,
-    RecentlyViewedComponent
+    RecentlyViewedComponent,
+    UpcomingReleasesComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -213,8 +207,5 @@ import { RecentlyViewedComponent } from './components/recently-viewed/recently-v
 })
 export class AppModule {
   constructor() {
-    // add icon to library to be used in components
-    // tslint:disable-next-line: max-line-length
-    //library.add(faBell, faBars, faShoppingCart, faUserCircle, faFacebook, faInstagram, faTwitter, faTimes, faGoogle, faSearch, faPaypal, faDollarSign, faCheckCircle, faQuestionCircle, faTag, faBox, faMoneyBillWave, faSpinner, faHandHoldingUsd, faExclamationCircle, faPhone, faHome, faCreditCard, faCcVisa, faCcMastercard, faCcAmex, faCog, faClock, faFacebookF, faEnvelope, faLink, faMedal, faAsterisk, faShippingFast, faShieldAlt, faStoreAlt, faCanadianMapleLeaf, faYoutube, faCircleNotch, faCheck, faFilter, faChevronDown, faSortUp, faSortDown);
   }
 }

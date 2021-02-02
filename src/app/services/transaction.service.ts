@@ -192,11 +192,6 @@ export class TransactionService {
       })
     }
 
-    //update product trending score
-    batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(7)
-    })
-
     // track if item purchased is a product from recently_viewed component
     if (this.globals.recently_viewed_clicks.includes(product.productID)) {
       gtag('event', 'purchase_recently_viewed', {
@@ -383,11 +378,6 @@ export class TransactionService {
         listed: firebase.firestore.FieldValue.increment(-1)
       })
     }
-
-    //update product trending score
-    batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(7)
-    })
 
     // track if bid accepted on a product from recently_viewed component
     if (this.globals.recently_viewed_clicks.includes(product.productID)) {

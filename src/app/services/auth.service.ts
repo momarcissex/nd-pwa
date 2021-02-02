@@ -52,12 +52,15 @@ export class AuthService {
   async signOut(redirect: boolean) {
     await this.afAuth.signOut()
       .then(() => {
-        //console.log('Signed Out')
-        //alert('signed out')
+        this.globals.uid = undefined
+        this.globals.user_data = undefined
+        this.globals.user_subscription.unsubscribe()
+
         window.Intercom('shutdown')
         window.Intercom("boot", {
           app_id: "w1p7ooc8"
         });
+
         if (redirect) {
           return this.ngZone.run(() => {
             return this.router.navigate(['/bye']);

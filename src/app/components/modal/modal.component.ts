@@ -29,6 +29,8 @@ export class ModalComponent implements OnInit {
   discount: boolean = false
   exp001_version: string;
 
+  exp002: boolean[] = [false, false, false, false, false, false]
+
   constructor(
     private modalService: ModalService,
     private http: HttpClient,
@@ -52,6 +54,11 @@ export class ModalComponent implements OnInit {
         } else if (res === 'discount') {
           this.discount = true
           document.getElementById('modal-card').classList.add('discount-background')
+        } else if (res === 'exp002') {
+          this.exp002[0] = true
+          gtag('event', 'page1_view', {
+            'event_category': 'exp002',
+          });
         } else if (res === 'exp001') {
           this.exp001_version = this.globals.exp001_version
           this.trackVersion('exp001')
@@ -96,6 +103,49 @@ export class ModalComponent implements OnInit {
           }
         }
       }
+    }
+  }
+
+  closeExp002(current_page?: string) {
+    if (this.isOpen) {
+      if (current_page != undefined && current_page === 'page1') {
+        gtag('event', 'page1_close_btn', {
+          'event_category': 'exp002',
+        });
+        this.exp002[0] = false
+      } else if (current_page != undefined && current_page === 'page2') {
+        gtag('event', 'page2_close_btn', {
+          'event_category': 'exp002',
+        });
+        this.exp002[1] = false
+      } else if (current_page != undefined && current_page === 'page3') {
+        gtag('event', 'page3_close_btn', {
+          'event_category': 'exp002',
+        });
+        this.exp002[2] = false
+      } else if (current_page != undefined && current_page === 'page4') {
+        gtag('event', 'page4_close_btn', {
+          'event_category': 'exp002',
+        });
+        this.exp002[3] = false
+      } else if (current_page != undefined && current_page === 'page5') {
+        gtag('event', 'page5_close_btn', {
+          'event_category': 'exp002',
+        });
+        this.exp002[4] = false
+      } else if (current_page != undefined && current_page === 'page6') {
+        gtag('event', 'page6_close_btn', {
+          'event_category': 'exp002',
+        });
+        this.exp002[5] = false
+      }
+
+
+      document.getElementById('modal').style.background = 'transparent'
+      document.getElementById('modal').style.top = '100%';
+      this.isOpen = false
+      this.giveaway = false
+      document.body.style.overflow = 'auto'
     }
   }
 
@@ -214,6 +264,124 @@ export class ModalComponent implements OnInit {
       queryParams: { holidaysales: true }
     })
     this.close()
+  }
+
+  previousPage(destination: string) {
+    if (destination === 'page1') {
+      this.exp002[1] = false
+      this.exp002[0] = true
+
+      gtag('event', 'page1_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page2_back_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page2') {
+      this.exp002[2] = false
+      this.exp002[1] = true
+
+      gtag('event', 'page2_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page3_back_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page3') {
+      this.exp002[3] = false
+      this.exp002[2] = true
+
+      gtag('event', 'page3_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page4_back_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page4') {
+      this.exp002[4] = false
+      this.exp002[3] = true
+
+      gtag('event', 'page4_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page5_back_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page5') {
+      this.exp002[5] = false
+      this.exp002[4] = true
+
+      gtag('event', 'page5_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page6_back_btn', {
+        'event_category': 'exp002',
+      });
+    }
+  }
+
+  nextPage(destination: string) {
+    if (destination === 'page2') {
+      this.exp002[0] = false
+      this.exp002[1] = true
+
+      gtag('event', 'page2_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page1_next_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page3') {
+      this.exp002[1] = false
+      this.exp002[2] = true
+
+      gtag('event', 'page3_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page2_next_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page4') {
+      this.exp002[2] = false
+      this.exp002[3] = true
+
+      gtag('event', 'page4_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page3_next_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page5') {
+      this.exp002[3] = false
+      this.exp002[4] = true
+
+      gtag('event', 'page5_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page4_next_btn', {
+        'event_category': 'exp002',
+      });
+    } else if (destination === 'page6') {
+      this.exp002[4] = false
+      this.exp002[5] = true
+
+      gtag('event', 'page6_view', {
+        'event_category': 'exp002',
+      });
+
+      gtag('event', 'page5_next_btn', {
+        'event_category': 'exp002',
+      });
+    }
   }
 
   trackVersion(experiment: string) {

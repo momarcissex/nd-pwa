@@ -40,4 +40,8 @@ export interface User {
             street: string
         }
     }
+    exp002?: {
+        timestamp: number;
+        viewed: number;
+    }
 }

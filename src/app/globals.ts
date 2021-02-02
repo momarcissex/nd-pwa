@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Subscription } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { User } from './models/user';
 import { SlackService } from './services/slack.service';
@@ -14,6 +15,8 @@ export class Globals {
 
     user_data: User;
     uid: string;
+
+    user_subscription: Subscription;
 
     constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private slack: SlackService) { }
 
@@ -56,7 +59,7 @@ export class Globals {
     }
 
     updateUserInfo() {
-        this.afs.collection('users').doc(this.uid).valueChanges().subscribe(res => {
+        this.user_subscription = this.afs.collection('users').doc(this.uid).valueChanges().subscribe(res => {
             this.user_data = res as User
         })
     }

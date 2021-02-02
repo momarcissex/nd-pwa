@@ -248,4 +248,14 @@ export class UserService {
       }, { merge: true })
     }
   }
+
+  exp002(uid: string) {
+    return this.afs.collection('users').doc(uid).set({
+      exp002: {
+        timestamp: Date.now(),
+        viewed: true
+      }
+    }, { merge: true })
+  }
+
 }

@@ -72,11 +72,6 @@ export class BidService {
     batch.set(offersValRef, {
       offers: firebase.firestore.FieldValue.increment(1)
     }, { merge: true })
-    
-    //update trending score
-    batch.update(this.afs.firestore.collection('products').doc(pair.productID), {
-      trending_score: firebase.firestore.FieldValue.increment(0.46)
-    })
 
     // track if bid was placed on a product from recently_viewed component
     if (this.globals.recently_viewed_clicks.includes(pair.productID)) {
@@ -266,11 +261,6 @@ export class BidService {
       size: bid.size,
       last_updated,
       expiration_date
-    })
-
-    //update trending score
-    batch.update(this.afs.firestore.collection('products').doc(bid.productID), {
-      trending_score: firebase.firestore.FieldValue.increment(0.46)
     })
 
     return batch.commit()

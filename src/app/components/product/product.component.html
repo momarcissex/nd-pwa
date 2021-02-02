@@ -79,6 +79,10 @@
               [queryParams]="{ sneaker: productInfo | json, size: sizeSelected }">Place Ask</a>
           </div>
         </div>
+
+        <p id="user-asks-btn" *ngIf="user_asks.length > 0" (click)="scrollTo('asks')">View Your Ask(s)</p>
+
+        <p id="user-bids-btn" *ngIf="user_bids.length > 0" (click)="scrollTo('bids')">View Your Bid(s)</p>
       </div>
 
       <app-trustbox></app-trustbox>
@@ -141,6 +145,26 @@
           '1.0-0' }}</button>
         <button id="highestBid" *ngIf="!offer.HighestBid" style="opacity: 0.4;">No Bid</button>
       </div>
+    </div>
+  </section>
+
+  <section class="user-listings" *ngIf="user_asks.length > 0" id="asks">
+    <h3>Your Listings</h3>
+
+    <div class="listing" *ngFor="let ask of user_asks">
+      <h4>{{ ask.size }}</h4>
+      <p>{{ ask.price | currency: 'CAD' : 'symbol' : '1.0-0' }}</p>
+      <a class="btn" [routerLink]="['/edit-listing', ask.listingID]" [queryParams]="{ source: 'product/' + ask.productID}" (click)="trackUpdateClick(true)">Update</a>
+    </div>
+  </section>
+
+  <section class="user-bids" *ngIf="user_bids.length > 0" id="bids">
+    <h3>Your Bids</h3>
+
+    <div class="bid" *ngFor="let bid of user_bids">
+      <h4>{{ bid.size }}</h4>
+      <p>{{ bid.price | currency: 'CAD' : 'symbol' : '1.0-0' }}</p>
+      <a class="btn" [routerLink]="['/edit-offer', bid.offerID]" [queryParams]="{ source: 'product/' + bid.productID}" (click)="trackUpdateClick(false)">Update</a>
     </div>
   </section>
 
