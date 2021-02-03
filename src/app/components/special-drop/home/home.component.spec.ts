@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SpecialDropHomeComponent } from './home.component';
 
@@ -6,7 +6,7 @@ describe('SpecialDropHomeComponent', () => {
   let component: SpecialDropHomeComponent;
   let fixture: ComponentFixture<SpecialDropHomeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SpecialDropHomeComponent ]
     })
