@@ -189,11 +189,6 @@ export class TransactionService {
       })
     }
 
-    //update product trending score
-    batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(100)
-    })
-
     //commit the transaction
     return batch.commit()
       .then(() => {
@@ -373,11 +368,6 @@ export class TransactionService {
         listed: firebase.firestore.FieldValue.increment(-1)
       })
     }
-
-    //update product trending score
-    batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(100)
-    })
 
     //commit the transaction
     return batch.commit()

@@ -70,11 +70,6 @@ export class BidService {
     batch.set(offersValRef, {
       offers: firebase.firestore.FieldValue.increment(1)
     }, { merge: true })
-    
-    //update trending score
-    batch.update(this.afs.firestore.collection('products').doc(pair.productID), {
-      trending_score: firebase.firestore.FieldValue.increment(5)
-    })
 
     // update highestBid in products Document
     return this.afs.collection('products').doc(`${pair.productID}`).get().subscribe(res => {
@@ -256,11 +251,6 @@ export class BidService {
       size: bid.size,
       last_updated,
       expiration_date
-    })
-
-    //update trending score
-    batch.update(this.afs.firestore.collection('products').doc(bid.productID), {
-      trending_score: firebase.firestore.FieldValue.increment(5)
     })
 
     return batch.commit()

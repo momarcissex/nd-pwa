@@ -75,35 +75,22 @@ export class ProductComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    //console.log('oninit start')
     this.productID = this.route.snapshot.params.id;
 
     this.auth.isConnected().then((res) => {
-      //console.log('isConnected start')
       if (!(res === undefined)) {
         this.UID = res.uid;
       }
-      //console.log('isConnected end')
     });
 
     await this.getItemInformation()
 
     this.getSizeSuffix();
-    //console.log('oninit end')
+
+
   }
 
-  /*addToCart(listing) {
-    this.productService.addToCart(listing).then(res => {
-      if (res) {
-        // console.log('Added to cart');
-      } else {
-        // console.log('Cannot add to cart');
-      }
-    });
-  }*/
-
   async getItemInformation() {
-    //console.log('getItemInformation start')
     this.productService.getProductInfo(this.productID).subscribe(data => {
       console.log('getProductInfo start')
       console.log(data)
@@ -130,7 +117,6 @@ export class ProductComponent implements OnInit {
       if (this.offers.length === 0) {
         this.getOffers();
       }
-      //console.log('getProductInfo end')
     });
   }
 
@@ -139,25 +125,10 @@ export class ProductComponent implements OnInit {
     const patternGS = new RegExp(/.+\-GS$/);
 
     if (patternW.test(this.productID.toUpperCase())) {
-      //console.log('Woman Size');
       this.sizeSuffix = 'W';
     } else if (patternGS.test(this.productID.toUpperCase())) {
-      //console.log(`GS size`);
       this.sizeSuffix = 'Y';
     }
-  }
-
-  async countView() {
-    //console.log('countView start')
-    if (!(this.UID == null || this.UID == undefined)) {
-      this.productService.countView(this.productID).then(() => {
-        //console.log('view count updated')
-      }).catch(err => {
-        console.error(err);
-      })
-    }
-
-    //console.log('countView end')
   }
 
   buyNow(listing) {
@@ -181,13 +152,6 @@ export class ProductComponent implements OnInit {
 
   share(social: string) {
     if (isPlatformBrowser(this.platform_id)) {
-
-      this.productService.shareCount(this.productInfo.productID).then(() => {
-        //console.log('trending score update')
-      })
-        .catch(err => {
-          console.error(err)
-        })
 
       if (social === 'fb') {
         window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.productID}&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
@@ -243,7 +207,6 @@ export class ProductComponent implements OnInit {
   }
 
   getOffers() {
-    //console.log('getOffers start')
     let suffix: string;
     let shoeSizes: Array<string> | Array<number>;
     this.offers.length = 0
@@ -266,8 +229,6 @@ export class ProductComponent implements OnInit {
       }
     }
 
-    //console.log(this.sizes[suffix]);
-    //console.log(this.productInfo.sizes)
     if (!(this.productInfo.sizes === undefined)) {
       shoeSizes = this.productInfo.sizes
     } else {
@@ -318,12 +279,10 @@ export class ProductComponent implements OnInit {
           if (shoeSizes.length === this.offers.length) {
             this.currentOffer.LowestAsk = this.lowestAsk;
             this.currentOffer.HighestBid = this.highestBid;
-            this.countView()
           }
         });
       });
     });
-    //console.log('getOffers end')
   }
 
   selectSize(selected: any) {
