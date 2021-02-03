@@ -2076,3 +2076,85 @@ exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone
             console.error('Get Active Users error: ', err)
         })
 })
+
+exports.trendingScoreUpdate = functions.https.onRequest((req, res) => {
+    return cors(req, res, () => {
+        if (req.method !== 'PATCH') {
+            return res.status(200).send(false)
+        }
+
+        let score = 0
+
+        return admin.firestore().collection('activity').where('product_id', '==', req.body.product_id).get()
+            .then(response => {
+                response.docs.forEach(data => {
+                    if (data.data().event === "purchase") {
+                        score += 100
+                    } else if (data.data().event === "ask_placed") {
+                        score += 20
+                    } else if (data.data().event === "bid_place") {
+                        score += 10
+                    } else if (data.data().event === "product_view") {
+                        score += 5
+                    }
+                })
+
+                return admin.firestore().collection('products').doc(req.body.product_id).set({
+                    trending_score: score
+                }, { merge: true })
+                    .then(() => {
+                        return res.status(200).send(true)
+                    })
+                    .catch(err => {
+                        console.error("Error Updating Trending Score: ", err)
+                    })
+            })
+            .catch(err => {
+                console.error("Error Fetching Activities: ", err)
+            })
+    })
+})
+
+exports.trendingScoreUpdateRoutine = functions.pubsub.schedule("every 30 minutes").onRun((context: any) => {
+    const date_limit = Date.now() - 259200000;
+    let score = 0;
+
+    return admin.firestore().collection('products').get()
+        .then(res => {
+            res.docs.forEach(product => {
+                score = 0
+                admin.firestore().collection('activity').where('product_id', '==', product.data().productID).where('timestamp', '>', date_limit).get()
+                    .then(response => {
+                        response.docs.forEach(data => {
+                            if (data.data().event === "purchase") {
+                                score += 100
+                            } else if (data.data().event === "ask_placed") {
+                                score += 20
+                            } else if (data.data().event === "bid_place") {
+                                score += 10
+                            } else if (data.data().event === "product_view") {
+                                score += 5
+                            }
+                        })
+
+                        admin.firestore().collection('products').doc(product.data().productID).set({
+                            trending_score: score
+                        }, { merge: true })
+                            .then(() => {
+                                return;
+                            })
+                            .catch(err => {
+                                console.error("Error Updating Trending Score: ", err)
+                            })
+                    })
+                    .catch(err => {
+                        console.error("Error Fetching Activities: ", err)
+                    })
+                
+                return null;
+            })
+        })
+        .catch(err => {
+            console.error("Error Fetching Products: ", err)
+        })
+})

@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { environment } from 'src/environments/environment';
 import { Globals } from '../globals';
 import { Activity } from '../models/activity';
 
@@ -10,7 +12,8 @@ export class ActivityService {
 
   constructor(
     private afs: AngularFirestore,
-    private globals: Globals
+    private globals: Globals,
+    private http: HttpClient
   ) { }
 
   /**
@@ -32,9 +35,18 @@ export class ActivityService {
     if (this.globals.uid != undefined) data.user_id = this.globals.uid
     if (this.globals.user_ip != undefined) data.ip_address = this.globals.user_ip
 
-    this.afs.collection('activity').doc(activity_id).set(data).catch(err => {
-      console.error(err)
-    })
+    this.afs.collection('activity').doc(activity_id).set(data)
+      .then(() => {
+        this.http.patch(`${environment.cloud.url}trendingScoreUpdate`, {
+          product_id: product_id
+        })
+          .subscribe(res => {
+            console.log(res)
+          })
+      })
+      .catch(err => {
+        console.error(err)
+      })
   }
 
   /**
