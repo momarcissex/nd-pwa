@@ -112,9 +112,7 @@ export class MakeAnOfferComponent implements OnInit {
     this.index = this.algoliaClient.initIndex(environment.algolia.index);
 
     this.auth.isConnected().then(res => {
-      if (!(res === null)) {
-        this.user = res;
-      }
+      if (res != undefined) this.user = res
 
       this.activatedRoute.queryParams.subscribe(params => {
         if (!(params.sneaker === undefined)) {

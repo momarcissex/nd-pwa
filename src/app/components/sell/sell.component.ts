@@ -125,6 +125,9 @@ export class SellComponent implements OnInit {
     // check if the user is connected and redirect if not
     if (this.globals.uid != undefined) {
       this.auth.isConnected().then(res => {
+        
+        this.user = res
+
         // redirect is phone number verification not verified
         if (res.phoneNumber == undefined && res.email != "momarcisse0@gmail.com") {
           if (this.activatedRoute.snapshot.queryParams.sneaker) {
