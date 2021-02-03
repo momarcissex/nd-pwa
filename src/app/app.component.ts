@@ -33,22 +33,7 @@ export class AppComponent implements AfterViewInit {
     private modalService: ModalService,
     public globals: Globals,
     @Inject(PLATFORM_ID) private _platformId: Object
-  ) {
-    /** Display EXP001 Pop-Ups
-      * Get random number and decide what version to display
-    */
-    const draw = Math.floor(Math.random() * Math.floor(3))
-
-    if (draw == 0) {
-      this.globals.exp001_version = 'exp001a'
-    } else if (draw == 1) {
-      this.globals.exp001_version = 'exp001b'
-    } else if (draw == 2) {
-      this.globals.exp001_version = 'exp001c'
-    } else {
-      this.globals.exp001_version = 'exp001d'
-    }
-  }
+  ) { }
 
   ngAfterViewInit() {
     const navEndEvents = this.router.events.pipe(
@@ -62,9 +47,7 @@ export class AppComponent implements AfterViewInit {
           if (res != null || res != undefined) {
             gtag('set', { 'user_id': res.uid }); // Set the user ID using signed-in user_id.
             fbq('init', '247312712881625', { uid: res.uid });
-            this.ipService.getIPAddress().subscribe((data: any) => {
-              this.auth.updateLastActivity(res.uid, data.ip);
-            })
+            this.auth.updateLastActivity(res.uid, this.globals.user_ip);
 
             this.http.put(`${environment.cloud.url}IntercomData`, { uid: res.uid }).subscribe((data: any) => {
               //console.log(data)

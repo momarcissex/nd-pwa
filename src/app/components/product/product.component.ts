@@ -15,6 +15,7 @@ import { SlackService } from 'src/app/services/slack.service';
 import { Globals } from 'src/app/globals';
 import { Ask } from 'src/app/models/ask';
 import { Bid } from 'src/app/models/bid';
+import { ActivityService } from 'src/app/services/activity.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -82,6 +83,7 @@ export class ProductComponent implements OnInit {
     private userService: UserService,
     private slackService: SlackService,
     public globals: Globals,
+    private activityService: ActivityService,
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
@@ -100,10 +102,12 @@ export class ProductComponent implements OnInit {
     }
 
     this.getItemInformation()
-    this.getSizeSuffix();
+    this.getSizeSuffix()
     this.getUserAsks()
     this.getUserBids()
     this.addToRecentlyViewed()
+
+    this.activityService.logActivity(this.productID, 'product_view')      // Log activity
   }
 
   getItemInformation() {
