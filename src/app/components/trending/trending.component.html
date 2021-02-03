@@ -3,7 +3,7 @@
 
   <div class="showcase-windows">
     <div *ngFor="let trend of trends" class="showcase-window">
-      <a routerLink="/product/{{ trend.productID }}">
+      <a [routerLink]="['/product', trend.productID]" (click)="trackProductClick(trend.model)">
           <h6 id="window-price">{{ trend.lowest_price | currency: 'CAD' }}</h6>
           <div id="window-image"><img src="{{ trend.assetURL }}" alt="{{ trend.model }}"></div>
           <h3 id="window-model">{{ trend.model }}</h3>

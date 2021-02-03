@@ -16,6 +16,7 @@ import { User } from 'firebase';
 import { response } from 'express';
 import { faBox, faCircleNotch, faEnvelope, faHandHoldingUsd, faLink, faShippingFast, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare var gtag: any;
 
@@ -100,7 +101,8 @@ export class MakeAnOfferComponent implements OnInit {
     private title: Title,
     private slack: SlackService,
     @Inject(PLATFORM_ID) private _platformId: Object,
-    private meta: MetaService
+    private meta: MetaService,
+    public globals: Globals
   ) { }
 
   ngOnInit() {
@@ -110,9 +112,7 @@ export class MakeAnOfferComponent implements OnInit {
     this.index = this.algoliaClient.initIndex(environment.algolia.index);
 
     this.auth.isConnected().then(res => {
-      if (!(res === null)) {
-        this.user = res;
-      }
+      if (res != undefined) this.user = res
 
       this.activatedRoute.queryParams.subscribe(params => {
         if (!(params.sneaker === undefined)) {
@@ -282,6 +282,22 @@ export class MakeAnOfferComponent implements OnInit {
               'event_label': this.selectedPair.model,
               'event_value': this.pairPrice
             });
+
+            if (this.globals.exp001_version != undefined) {
+              gtag('event', `${this.globals.exp001_version}_bid_placed`, {
+                'event_category': 'exp001',
+                'event_label': `${this.selectedPair.model}`,
+                'event_value': `${this.pairPrice}`
+              })
+            }
+
+            if (this.globals.exp003_version != undefined) {
+              gtag('event', `${this.globals.exp003_version}_bid_placed`, {
+                'event_category': 'exp003',
+                'event_label': `${this.selectedPair.model}`,
+                'event_value': `${this.pairPrice}`
+              })
+            }
           }
 
           const msg = `${this.user.uid} placed an offer for ${this.selectedPair.model}, size ${this.pairSize} at ${this.pairPrice}`;

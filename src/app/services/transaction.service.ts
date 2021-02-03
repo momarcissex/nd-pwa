@@ -11,7 +11,9 @@ import { Bid } from '../models/bid';
 import { User } from '../models/user';
 import { Ask } from '../models/ask';
 import { NxtdropCC } from '../models/nxtdrop_cc';
+import { Globals } from '../globals';
 
+declare const gtag: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +23,8 @@ export class TransactionService {
     private afs: AngularFirestore,
     private auth: AuthService,
     private http: HttpClient,
-    private slack: SlackService
+    private slack: SlackService,
+    private globals: Globals
   ) { }
 
   /**
@@ -186,6 +189,14 @@ export class TransactionService {
       batch.delete(this.afs.firestore.collection(`bids`).doc(`${userBid.offerID}`))
       batch.update(buyerRef, {
         offers: firebase.firestore.FieldValue.increment(-1)
+      })
+    }
+
+    // track if item purchased is a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(product.productID)) {
+      gtag('event', 'purchase_recently_viewed', {
+        'event-category': 'exp004',
+        'event-label': product.productID
       })
     }
 
@@ -366,6 +377,14 @@ export class TransactionService {
       batch.delete(this.afs.firestore.collection(`asks`).doc(`${userAsk.listingID}`))
       batch.update(sellerRef, {
         listed: firebase.firestore.FieldValue.increment(-1)
+      })
+    }
+
+    // track if bid accepted on a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(product.productID)) {
+      gtag('event', 'bid_accepted_recently_viewed', {
+        'event-category': 'exp004',
+        'event-label': product.productID
       })
     }
 

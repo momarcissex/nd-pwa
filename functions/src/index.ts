@@ -1530,7 +1530,7 @@ exports.enterGiveaway = functions.https.onRequest((req, res) => {
             method: 'PUT',
             url: '/v3/marketing/contacts',
             body: {
-                "list_ids": ["bf38e85c-5811-4d75-95d4-6c2febd69863"],
+                "list_ids": ["98ca9ef9-f9df-47c3-b850-9a03334b57fe"],
                 "contacts": [{
                     "email": req.body.email
                 }]

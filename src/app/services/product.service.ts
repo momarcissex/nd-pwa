@@ -12,15 +12,23 @@ export class ProductService {
     private afs: AngularFirestore
   ) { }
 
-  getProductInfo(productID) {
-    return this.afs.collection('products').doc(`${productID}`).valueChanges() as Observable<Product>
+  getProductInfo(product_id) {
+    return this.afs.collection('products').doc(`${product_id}`).valueChanges() as Observable<Product>
   }
 
-  getBuy(productID) {
-    return this.afs.collection('products').doc(`${productID}`).collection('listings', ref => ref.orderBy(`size`, `asc`)).valueChanges();
+  getBuy(product_id) {
+    return this.afs.collection('products').doc(`${product_id}`).collection('listings', ref => ref.orderBy(`size`, `asc`)).valueChanges();
   }
 
-  getOffers(productID) {
-    return this.afs.collection('products').doc(`${productID}`).collection('offers', ref => ref.orderBy(`size`, `asc`)).valueChanges();
+  getOffers(product_id) {
+    return this.afs.collection('products').doc(`${product_id}`).collection('offers', ref => ref.orderBy(`size`, `asc`)).valueChanges();
+  }
+
+  getUserAsks(product_id: string, user_id: string) {
+    return this.afs.collection('products').doc(`${product_id}`).collection('listings', ref => ref.where('sellerID', '==', user_id).orderBy('expiration_date', 'desc')).get();
+  }
+
+  getUserBids(product_id: string, user_id: string) {
+    return this.afs.collection('products').doc(`${product_id}`).collection('offers', ref => ref.where('buyerID', '==', user_id).orderBy('expiration_date', 'desc')).get();
   }
 }

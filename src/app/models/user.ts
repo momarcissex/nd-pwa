@@ -1,42 +1,47 @@
 export interface User {
-    uid: string;
+    creation_date: number;
     email: string;
+    firstName: string;
+    isActive: boolean;
+    lastName: string;
     listed: number;
+    offers: number;
     ordered: number;
     sold: number;
-    offers: number;
-    isActive: boolean;
-    creation_date: number;
+    uid: string;
     username: string;
-    firstName: string;
-    lastName: string;
 
     // Optional
     dob?: string
     freeShipping?: boolean;
-    last_login?: number;
-    last_known_ip_address?: string;
     last_item_in_cart?: Object;
+    last_known_ip_address?: string;
+    last_login?: number;
+    recently_viewed?: string[];
     shippingAddress?: {
-        selling?: {
-            firstName: string,
-            lastName: string,
-            street: string,
-            line2: string,
-            city: string,
-            province: string,
-            postalCode: string,
-            country: string
-        },
         buying?: {
+            city: string,
+            country: string,
             firstName: string,
             lastName: string,
-            street: string,
             line2: string,
-            city: string,
-            province: string,
             postalCode: string,
-            country: string
+            province: string,
+            street: string
+        },
+        selling?: {
+            city: string,
+            country: string,
+            firstName: string,
+            lastName: string,
+            line2: string,
+            postalCode: string,
+            province: string,
+            street: string
         }
+    }
+    exp002?: {
+        timestamp: number;
+        viewed: number;
     }
 }

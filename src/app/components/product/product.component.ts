@@ -1,7 +1,6 @@
-import { Component, OnInit, NgZone, PLATFORM_ID, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 import { ProductService } from 'src/app/services/product.service';
-import { AuthService } from 'src/app/services/auth.service';
 import { Title } from '@angular/platform-browser';
 import { Product } from 'src/app/models/product';
 import { MetaService } from 'src/app/services/meta.service';
@@ -10,6 +9,12 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
+import { ModalService } from 'src/app/services/modal.service';
+import { UserService } from 'src/app/services/user.service';
+import { SlackService } from 'src/app/services/slack.service';
+import { Globals } from 'src/app/globals';
+import { Ask } from 'src/app/models/ask';
+import { Bid } from 'src/app/models/bid';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -61,44 +66,52 @@ export class ProductComponent implements OnInit {
 
   UID: string
 
+  user_asks: Ask[] = []
+  user_bids: Bid[] = []
+
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private auth: AuthService,
     private router: Router,
     private title: Title,
     private seo: MetaService,
     private ngZone: NgZone,
     private askService: AskService,
     private bidService: BidService,
+    private modalService: ModalService,
+    private userService: UserService,
+    private slackService: SlackService,
+    public globals: Globals,
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.productID = this.route.snapshot.params.id;
 
-    this.auth.isConnected().then((res) => {
-      if (!(res === undefined)) {
-        this.UID = res.uid;
-      }
-    });
+    if (this.globals.uid != undefined) this.UID = this.globals.uid
 
-    await this.getItemInformation()
+    if (this.globals.uid != undefined && this.globals.user_data.exp002 == undefined) {
+      setTimeout(() => {
+        this.modalService.openModal('exp002')
+        this.userService.exp002(this.UID).catch(err => {
+          this.slackService.sendAlert('bugreport', err)
+        })
+      }, 5000);
+    }
 
+    this.getItemInformation()
     this.getSizeSuffix();
-
-
+    this.getUserAsks()
+    this.getUserBids()
+    this.addToRecentlyViewed()
   }
 
-  async getItemInformation() {
+  getItemInformation() {
     this.productService.getProductInfo(this.productID).subscribe(data => {
-      console.log('getProductInfo start')
-      console.log(data)
       if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
         if (this.productInfo.assetURL === '') {
-          console.log('seo etc')
           this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
           this.seo.addTags('Product', data);
 
@@ -134,6 +147,7 @@ export class ProductComponent implements OnInit {
   buyNow(listing) {
     const data = JSON.stringify(listing);
     clearTimeout(this.modalTimeout);
+
     this.ngZone.run(() => {
       this.router.navigate([`../../checkout`], {
         queryParams: { product: data, sell: false }
@@ -313,6 +327,59 @@ export class ProductComponent implements OnInit {
       alert('Please select a size')
     } else {
       alert('Please select a size below')
+    }
+  }
+
+  addToRecentlyViewed() {
+    this.userService.addToRecentlyViewed(this.productID, this.UID).catch(err => {
+      console.error(err)
+    })
+  }
+
+  /**
+   * Get the user's asks for this product if any
+   */
+  getUserAsks(): void {
+    this.productService.getUserAsks(this.productID, this.UID).subscribe(res => {
+      res.docs.forEach(ele => {
+        this.user_asks.push(ele.data() as Ask)
+      })
+    })
+  }
+
+  /**
+   * Get the user's bids for this product if any
+   */
+  getUserBids(): void {
+    this.productService.getUserBids(this.productID, this.UID).subscribe(res => {
+      res.docs.forEach(ele => {
+        this.user_bids.push(ele.data() as Bid)
+      })
+    })
+  }
+
+  /**
+   * Scroll to a given element
+   * @param id the element's ID
+   */
+  scrollTo(id: string): void {
+    const ele = document.getElementById(id)
+    ele.scrollIntoView()
+
+    return;
+  }
+
+  trackUpdateClick(isAsk: boolean) {
+    if (isAsk) {
+      gtag('event', 'prod_page_ask_update_click', {
+        'event_category': 'engagement',
+        'event_label': this.productInfo.model
+      })
+    } else {
+      gtag('event', 'prod_page_bid_update_click', {
+        'event_category': 'engagement',
+        'event_label': this.productInfo.model
+      })
     }
   }
 

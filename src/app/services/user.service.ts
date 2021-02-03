@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { auth } from 'firebase/app';
-import { isUndefined } from 'util';
 import { AuthService } from './auth.service';
-import { Bid } from '../models/bid';
 import { Ask } from '../models/ask';
+import { Globals } from '../globals';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +17,8 @@ export class UserService {
   constructor(
     private afs: AngularFirestore,
     private http: HttpClient,
-    private auth: AuthService
+    private auth: AuthService,
+    private globals: Globals
   ) { }
 
   getUserInfo(userId: string): Observable<User> {
@@ -177,20 +177,20 @@ export class UserService {
     //console.log(UID)
 
     if (filter === 'All') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter.created_at).limit(60)).get()
     } else if (filter === 'Active') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('expiration_date', 'asc').startAfter(startAfter.expiration_date).limit(60)).get()
     } else if (filter === 'Expired') {
       console.log('expired')
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('expiration_date', 'asc').startAfter(startAfter.expiration_date).limit(60)).get()
     } else if (filter === 'Oldest') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'asc').startAfter(startAfter.last_updated).limit(60)).get()
     } else if (filter === 'Recent') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'desc').startAfter(startAfter.last_updated).limit(60)).get()
     }
   }
@@ -202,20 +202,60 @@ export class UserService {
     });
 
     if (filter === 'All') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Active') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Expired') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Oldest') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Recent') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').startAfter(startAfter).limit(60)).get()
     }
   }
+
+  public addToRecentlyViewed(product_id: string, user_id: string) {
+    let recently_viewed = this.globals.user_data.recently_viewed
+
+    if (recently_viewed != undefined) {
+      recently_viewed.reverse()
+      if (recently_viewed.includes(product_id)) {
+        const index = recently_viewed.indexOf(product_id)
+        recently_viewed.splice(index, 1)
+        recently_viewed.push(product_id)
+      } else if (recently_viewed.length == 8) {
+        recently_viewed.reverse()
+        recently_viewed.pop()
+        recently_viewed.reverse()
+        recently_viewed.push(product_id)
+      } else {
+        recently_viewed.push(product_id)
+      }
+
+      recently_viewed.reverse()
+      return this.afs.collection('users').doc(user_id).set({
+        recently_viewed
+      }, { merge: true })
+    } else {
+      console.log('undefined')
+      return this.afs.collection('users').doc(user_id).set({
+        recently_viewed: [product_id]
+      }, { merge: true })
+    }
+  }
+
+  exp002(uid: string) {
+    return this.afs.collection('users').doc(uid).set({
+      exp002: {
+        timestamp: Date.now(),
+        viewed: true
+      }
+    }, { merge: true })
+  }
+
 }
