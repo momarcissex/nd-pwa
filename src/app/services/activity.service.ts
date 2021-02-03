@@ -20,9 +20,8 @@ export class ActivityService {
    */
   logActivity(product_id: string, event: string) {
     const activity_id = this.randomString(16)
-    console.log(activity_id)
 
-    /*let data: Activity = {
+    let data: Activity = {
       product_id,
       event,
       timestamp: Date.now(),
@@ -33,8 +32,9 @@ export class ActivityService {
     if (this.globals.uid != undefined) data.user_id = this.globals.uid
     if (this.globals.user_ip != undefined) data.ip_address = this.globals.user_ip
 
-
-    this.afs.collection('activity').doc(activity_id).set(data)*/
+    this.afs.collection('activity').doc(activity_id).set(data).catch(err => {
+      console.error(err)
+    })
   }
 
   /**
@@ -42,7 +42,7 @@ export class ActivityService {
    * @param string_length lenght of the random string
    * @returns a random string
    */
-  randomString(string_length: number) {
+  private randomString(string_length: number) {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
     let randomstring = '';
     for (var i = 0; i < string_length; i++) {

@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Globals } from '../globals';
+import { ActivityService } from './activity.service';
 
 declare const gtag: any;
 @Injectable({
@@ -21,6 +22,7 @@ export class AskService {
     private afs: AngularFirestore,
     private auth: AuthService,
     private http: HttpClient,
+    private activityService: ActivityService,
     private globals: Globals
   ) { }
 
@@ -122,6 +124,8 @@ export class AskService {
         //console.log(`size_lowest: ${pair.sizes_lowest_ask[size]} and price: ${price}`)
 
         if (!(sizeLowestAskNotif == undefined || sizeLowestAskNotif == null)) sizeLowestAskNotif.subscribe()
+        
+        this.activityService.logActivity(pair.productID, 'ask_placed')
 
         this.http.post(`${environment.cloud.url}askNotification`, this.ask_data).subscribe() //send ask email
 
@@ -306,8 +310,9 @@ export class AskService {
     // commit the updates
     return batch.commit()
       .then(() => {
-        //console.log('Listing updated');
         this.sendLowestAskNotification(price, ask.condition, ask.size, UID, ask.productID, ask.listingID, size_prices, product) //send new lowest ask notification if necessary
+
+        this.activityService.logActivity(ask.productID, 'ask_placed')
 
         this.ask_data = {
           assetURL: ask.assetURL,

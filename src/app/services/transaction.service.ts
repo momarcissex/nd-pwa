@@ -12,6 +12,7 @@ import { User } from '../models/user';
 import { Ask } from '../models/ask';
 import { NxtdropCC } from '../models/nxtdrop_cc';
 import { Globals } from '../globals';
+import { ActivityService } from './activity.service';
 
 declare const gtag: any;
 @Injectable({
@@ -24,6 +25,7 @@ export class TransactionService {
     private auth: AuthService,
     private http: HttpClient,
     private slack: SlackService,
+    private activityService: ActivityService,
     private globals: Globals
   ) { }
 
@@ -203,7 +205,7 @@ export class TransactionService {
     //commit the transaction
     return batch.commit()
       .then(() => {
-        //console.log('Transaction Approved');
+        this.activityService.logActivity(product.productID, 'purchase')
 
         //send alert to slack
         this.slack.sendAlert('sales', `${UID} bought ${product.model}, size ${product.size} at ${product.price} from ${product.sellerID}`).catch(err => {
@@ -391,7 +393,7 @@ export class TransactionService {
     //commit the transaction
     return batch.commit()
       .then(() => {
-        //console.log('Transaction Approved');
+        this.activityService.logActivity(product.productID, 'purchase')
 
         //send alert to slack
         this.slack.sendAlert('sales', `${UID} sold ${product.model}, size ${product.size} at ${product.price} to ${product.buyerID}`).catch(err => {

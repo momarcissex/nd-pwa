@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Globals } from '../globals';
+import { ActivityService } from './activity.service';
 
 declare const gtag: any;
 @Injectable({
@@ -22,6 +23,7 @@ export class BidService {
     private afs: AngularFirestore,
     private auth: AuthService,
     private http: HttpClient,
+    private activityService: ActivityService,
     private globals: Globals
   ) { }
 
@@ -93,7 +95,7 @@ export class BidService {
 
       return batch.commit()
         .then(() => {
-          //console.log('New Offer Added');
+          this.activityService.logActivity(pair.productID, 'bid_placed')
 
           console.log(`size highest_bid: ${size_highest_bid} and price: ${price}`)
 
@@ -265,7 +267,8 @@ export class BidService {
 
     return batch.commit()
       .then(() => {
-        //console.log('Offer updated');
+        this.activityService.logActivity(bid.productID, 'bid_placed')
+
         this.sendHighestBidNotification(price, bid.condition, bid.size, UID, bid.productID, bid.offerID, size_prices)
 
         this.bid_data = {

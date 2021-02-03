@@ -26,7 +26,6 @@ export class TrendingComponent implements OnInit {
   }
 
   trackProductClick(model: string) {
-    console.log('work')
     if (this.globals.exp003_version != undefined) {
       gtag('event', `${this.globals.exp003_version}_product_click`, {
         'event_category': `exp003`,
