@@ -6,7 +6,6 @@ import { MetaService } from './services/meta.service';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { IpService } from './services/ip.service';
 import { ModalService } from './services/modal.service';
 import { Globals } from './globals';
 
@@ -29,7 +28,6 @@ export class AppComponent implements AfterViewInit {
     private auth: AuthService,
     private seo: MetaService,
     private http: HttpClient,
-    private ipService: IpService,
     private modalService: ModalService,
     public globals: Globals,
     @Inject(PLATFORM_ID) private _platformId: Object
@@ -85,6 +83,10 @@ export class AppComponent implements AfterViewInit {
         });
         fbq('track', 'PageView');
         window.Intercom("update");
+
+        if (this.globals.landing_page == undefined) {
+          this.globals.landing_page = this.router.url
+        }
 
         this.auth.isConnected()
           .then(res => {

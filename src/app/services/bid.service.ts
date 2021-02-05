@@ -83,6 +83,14 @@ export class BidService {
       })
     }
 
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'bid_placed', {
+        'event-category': "landing_page",
+        'event-label': this.globals.landing_page
+      })
+    }
+
     // update highestBid in products Document
     return this.afs.collection('products').doc(`${pair.productID}`).get().subscribe(res => {
       if ((res.data().highest_bid == undefined || res.data().highest_bid == null) || res.data().highest_bid < price) {

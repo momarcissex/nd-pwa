@@ -202,6 +202,14 @@ export class TransactionService {
       })
     }
 
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'purchase', {
+        'event-category': "landing_page",
+        'event-label': this.globals.landing_page
+      })
+    }
+
     //commit the transaction
     return batch.commit()
       .then(() => {
@@ -387,6 +395,14 @@ export class TransactionService {
       gtag('event', 'bid_accepted_recently_viewed', {
         'event-category': 'exp004',
         'event-label': product.productID
+      })
+    }
+
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'bid_accepted', {
+        'event-category': "landing_page",
+        'event-label': this.globals.landing_page
       })
     }
 

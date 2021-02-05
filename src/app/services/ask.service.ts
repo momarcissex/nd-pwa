@@ -118,13 +118,21 @@ export class AskService {
       })
     }
 
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'ask_placed', {
+        'event-category': "landing_page",
+        'event-label': this.globals.landing_page
+      })
+    }
+
     return batch.commit()
       .then(() => {
         //console.log('New Listing Added');
         //console.log(`size_lowest: ${pair.sizes_lowest_ask[size]} and price: ${price}`)
 
         if (!(sizeLowestAskNotif == undefined || sizeLowestAskNotif == null)) sizeLowestAskNotif.subscribe()
-        
+
         this.activityService.logActivity(pair.productID, 'ask_placed')
 
         this.http.post(`${environment.cloud.url}askNotification`, this.ask_data).subscribe() //send ask email

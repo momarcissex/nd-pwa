@@ -17,6 +17,7 @@ export class Globals {
     user_data: User;
     uid: string;
     user_ip: string;
+    landing_page: string;
 
     user_subscription: Subscription;
 
