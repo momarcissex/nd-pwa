@@ -1,0 +1,254 @@
+@import "../../base_styles/base";
+
+.container {
+    width: 100%;
+    background: $black;
+
+    .description {
+        img {
+            margin: 0 auto;
+            display: block;
+        }
+
+        p {
+            color: $white;
+            text-align: center;
+        }
+    }
+
+    .video {
+        iframe {
+            display: block;
+        }
+    }
+}
+
+@media only screen and (min-width: 0px) and (max-width: 399.9px) {
+    .container {
+        padding: 1rem 0;
+        margin: 3rem auto;
+
+        .description {
+            img {
+                width: 50%;
+            }
+
+            p {
+                font-size: 0.6rem;
+                width: 80%;
+                margin: 1.5rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 90%;
+                margin: 1rem auto;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 400px) and (max-width: 599.9px) {
+    .container {
+        padding: 1rem 0;
+        margin: 3rem auto;
+
+        .description {
+            img {
+                width: 45%;
+            }
+
+            p {
+                font-size: 0.65rem;
+                width: 70%;
+                margin: 2rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 80%;
+                height: 200px;
+                margin: 1.5rem auto;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 799.9px) {
+    .container {
+        padding: 1rem 0;
+        margin: 3rem auto;
+
+        .description {
+            img {
+                width: 40%;
+            }
+
+            p {
+                font-size: 0.8rem;
+                width: 60%;
+                margin: 2rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 70%;
+                height: 300px;
+                margin: 1.5rem auto;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 800px) and (max-width: 999.9px) {
+    .container {
+        padding: 2rem 0;
+        margin: 3rem auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+
+        .description {
+            img {
+                width: 60%;
+            }
+
+            p {
+                font-size: 0.8rem;
+                width: 90%;
+                margin: 2rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 90%;
+                height: 250px;
+                margin: 1.5rem auto;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1000px) and (max-width: 1299.9px) {
+    .container {
+        padding: 2rem 0;
+        margin: 3rem auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+
+        .description {
+            img {
+                width: 40%;
+            }
+
+            p {
+                font-size: 0.8rem;
+                width: 75%;
+                margin: 2rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 90%;
+                height: 300px;
+                margin: 1.5rem auto;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1300px) and (max-width: 1599.9px) {
+    .container {
+        padding: 2rem 0;
+        margin: 3rem auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+
+        .description {
+            img {
+                width: 35%;
+            }
+
+            p {
+                font-size: 0.9rem;
+                width: 75%;
+                margin: 2rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 85%;
+                height: 325px;
+                margin: 1.5rem auto;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 1600px) and (max-width: 1999.9px) {
+    .container {
+        padding: 2rem 0;
+        margin: 3rem auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+
+        .description {
+            img {
+                width: 35%;
+            }
+
+            p {
+                font-size: 1rem;
+                width: 60%;
+                margin: 2rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 70%;
+                height: 400px;
+                margin: 1.5rem auto;
+            }
+        }
+    }
+}
+
+@media only screen and (min-width: 2000px) {
+    .container {
+        padding: 2rem 0;
+        margin: 3rem auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+
+        .description {
+            img {
+                width: 35%;
+            }
+
+            p {
+                font-size: 1rem;
+                width: 60%;
+                margin: 2rem auto 0 auto;
+            }
+        }
+
+        .video {
+            iframe {
+                width: 70%;
+                height: 400px;
+                margin: 1.5rem auto;
+            }
+        }
+    }
+}

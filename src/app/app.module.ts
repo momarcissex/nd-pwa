@@ -73,6 +73,7 @@ import { SaleConfirmationComponent } from './components/sale-confirmation/sale-c
 import { TrustboxComponent } from './components/trustbox/trustbox.component';
 import { RecentlyViewedComponent } from './components/recently-viewed/recently-viewed.component';
 import { UpcomingReleasesComponent } from './components/upcoming-releases/upcoming-releases.component';
+import { SneakPeekComponent } from './components/sneak-peek/sneak-peek.component';
 
 /** Font Awesome */
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -173,7 +174,8 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     ExtendAskBidComponent,
     OnlyNumberDirective,
     RecentlyViewedComponent,
-    UpcomingReleasesComponent
+    UpcomingReleasesComponent,
+    SneakPeekComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
