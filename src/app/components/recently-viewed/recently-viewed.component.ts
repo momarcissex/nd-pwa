@@ -53,8 +53,8 @@ export class RecentlyViewedComponent implements OnInit {
     this.globals.recently_viewed_clicks.push(product_id)
 
     gtag('event', 'product_click', {
-      'event-category': 'exp004',
-      'event-label': product_id
+      'event_category': 'exp004',
+      'event_label': product_id
     })
   }
 
