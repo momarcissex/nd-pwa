@@ -55,58 +55,6 @@
   }
 }
 
-.stat-banner {
-  margin: $spacing-xlarge 0 0 0;
-  display: grid;
-  background: $black;
-  row-gap: 0;
-
-  h1 {
-    text-align: center;
-    color: $white;
-    text-transform: uppercase;
-    letter-spacing: 1.1px;
-  }
-
-  h2 {
-    text-align: center;
-    color: $white;
-    text-transform: uppercase;
-    letter-spacing: 1.1px;
-  }
-
-  .stat-content {
-    display: grid;
-    align-items: center;
-    justify-items: center;
-    margin: $spacing-normal 0;
-
-    .duties,
-    .authRate {
-      padding: $spacing-xsmall;
-      border-radius: 110px;
-      background: $white;
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      justify-items: center;
-
-      h3,
-      p {
-        color: $black;
-      }
-
-      h3 {
-        align-self: flex-end;
-      }
-
-      p {
-        align-self: flex-start;
-        text-align: center;
-      }
-    }
-  }
-}
-
 .big-margin {
   margin: 0 auto !important;
   margin-top: $spacing-large !important;
@@ -181,37 +129,6 @@
     }
   }
 
-  .stat-banner {
-    padding: $spacing-normal 0;
-
-    h1,
-    h2 {
-      font-size: $font-small;
-    }
-
-    .stat-content {
-      grid-template-rows: 1fr 1fr 1fr;
-
-      .duties,
-      .authRate {
-        height: 150px;
-        width: 150px;
-      }
-
-      h3 {
-        font-size: $font-normal;
-      }
-
-      p {
-        font-size: $font-xsmall;
-      }
-
-      img {
-        width: 40%;
-      }
-    }
-  }
-
   .last-sale-banner {
     width: 90vw;
     padding: $spacing-small $spacing-xsmall;
@@ -264,37 +181,6 @@
     .banner-image {
       img {
         height: 125px;
-      }
-    }
-  }
-
-  .stat-banner {
-    padding: $spacing-normal 0;
-
-    h1,
-    h2 {
-      font-size: $font-normal;
-    }
-
-    .stat-content {
-      grid-template-columns: 1fr 1fr 1fr;
-
-      .duties,
-      .authRate {
-        height: 125px;
-        width: 125px;
-      }
-
-      h3 {
-        font-size: $font-normal;
-      }
-
-      p {
-        font-size: $font-xsmall;
-      }
-
-      img {
-        width: 75%;
       }
     }
   }
@@ -355,37 +241,6 @@
     }
   }
 
-  .stat-banner {
-    padding: $spacing-normal 0;
-
-    h1,
-    h2 {
-      font-size: $font-normal;
-    }
-
-    .stat-content {
-      grid-template-columns: 1fr 1fr 1fr;
-
-      .duties,
-      .authRate {
-        height: 150px;
-        width: 150px;
-      }
-
-      h3 {
-        font-size: $font-normal;
-      }
-
-      p {
-        font-size: $font-xsmall;
-      }
-
-      img {
-        width: 60%;
-      }
-    }
-  }
-
   .last-sale-banner {
     width: 70vw;
     padding: $spacing-small $spacing-xsmall;
@@ -438,37 +293,6 @@
     .banner-image {
       img {
         height: 250px;
-      }
-    }
-  }
-
-  .stat-banner {
-    padding: $spacing-large 0;
-
-    h1,
-    h2 {
-      font-size: $font-normal;
-    }
-
-    .stat-content {
-      grid-template-columns: 1fr 1fr 1fr;
-
-      .duties,
-      .authRate {
-        height: 175px;
-        width: 175px;
-      }
-
-      h3 {
-        font-size: $font-large;
-      }
-
-      p {
-        font-size: $font-small;
-      }
-
-      img {
-        width: 50%;
       }
     }
   }
@@ -529,38 +353,6 @@
     }
   }
 
-  .stat-banner {
-    padding: $spacing-xlarge 0;
-
-    h1,
-    h2 {
-      font-size: $font-normal;
-    }
-
-    .stat-content {
-      grid-template-columns: 1fr 1fr 1fr;
-
-      .duties,
-      .authRate {
-        height: 250px;
-        width: 250px;
-        border-radius: 135px !important;
-      }
-
-      h3 {
-        font-size: $font-xlarge;
-      }
-
-      p {
-        font-size: $font-normal;
-      }
-
-      img {
-        width: 50%;
-      }
-    }
-  }
-
   .last-sale-banner {
     width: 50vw;
     padding: $spacing-small $spacing-xsmall;
@@ -613,38 +405,6 @@
     .banner-image {
       img {
         height: 250px;
-      }
-    }
-  }
-
-  .stat-banner {
-    padding: $spacing-xlarge 0;
-
-    h1,
-    h2 {
-      font-size: $font-normal;
-    }
-
-    .stat-content {
-      grid-template-columns: 1fr 1fr 1fr;
-
-      .duties,
-      .authRate {
-        height: 250px;
-        width: 250px;
-        border-radius: 135px !important;
-      }
-
-      h3 {
-        font-size: $font-xlarge;
-      }
-
-      p {
-        font-size: $font-normal;
-      }
-
-      img {
-        width: 50%;
       }
     }
   }

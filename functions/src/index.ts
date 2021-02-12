@@ -292,7 +292,7 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
                     trackingURL = `http://theupsstore.ca/track/${req.body.shipTracking.trackingID}`;
                     break;
                 case 'Canada Post':
-                    trackingURL = `https://www.canadapost.ca/trackweb/en#/details/${req.body.shipTracking.trackingID}`;
+                    trackingURL = `https://www.canadapost.ca/track-reperage/en#/details/${req.body.shipTracking.trackingID}`;
                     break;
                 default:
                     break;
