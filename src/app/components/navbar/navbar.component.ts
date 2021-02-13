@@ -70,14 +70,6 @@ export class NavbarComponent implements OnInit {
     } else {
       this.showSearchBar = false;
     }
-
-    /*this.navbarService.getCartItems().then(res => {
-      res.subscribe(data => {
-        if (!isNull(data)) {
-          this.userInfo = data;
-        }
-      });
-    });*/
   }
 
   openMenu() {

@@ -3,8 +3,8 @@
 <div class="main-container">
   <h2>Edit Profile</h2>
   
-  <input type="text" id="firstName" placeholder="First Name" value="{{ firstName }}" (keyup)="firstNameChanges($event)">
-  <input type="text" id="lastName" placeholder="Last Name" value="{{ lastName }}" (keyup)="lastNameChanges($event)">
+  <input type="text" id="firstName" placeholder="First Name" value="{{ first_name }}" (keyup)="firstNameChanges($event)">
+  <input type="text" id="lastName" placeholder="Last Name" value="{{ last_name }}" (keyup)="lastNameChanges($event)">
   <input type="text" id="username" placeholder="Username" value="{{ username }}" (keyup)="usernameChanges($event)">
   <label for="dob">Date of Birth:</label>
   <input type="date" id="dob" value="{{ dob }}" (change)="dobChanges($event)">

@@ -61,9 +61,9 @@ export class SaleConfirmationComponent implements OnInit {
     this.confService.transactionData(transactionId).subscribe((data: Transaction) => {
       this.transactionData = data;
 
-      this.consignmentFee = this.transactionData.price * 0.085;
-      this.paymentProcessingFee = this.transactionData.price * 0.03;
-      this.payout = this.transactionData.price - this.consignmentFee - this.paymentProcessingFee;
+      this.consignmentFee = this.transactionData.item.price * 0.085;
+      this.paymentProcessingFee = this.transactionData.item.price * 0.03;
+      this.payout = this.transactionData.item.price - this.consignmentFee - this.paymentProcessingFee;
       //console.log(this.transactionData);
     })
   }
@@ -77,7 +77,7 @@ export class SaleConfirmationComponent implements OnInit {
   confirmOrder() {
     this.confLoading = true;
 
-    this.confService.confirmOrder(this.route.snapshot.params.id, this.user.shippingAddress.selling).then(response => {
+    this.confService.confirmOrder(this.route.snapshot.params.id, this.user.shipping_address.selling).then(response => {
       this.confLoading = false;
       if (!response) {
         this.confError = true;
@@ -117,9 +117,9 @@ export class SaleConfirmationComponent implements OnInit {
   }
 
   addressExist() {
-    if (this.user.shippingAddress === undefined) {
+    if (this.user.shipping_address === undefined) {
       return false;
-    } else if (this.user.shippingAddress.selling === undefined) {
+    } else if (this.user.shipping_address.selling === undefined) {
       return false;
     } else {
       return true;

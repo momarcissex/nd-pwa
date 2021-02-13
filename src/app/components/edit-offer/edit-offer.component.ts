@@ -72,7 +72,7 @@ export class EditOfferComponent implements OnInit {
 
         this.shoeSizes();
 
-        this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+        this.askService.getLowestAsk(this.offerInfo.product_id, this.offerInfo.condition, this.offerInfo.size).then(data => {
           if (!data.empty) {
             this.lowest_ask = data.docs[0].data() as Ask
           }
@@ -225,7 +225,7 @@ export class EditOfferComponent implements OnInit {
   buyNow() {
     this.router.navigate(['/checkout'], {
       queryParams: {
-        product: this.lowest_ask.listingID,
+        product: this.lowest_ask.listing_id,
         sell: false,
         redirectTo: this.router.url
       }

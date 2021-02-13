@@ -76,8 +76,8 @@ export class EmailService {
 
         const data = {
           email: email,
-          first_name: res.data().firstName,
-          last_name: res.data().lastName,
+          first_name: res.data().first_name,
+          last_name: res.data().last_name,
           uid: res.data().uid,
           last_login: res.data().last_login,
           creation_date: res.data().creation_date

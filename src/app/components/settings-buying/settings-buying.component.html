@@ -13,7 +13,7 @@
   <div id="cc-cvv"></div>
 
   <h6>Billing Information</h6>
-  <p *ngIf="shippingInfo.street != ''" id="address"><span>Current Shipping Address: </span>{{ shippingInfo.firstName + ' ' + shippingInfo.lastName }}, {{ shippingInfo.street }}</p>
+  <p *ngIf="shippingInfo.street != ''" id="address"><span>Current Shipping Address: </span>{{ shippingInfo.first_name + ' ' + shippingInfo.last_name }}, {{ shippingInfo.street }}</p>
   <div class="sameAddress" *ngIf="shippingInfo.street != ''">
     <input type="checkbox" name="sameAddress" id="sameAddress" (change)="sameAddress()"><label for="sameAddress">Same as Shipping Address</label>
   </div>

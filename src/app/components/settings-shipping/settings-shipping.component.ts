@@ -14,17 +14,17 @@ export class SettingsShippingComponent implements OnInit {
 
   faCircleNotch = faCircleNotch
 
-  shippingInfo: User["shippingAddress"] //shipping information
+  shippingInfo: User["shipping_address"] //shipping information
   UID: string //user id
 
   //current shipping information inputs
-  firstName = ''
-  lastName = ''
+  first_name = ''
+  last_name = ''
   street = ''
   line = ''
   city = ''
   province = ''
-  postalCode = ''
+  postal_code = ''
 
   // input boolean controls
   firstNameChanged = false
@@ -82,29 +82,29 @@ export class SettingsShippingComponent implements OnInit {
 
   getShippingInfo(UID: string) {
     this.userService.getUserInfo(UID).subscribe(data => {
-      if (!(data.shippingAddress === undefined)) {
-        this.shippingInfo = data.shippingAddress
-        let curShip: User["shippingAddress"]['buying'] | User["shippingAddress"]["selling"]
+      if (!(data.shipping_address === undefined)) {
+        this.shippingInfo = data.shipping_address
+        let curShip: User["shipping_address"]['buying'] | User["shipping_address"]["selling"]
 
         this.buying ? curShip = this.shippingInfo.buying : curShip = this.shippingInfo.selling
 
         if (!(curShip === undefined)) {
-          this.firstName = curShip.firstName
-          this.lastName = curShip.lastName
+          this.first_name = curShip.first_name
+          this.last_name = curShip.last_name
           this.street = curShip.street
           this.line = curShip.line2
           this.city = curShip.city
           this.province = curShip.province
-          this.postalCode = curShip.postalCode;
+          this.postal_code = curShip.postal_code;
 
           (document.getElementById('ship-state') as HTMLInputElement).value = this.province
         } else {
-          this.firstName = data.firstName
-          this.lastName = data.lastName
+          this.first_name = data.first_name
+          this.last_name = data.last_name
         }
       } else {
-        this.firstName = data.firstName
-        this.lastName = data.lastName
+        this.first_name = data.first_name
+        this.last_name = data.last_name
       }
     })
   }
@@ -163,7 +163,7 @@ export class SettingsShippingComponent implements OnInit {
   firstNameChanges() {
     const firstName = (document.getElementById('ship-firstName') as HTMLInputElement).value;
 
-    if (this.firstName === undefined || (firstName.toLowerCase() != this.firstName.toLowerCase())) {
+    if (this.first_name === undefined || (firstName.toLowerCase() != this.last_name.toLowerCase())) {
       this.firstNameChanged = true;
     } else {
       this.firstNameChanged = false;
@@ -173,7 +173,7 @@ export class SettingsShippingComponent implements OnInit {
   lastNameChanges() {
     const lastName = (document.getElementById('ship-lastName') as HTMLInputElement).value;
 
-    if (this.lastName === undefined || (lastName.toLowerCase() != this.lastName.toLowerCase())) {
+    if (this.last_name === undefined || (lastName.toLowerCase() != this.last_name.toLowerCase())) {
       this.lastNameChanged = true;
     } else {
       this.lastNameChanged = false;
@@ -223,7 +223,7 @@ export class SettingsShippingComponent implements OnInit {
   zipChanges() {
     const postalCode = (document.getElementById('ship-zip') as HTMLInputElement).value;
 
-    if (postalCode.toLowerCase() != this.postalCode.toLowerCase()) {
+    if (postalCode.toLowerCase() != this.postal_code.toLowerCase()) {
       this.postalCodeChanged = true;
     } else {
       this.postalCodeChanged = false;

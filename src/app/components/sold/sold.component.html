@@ -3,13 +3,13 @@
 <div class="main-container">
   <section class="review-container" *ngIf="!error && transaction">
     <h2>Transaction ID:</h2>
-    <h6>{{ transaction.buyerID + '-' + transaction.sellerID + '-' + transaction.purchaseDate }}</h6>
+    <h6>{{ transaction.id }}</h6>
 
     <div class="review-items">
       <div class="review-item">
-        <img src="{{ transaction.assetURL }}" alt="{{ transaction.model }}">
-        <h5>{{ transaction.model + ', ' + transaction.size }}</h5>
-        <h5>{{ transaction.price | currency: 'CAD' }}</h5>
+        <img src="{{ transaction.item.asset_url }}" alt="{{ transaction.item.model }}">
+        <h5>{{ transaction.item.model + ', ' + transaction.item.size }}</h5>
+        <h5>{{ transaction.item.price | currency: 'CAD' }}</h5>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
 
         <div class="total">
           <h5>Total Payout</h5>
-          <h5>{{ transaction.price - fee() - processing() | currency: 'CAD' }}</h5>
+          <h5>{{ transaction.item.price - fee() - processing() | currency: 'CAD' }}</h5>
         </div>
       </div>
     </div>

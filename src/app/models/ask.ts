@@ -1,14 +1,16 @@
 export class Ask {
-    assetURL: string;
+    asset_url: string;
+    brand: string;
+    created_at: number;
     condition: string;
-    listingID: string;
+    expiration_date?: number;
+    last_reminder?: number;
+    last_updated?: number;
+    line: string;
+    listing_id: string;
     model: string;
     price: number;
-    productID: string;
-    sellerID: string;
+    product_id: string;
+    seller_id: string;
     size: string;
-    last_updated?: number;
-    created_at: number;
-    last_reminder?: number;
-    expiration_date?: number;
 }

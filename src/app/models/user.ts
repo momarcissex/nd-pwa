@@ -5,37 +5,37 @@ export interface User {
     ordered: number;
     sold: number;
     offers: number;
-    isActive: boolean;
+    is_active: boolean;
     creation_date: number;
     username: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
 
     // Optional
     dob?: string
-    freeShipping?: boolean;
+    free_shipping?: boolean;
     last_login?: number;
     last_known_ip_address?: string;
     last_item_in_cart?: Object;
-    shippingAddress?: {
+    shipping_address?: {
         selling?: {
-            firstName: string,
-            lastName: string,
+            first_name: string,
+            last_name: string,
             street: string,
             line2: string,
             city: string,
             province: string,
-            postalCode: string,
+            postal_code: string,
             country: string
         },
         buying?: {
-            firstName: string,
-            lastName: string,
+            first_name: string,
+            last_name: string,
             street: string,
             line2: string,
             city: string,
             province: string,
-            postalCode: string,
+            postal_code: string,
             country: string
         }
     }

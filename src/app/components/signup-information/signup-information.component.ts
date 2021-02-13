@@ -98,8 +98,8 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
           .subscribe(
             res => {
               this.signupForm.setValue({
-                firstName: `${res.firstName}`,
-                lastName: `${res.lastName}`,
+                first_name: `${res.first_name}`,
+                last_name: `${res.last_name}`,
                 username: `${res.username}`,
                 password: ``
               })
@@ -114,12 +114,12 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     })
 
     this.signupForm = this.fb.group({
-      firstName: ['',
+      first_name: ['',
         [Validators.minLength(2),
         Validators.required],
         [CustomValidators.validName()]
       ],
-      lastName: ['',
+      last_name: ['',
         [Validators.minLength(2),
         Validators.required],
         [CustomValidators.validName()]
@@ -172,7 +172,7 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
     const redirect = this.route.snapshot.queryParams.redirectTo;
 
     if (this.signupForm.valid) {
-      this.auth.addInformationUser(this.capitalizeWords(this.firstName.value.trim()), this.capitalizeWords(this.lastName.value.trim()), this.username.value.trim(), this.password.value, this.userIP)
+      this.auth.addInformationUser(this.capitalizeWords(this.first_name.value.trim()), this.capitalizeWords(this.last_name.value.trim()), this.username.value.trim(), this.password.value, this.userIP)
         .then((res) => {
           if (!res) {
             this.loading = false;
@@ -200,7 +200,7 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
           console.error(err)
           this.slackService.sendAlert('bugreport', err)
         })
-    } else if (this.firstName.valid && this.lastName.valid && this.password.valid && this.userDataAvailable) {
+    } else if (this.first_name.valid && this.last_name.valid && this.password.valid && this.userDataAvailable) {
       this.auth.linkGoogleToPasswordAccount(this.password.value)
         .then(res => {
           if (!res) {
@@ -244,12 +244,12 @@ export class SignupInformationComponent implements OnInit, OnDestroy {
   }
 
   // Getters
-  get firstName() {
-    return this.signupForm.get('firstName');
+  get first_name() {
+    return this.signupForm.get('first_name');
   }
 
-  get lastName() {
-    return this.signupForm.get('lastName');
+  get last_name() {
+    return this.signupForm.get('last_name');
   }
 
   get username() {

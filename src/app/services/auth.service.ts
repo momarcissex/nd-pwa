@@ -131,15 +131,15 @@ export class AuthService {
     this.oAuthLogin(provider);
   }*/
 
-  async emailSignUp(email: string, password: string, firstName: string, lastName: string, username: string, userIP: string, inviteCode?: string) {
-    if (email || password || firstName || lastName || username) {
+  async emailSignUp(email: string, password: string, first_name: string, last_name: string, username: string, userIP: string, inviteCode?: string) {
+    if (email || password || first_name || last_name || username) {
       return this.afAuth.createUserWithEmailAndPassword(email, password)
         .then(user => {
           this.isEmailSignUp = true
 
           const userData: User = {
-            firstName,
-            lastName,
+            first_name,
+            last_name,
             username,
             email: user.user.email,
             uid: user.user.uid,
@@ -147,14 +147,14 @@ export class AuthService {
             sold: 0,
             ordered: 0,
             offers: 0,
-            isActive: false,
+            is_active: false,
             creation_date: Date.parse(user.user.metadata.creationTime),
             last_known_ip_address: userIP,
             last_login: Date.parse(user.user.metadata.creationTime)
           };
 
           if (inviteCode != undefined) {
-            userData.freeShipping = true;
+            userData.free_shipping = true;
             this.afs.collection(`users`).doc(`${inviteCode}`).set({
               shippingPromo: {
                 sent: true,
@@ -197,7 +197,7 @@ export class AuthService {
 
         this.http.put(`${environment.cloud.url}IntercomData`, { uid: response.user.uid }).subscribe((data: any) => {
           window.Intercom("update", {
-            "name": `${data.firstName} ${data.lastName}`, // Full name
+            "name": `${data.first_name} ${data.last_name}`, // Full name
             "email": response.user.email, // Email address
             "created_at": response.user.metadata.creationTime, // Signup date as a Unix timestamp
             "user_id": response.user.uid,
@@ -212,71 +212,6 @@ export class AuthService {
         return false;
       });
   }
-
-  /*private oAuthLogin(provider) {
-    return this.afAuth.signInWithPopup(provider)
-      .then((credential) => {
-        if (this.handleAuthToken(credential.user)) {
-          console.log('does exist');
-          // console.log(this.handleAuthToken(credential.user));
-        } else {
-          console.log('does not exist');
-        }
-      })
-      .catch(error => {
-
-      });
-  }
-
-  private handleAuthToken(user: firebase.User) {
-    return this.checkEmail(user.email).get().subscribe((snapshot) => {
-      const redirect = this.route.snapshot.queryParams.redirectTo;
-
-      if (snapshot.empty) {
-        if (redirect != undefined) {
-          return this.ngZone.run(() => {
-            return this.router.navigate(['/additional-information'], {
-              queryParams: { redirectTo: redirect }
-            });
-          });
-        } else {
-          return this.ngZone.run(() => {
-            return this.router.navigate(['/additional-information']);
-          });
-        }
-      } else {
-        this.ipService.getIPAddress().subscribe((data: any) => {
-          this.updateLastActivity(user.uid, data.ip)
-        })
-
-        if (redirect != undefined) {
-          return this.ngZone.run(() => {
-            return this.router.navigateByUrl(`${redirect}`);
-          });
-        } else {
-          return this.ngZone.run(() => {
-            return this.router.navigate(['/home']);
-          });
-        }
-
-        /*if (user.providerData.length === 1) {
-          return this.ngZone.run(() => {
-            return this.router.navigate(['/additional-information']);
-          });
-        } else {
-          if (redirect != undefined) {
-            return this.ngZone.run(() => {
-              return this.router.navigateByUrl(`${redirect}`);
-            });
-          } else {
-            return this.ngZone.run(() => {
-              return this.router.navigate(['/home']);
-            });
-          }
-        }
-      }
-    });
-  }*/
 
   private createUserData(user: User, userCred: auth.UserCredential) {
     console.log('createUserDate running...')
@@ -299,7 +234,7 @@ export class AuthService {
 
         this.http.put(`${environment.cloud.url}IntercomData`, { uid: user.uid }).subscribe((data: any) => {
           window.Intercom("update", {
-            "name": `${user.firstName} ${user.lastName}`, // Full name
+            "name": `${user.first_name} ${user.last_name}`, // Full name
             "email": user.email, // Email address
             "created_at": userCred.user.metadata.creationTime, // Signup date as a Unix timestamp
             "user_id": user.uid,
@@ -340,7 +275,7 @@ export class AuthService {
     }
   }
 
-  public addInformationUser(firstName: string, lastName: string, username: string, password: string, userIP: string) {
+  public addInformationUser(first_name: string, last_name: string, username: string, password: string, userIP: string) {
     if (this.afAuth.currentUser != null || this.afAuth.currentUser != undefined) {
       return this.afAuth.currentUser.then(currentUser => {
         const credential = auth.EmailAuthProvider.credential(currentUser.email, password);
@@ -348,8 +283,8 @@ export class AuthService {
         return currentUser.linkWithCredential(credential)
           .then((userCredential) => {
             const userData: User = {
-              firstName,
-              lastName,
+              first_name,
+              last_name,
               username,
               email: userCredential.user.email,
               uid: userCredential.user.uid,
@@ -357,7 +292,7 @@ export class AuthService {
               sold: 0,
               ordered: 0,
               offers: 0,
-              isActive: true,
+              is_active: true,
               creation_date: Date.parse(userCredential.user.metadata.creationTime),
               last_known_ip_address: userIP,
               last_login: Date.parse(userCredential.user.metadata.creationTime)

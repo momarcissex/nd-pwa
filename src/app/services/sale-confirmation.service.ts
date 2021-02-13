@@ -21,13 +21,13 @@ export class SaleConfirmationService {
     return this.afs.collection(`transactions`).doc(`${transactionId}`).valueChanges();
   }
 
-  confirmOrder(transactionId: string, address: User['shippingAddress']['selling']) {
+  confirmOrder(transactionId: string, address: User['shipping_address']['selling']) {
     return this.afs.collection(`transactions`).doc(`${transactionId}`).set({
       status: {
         sellerConfirmation: true
       }
     }, { merge: true }).then(() => {
-      this.slackService.sendAlert('seller_confirmation', `transactionID: ${transactionId}\nName: ${address.firstName} ${address.lastName}\nAddress: ${address.street} ${address.line2} ${address.city} ${address.province} ${address.postalCode} ${address.country}`)
+      this.slackService.sendAlert('seller_confirmation', `transactionID: ${transactionId}\nName: ${address.first_name} ${address.last_name}\nAddress: ${address.street} ${address.line2} ${address.city} ${address.province} ${address.postal_code} ${address.country}`)
       return true;
     }).catch(() => {
       return false;
@@ -43,7 +43,7 @@ export class SaleConfirmationService {
         }
       }, { merge: true }).then(() => {
         transactionData.status.cancelled = true;
-        transactionData.cancellationNote = 'Seller cancelled the order.';
+        transactionData.cancellation_note = 'Seller cancelled the order.';
         this.http.post(`${environment.cloud.url}orderCancellation`, transactionData).subscribe();
         return true;
       }).catch(() => {

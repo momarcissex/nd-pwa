@@ -13,7 +13,7 @@
 
     <div class="profile-info">
       <div class="profile-name">
-        <h4>{{ dashInfo.firstName }} {{ dashInfo.lastName }}</h4>
+        <h4>{{ dashInfo.first_name }} {{ dashInfo.last_name }}</h4>
         <h6>{{ dashInfo.username }}</h6>
       </div>
 
@@ -84,10 +84,10 @@
         <h5 id="model">{{ listing.model }}</h5>
 
         <div class="action-btns">
-          <a [routerLink]="['/edit-listing', listing.listingID]" [queryParams]="{ source: 'profile'}" class="btn" *ngIf="current_date < listing.expiration_date">Edit</a>
-          <a (click)="extendAsk(listing)" class="btn" id="extend-ask-{{listing.listingID}}" *ngIf="current_date >= listing.expiration_date">Extend</a>
+          <a [routerLink]="['/edit-listing', listing.listing_id]" [queryParams]="{ source: 'profile'}" class="btn" *ngIf="current_date < listing.expiration_date">Edit</a>
+          <a (click)="extendAsk(listing)" class="btn" id="extend-ask-{{listing.listing_id}}" *ngIf="current_date >= listing.expiration_date">Extend</a>
 
-          <button id="remove-ask-{{listing.listingID}}" class="btn" (click)="removeAsk(listing)">Remove</button>
+          <button id="remove-ask-{{listing.listing_id}}" class="btn" (click)="removeAsk(listing)">Remove</button>
         </div>
 
         <h5 *ngIf="current_date >= listing.expiration_date">Ask Expired</h5>
@@ -153,10 +153,10 @@
         <h5 id="model">{{ offer.model }}</h5>
 
         <div class="action-btns">
-          <a [routerLink]="['/edit-offer', offer.offerID]" [queryParams]="{ source: 'profile'}" class="btn" *ngIf="current_date < offer.expiration_date">Edit</a>
-          <a (click)="extendBid(offer)" class="btn" id="extend-bid-{{offer.offerID}}" *ngIf="current_date > offer.expiration_date">Extend</a>
+          <a [routerLink]="['/edit-offer', offer.offer_id]" [queryParams]="{ source: 'profile'}" class="btn" *ngIf="current_date < offer.expiration_date">Edit</a>
+          <a (click)="extendBid(offer)" class="btn" id="extend-bid-{{offer.offer_id}}" *ngIf="current_date > offer.expiration_date">Extend</a>
 
-          <button class="btn" id="remove-bid-{{offer.offerID}}" (click)="removeBid(offer)">Remove</button>
+          <button class="btn" id="remove-bid-{{offer.offer_id}}" (click)="removeBid(offer)">Remove</button>
         </div>
 
         <h5 *ngIf="current_date >= offer.expiration_date">Bid Expired</h5>

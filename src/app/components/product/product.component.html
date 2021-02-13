@@ -27,7 +27,7 @@
 
           <div>
             <a *ngIf="sizeSelected && currentOffer.LowestAsk" [routerLink]="['/checkout']"
-              [queryParams]="{ product: currentOffer.LowestAsk.listingID, sell: false }">Buy Now</a>
+              [queryParams]="{ product: currentOffer.LowestAsk.listing_id, sell: false }">Buy Now</a>
             <a *ngIf="sizeSelected && !currentOffer.LowestAsk" class="disabled">Buy Now</a>
             <a *ngIf="!sizeSelected && (currentOffer.LowestAsk || !currentOffer.LowestAsk)" (click)="sizeAlert()"
               class="disabled">Buy Now</a>
@@ -62,7 +62,7 @@
 
           <div>
             <a *ngIf="sizeSelected && currentOffer.HighestBid" [routerLink]="['/checkout']"
-              [queryParams]="{ product: currentOffer.HighestBid.offerID, sell: true }">Sell Now</a>
+              [queryParams]="{ product: currentOffer.HighestBid.offer_id, sell: true }">Sell Now</a>
             <a *ngIf="sizeSelected && !currentOffer.HighestBid" class="disabled">Sell Now</a>
             <a *ngIf="!sizeSelected && (currentOffer.HighestBid || !currentOffer.HighestBid)" (click)="sizeAlert()"
               class="disabled">Sell Now</a>
@@ -78,7 +78,7 @@
 
       <app-trustbox></app-trustbox>
 
-      <img src="{{ productInfo.assetURL }}" alt="{{ productInfo.model }}">
+      <img src="{{ productInfo.asset_url }}" alt="{{ productInfo.model }}">
 
       <div class="links">
         <a routerLink="/faq/buying/what-does-nxtdrop-define-as-new" class="return">Condition: New</a>
@@ -110,7 +110,7 @@
       <div class="product-specs">
         <h4>{{ productInfo.model }}</h4>
         <h4>Colorway: {{ productInfo.colorway }}</h4>
-        <h4>Release Date: {{ productInfo.yearMade }}</h4>
+        <h4>Release Date: {{ productInfo.release_date }}</h4>
       </div>
     </div>
 

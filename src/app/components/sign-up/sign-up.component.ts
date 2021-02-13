@@ -84,12 +84,12 @@ export class SignUpComponent implements OnInit {
     this.redirectURL = this.route.snapshot.queryParams.redirectTo
 
     this.signupForm = this.fb.group({
-      firstName: ['',
+      first_name: ['',
         [Validators.minLength(2),
         Validators.required],
         [CustomValidators.validName()]
       ],
-      lastName: ['',
+      last_name: ['',
         [Validators.minLength(2),
         Validators.required],
         [CustomValidators.validName()]
@@ -134,7 +134,7 @@ export class SignUpComponent implements OnInit {
     //console.log('signup called');
 
     if (this.signupForm.valid) {
-      return this.auth.emailSignUp(this.email.value.trim(), this.password.value, this.capitalizeWords(this.firstName.value.trim()), this.capitalizeWords(this.lastName.value.trim()), this.username.value.trim(), this.userIP, this.inviteCode).then(res => {
+      return this.auth.emailSignUp(this.email.value.trim(), this.password.value, this.capitalizeWords(this.first_name.value.trim()), this.capitalizeWords(this.last_name.value.trim()), this.username.value.trim(), this.userIP, this.inviteCode).then(res => {
         if (!res) {
           this.loading = false;
           this.error = true;
@@ -264,12 +264,12 @@ export class SignUpComponent implements OnInit {
   }
 
   // Getters
-  get firstName() {
-    return this.signupForm.get('firstName');
+  get first_name() {
+    return this.signupForm.get('first_name');
   }
 
-  get lastName() {
-    return this.signupForm.get('lastName');
+  get last_name() {
+    return this.signupForm.get('last_name');
   }
 
   get username() {

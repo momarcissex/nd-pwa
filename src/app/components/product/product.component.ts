@@ -36,13 +36,13 @@ export class ProductComponent implements OnInit {
   sizeSuffix: string = ''
 
   productInfo: Product = {
-    assetURL: '',
+    asset_url: '',
     model: '',
     line: '',
     brand: '',
-    yearMade: '',
+    release_date: '',
     product_type: '',
-    productID: '',
+    product_id: '',
     colorway: '',
     sizes: [],
     size_category: ''
@@ -110,7 +110,7 @@ export class ProductComponent implements OnInit {
       if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
-        if (this.productInfo.assetURL === '') {
+        if (this.productInfo.asset_url === '') {
           console.log('seo etc')
           this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
           this.seo.addTags('Product', data);
@@ -182,7 +182,7 @@ export class ProductComponent implements OnInit {
   share(social: string) {
     if (isPlatformBrowser(this.platform_id)) {
 
-      this.productService.shareCount(this.productInfo.productID).then(() => {
+      this.productService.shareCount(this.productInfo.product_id).then(() => {
         //console.log('trending score update')
       })
         .catch(err => {

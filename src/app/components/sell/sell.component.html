@@ -39,7 +39,7 @@
         <div *ngFor="let hit of results">
 
           <div class="hit" (click)="selectPair(hit, true)">
-            <img src="{{ hit.assetURL }}">
+            <img src="{{ hit.asset_url }}">
 
             <div class="hit-info">
               <h3>{{ hit.model }}</h3>
@@ -63,7 +63,7 @@
         <h4 *ngIf="!currentAsk">Lowest Ask: --</h4>
       </div>
 
-      <img src="{{ selectedPair.assetURL }}" alt="{{ selectedPair.model }}">
+      <img src="{{ selectedPair.asset_url }}" alt="{{ selectedPair.model }}">
     </div>
 
     <div class="sizes" *ngIf="!selectedSize">

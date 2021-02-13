@@ -3,29 +3,17 @@
 <div class="main-container" id="main-container">
     <app-carousel></app-carousel>
 
-    <!--<section class="how-it-works-banner" *ngIf="!connected">
-        <div class="banner-message">
-            <h1>New to NXTDROP?</h1>
-            <a routerLink="/how-it-works" class="ripple">See How It Works</a>
-        </div>
-
-        <div class="banner-image">
-            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/Jordan%206%20Retro%20Gatorade%20Green.png?alt=media&token=16914453-040b-4b71-9144-f0a8bada0713"
-                alt="Jordan 6 Retro Gatorade Green">
-        </div>
-    </section>-->
-
-    <section routerLink="product/{{ lastSale.productID }}" class="last-sale-banner" *ngIf="lastSale">
+    <section routerLink="product/{{ lastSale.item.product_id }}" class="last-sale-banner" *ngIf="lastSale">
         <h1>Last Sale</h1>
 
         <div class="prod-description">
-            <img src="{{ lastSale.assetURL }}" alt="{{ lastSale.model }}">
-            <p>{{ lastSale.model }}</p>
+            <img src="{{ lastSale.item.asset_url }}" alt="{{ lastSale.item.model }}">
+            <p>{{ lastSale.item.model }}</p>
         </div>
 
         <div class="prod-specs">
-            <h3>{{ lastSale.price | currency:'CAD':'symbol':'3.0-0' }}</h3>
-            <p>{{ lastSale.size }}</p>
+            <h3>{{ lastSale.item.price | currency:'CAD':'symbol':'3.0-0' }}</h3>
+            <p>{{ lastSale.item.size }}</p>
         </div>
     </section>
 
@@ -36,27 +24,6 @@
     <app-new-releases></app-new-releases>
 
     <app-discovery></app-discovery>
-
-    <section class="stat-banner">
-        <h1>How we have helped our users so far</h1>
-
-        <div class="stat-content">
-            <div class="duties">
-                <h3>{{ duties | currency:'CAD':'symbol':'3.0-0' }}</h3>
-                <p>Saved on Duties</p>
-            </div>
-
-            <img src="https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/adidas%20Yeezy%20Boost%20Zebra.png.png?alt=media&token=890ba2a4-2764-4bf8-86d2-05b74ae25173"
-                alt="adidas Yeezy Boost 350 Zebra">
-
-            <div class="authRate">
-                <h3>100%</h3>
-                <p>Authentication Rate</p>
-            </div>
-        </div>
-
-        <h2>We can help you too</h2>
-    </section>
 </div>
 
 <app-newsletter></app-newsletter>

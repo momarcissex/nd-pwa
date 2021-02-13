@@ -3,9 +3,9 @@
       <img src="../../../assets/Negative.png" alt="NXTDROP, Inc. Logo Negative Symbol">
 
       <form [formGroup]="signupForm" (ngSubmit)="createUser()">
-        <input *ngIf="!userDataAvailable" type="text" placeholder="First Name" formControlName="firstName" [className]="firstName.invalid && firstName.dirty ? 'input-error' : ''">
+        <input *ngIf="!userDataAvailable" type="text" placeholder="First Name" formControlName="first_name" [className]="first_name.invalid && first_name.dirty ? 'input-error' : ''">
 
-        <input *ngIf="!userDataAvailable" type="text" placeholder="Last Name" formControlName="lastName" [className]="lastName.invalid && lastName.dirty ? 'input-error' : ''">
+        <input *ngIf="!userDataAvailable" type="text" placeholder="Last Name" formControlName="last_name" [className]="last_name.invalid && last_name.dirty ? 'input-error' : ''">
 
         <input *ngIf="!userDataAvailable" type="text" placeholder="Username" formControlName="username" [className]="username.invalid && username.dirty ? 'input-error' : ''" [patterns]="customPatterns" mask="0*">
 

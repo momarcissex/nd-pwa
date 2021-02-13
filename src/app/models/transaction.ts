@@ -1,49 +1,40 @@
 import { NxtdropCC } from './nxtdrop_cc'
+import { Ask } from './ask'
+import { Bid } from './bid'
 
 export class Transaction {
-    id: string;
-    assetURL: string;
-    boughtAt?: number;
-    soldAt?: number;
-    purchaseDate: number;
-    cancellationNote?: string;
-    buyerID: string;
-    condition: string;
-    listedAt: number;
-    listingID?: string;
-    offerID?: string;
-    model: string;
-    paymentID: string;
-    price: number;
-    productID: string;
-    sellerID: string;
-    shippingCost?: number;
+    buyer_id: string;
+    seller_id: string;
+    cancellation_note?: string;
     discount?: NxtdropCC | number;
-    discountCardID?: string;
-    total: number;
-    size: string;
-    shipTracking: {
+    id: string;
+    item: Ask | Bid;
+    payment_id: string;
+    purchase_date: number;
+    shipping_cost?: number;
+    ship_tracking: {
         address: {
-            recipient: string,
+            city: string,
+            country: string,
             line1: string,
             line2: string,
-            city: string,
+            postal_code: string,
             province: string,
-            postalCode: string,
-            country: string
+            recipient: string,
         },
-        label?: string,
         carrier?: string,
-        trackingID?: string
+        label?: string,
+        tracking_id?: string
     }
     status: {
         cancelled: boolean,
         delivered: boolean,
-        deliveredForAuthentication: boolean,
+        delivered_for_authentication: boolean,
+        seller_confirmation?: boolean,
         shipped: boolean,
-        shippedForVerification: boolean,
+        shipped_for_verification: boolean,
         verified: boolean,
-        sellerConfirmation?: boolean
-    };
-    type: string;
+    }
+    total: number;
+    transaction_type: "purchase" | "bid_accepted";
 }

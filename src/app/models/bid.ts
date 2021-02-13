@@ -1,14 +1,16 @@
 export class Bid {
-    assetURL: string;
+    asset_url: string;
+    brand: string;
+    buyer_id: string;
     condition: string;
-    offerID: string;
-    model: string;
-    price: number;
-    productID?: string;
-    buyerID: string;
-    size: string;
-    last_updated?: number;
     created_at?: number;
-    last_reminder?: number;
     expiration_date?: number;
+    last_reminder?: number;
+    last_updated?: number;
+    line: string;
+    model: string;
+    offer_id: string;
+    price: number;
+    product_id?: string;
+    size: string;
 }

@@ -6,11 +6,11 @@
 
     <div class="summary-items">
       <div class="summary-item">
-        <img src="{{ product.assetURL }}" alt="{{ product.model }}">
+        <img src="{{ asset_url }}" alt="{{ model }}">
 
-        <h6>{{ product.model }}, {{ product.size }}</h6>
+        <h6>{{ model }}, {{ size }}</h6>
 
-        <h6>{{ product.price | currency: 'CAD' }}</h6>
+        <h6>{{ price | currency: 'CAD' }}</h6>
       </div>
     </div>
 
@@ -26,8 +26,8 @@
 
       <div class="summary-shipping">
         <h5>Shipping</h5>
-        <h5 *ngIf="shippingPrice > 0">{{ shippingPrice | currency: 'CAD' }}</h5>
-        <h5 *ngIf="shippingPrice === 0">FREE</h5>
+        <h5 *ngIf="shipping_price > 0">{{ shipping_price | currency: 'CAD' }}</h5>
+        <h5 *ngIf="shipping_price === 0">FREE</h5>
       </div>
 
       <div class="summary-auth">
@@ -87,18 +87,18 @@
 
     <div *ngIf="showSellingShipping">
       <h6>Name:
-        <span>{{ user.shippingAddress.selling.firstName + ' ' + user.shippingAddress.selling.lastName }}</span>
+        <span>{{ user.shipping_address.selling.first_name + ' ' + user.shipping_address.selling.last_name }}</span>
       </h6>
       <h6>Address:
-        <span>{{ user.shippingAddress.selling.street + ', ' + user.shippingAddress.selling.city + ', ' + user.shippingAddress.selling.province + ' ' + user.shippingAddress.selling.postalCode}}</span>
+        <span>{{ user.shipping_address.selling.street + ', ' + user.shipping_address.selling.city + ', ' + user.shipping_address.selling.province + ' ' + user.shipping_address.selling.postalCode}}</span>
       </h6>
     </div>
 
     <div *ngIf="showBuyingShipping">
-      <h6>Name: <span>{{ user.shippingAddress.buying.firstName + ' ' + user.shippingAddress.buying.lastName }}</span>
+      <h6>Name: <span>{{ user.shipping_address.buying.first_name + ' ' + user.shipping_address.buying.last_name }}</span>
       </h6>
       <h6>Address:
-        <span>{{ user.shippingAddress.buying.street + ', ' + user.shippingAddress.buying.city + ', ' + user.shippingAddress.buying.province + ' ' + user.shippingAddress.buying.postalCode}}</span>
+        <span>{{ user.shipping_address.buying.street + ', ' + user.shipping_address.buying.city + ', ' + user.shipping_address.buying.province + ' ' + user.shipping_address.buying.postalCode}}</span>
       </h6>
     </div>
 
@@ -112,17 +112,6 @@
     <button class="btn edit-btn" (click)="editShipping()">Edit</button>
   </div>
 
-  <!--<div class="checkout-payment">
-      <fa-icon [icon]="['fas', 'credit-card']"></fa-icon>
-      <h3>Payment Information</h3>
-  
-      <h6>Payment Method: <span>Credit Card</span></h6>
-      <h6>Visa ending in 9472</h6>
-      <h6>Billing Address: <span>103 - 323 18 Ave SW, Calgary, AB T2S 0C4, CA</span></h6>
-  
-      <button class="btn edit-btn" (click)="editPayment()">Edit</button>
-    </div>-->
-
   <div class="checkout-btns" *ngIf="product">
     <!--user viewing an ask-->
     <div *ngIf="showPaypal" style="padding: .5rem;" id="paypal-checkout">
@@ -130,8 +119,8 @@
       <ngx-paypal [config]="payPalConfig"></ngx-paypal>
     </div>
 
-    <button *ngIf="showEditAsk" class="btn" [routerLink]="['/edit-ask', product.listingID]"
-      [queryParams]="{ source: 'checkout?product=' + product.listingID + '&sell=false'}">Edit Ask</button>
+    <button *ngIf="showEditAsk" class="btn" [routerLink]="['/edit-ask', product.listing_id]"
+      [queryParams]="{ source: 'checkout?product=' + product.listing_id + '&sell=false'}">Edit Ask</button>
     <!--user viewing an ask end-->
 
     <!--user not logged in-->
@@ -146,8 +135,8 @@
     <!--user buying pair for free (when using a promo covering all expenses) end-->
 
     <!--User viewing a bid-->
-    <button *ngIf="showEditBid" class="btn" [routerLink]="['/edit-bid', product.offerID]"
-      [queryParams]="{ source: 'checkout?product=' + product.offerID + '&sell=true'}">Edit Bid</button>
+    <button *ngIf="showEditBid" class="btn" [routerLink]="['/edit-bid', product.offer_id]"
+      [queryParams]="{ source: 'checkout?product=' + product.offer_id + '&sell=true'}">Edit Bid</button>
 
     <button *ngIf="showConfirmSale" (click)="sellNow()" class="btn">Confirm
       Sale</button>

@@ -17,8 +17,8 @@ export class SettingsProfileComponent implements OnInit {
   faCircleNotch = faCircleNotch
 
   user: User;
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   username: string
   email: string
   dob
@@ -51,8 +51,8 @@ export class SettingsProfileComponent implements OnInit {
       } else {
         this.userService.getUserInfo(res.uid).subscribe(data => {
           this.user = data
-          this.firstName = this.user.firstName
-          this.lastName = this.user.lastName
+          this.first_name = this.user.first_name
+          this.last_name = this.user.last_name
           this.username = this.user.username
           this.dob = this.user.dob
           this.email = this.user.email
@@ -72,7 +72,7 @@ export class SettingsProfileComponent implements OnInit {
 
   firstNameChanges($event) {
     const val = $event.target.value;
-    if (val.toLowerCase() != this.firstName.toLowerCase()) {
+    if (val.toLowerCase() != this.first_name.toLowerCase()) {
       this.firstNameChanged = true;
     } else {
       this.firstNameChanged = false;
@@ -81,7 +81,7 @@ export class SettingsProfileComponent implements OnInit {
 
   lastNameChanges($event) {
     const val = $event.target.value;
-    if (val.toLowerCase() != this.lastName.toLowerCase()) {
+    if (val.toLowerCase() != this.last_name.toLowerCase()) {
       this.lastNameChanged = true;
     } else {
       this.lastNameChanged = false;

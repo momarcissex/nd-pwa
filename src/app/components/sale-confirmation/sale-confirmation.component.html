@@ -5,33 +5,33 @@
 
         <div class="product-seller-info">
             <div class="product-info">
-                <img src="{{ transactionData.assetURL }}" alt="{{ transactionData.model }}">
-                <p id="condition">{{ transactionData.condition + ', 100% authentic'}}</p>
-                <p id="model-size">{{ transactionData.model + ', ' + transactionData.size }}</p>
-                <p id="price">{{ transactionData.price | currency: 'CAD':'symbol':'1.0-0' }}</p>
+                <img src="{{ transactionData.item.asset_url }}" alt="{{ transactionData.item.model }}">
+                <p id="condition">{{ transactionData.item.condition + ', 100% authentic'}}</p>
+                <p id="model-size">{{ transactionData.item.model + ', ' + transactionData.item.size }}</p>
+                <p id="price">{{ transactionData.item.price | currency: 'CAD':'symbol':'1.0-0' }}</p>
             </div>
 
             <div class="seller-address">
                 <fa-icon [icon]="faStoreAlt"></fa-icon>
                 <div *ngIf="addressExist()">
                     <p id="name">
-                        {{ user.shippingAddress.selling.firstName + ' ' + user.shippingAddress.selling.lastName }}
+                        {{ user.shipping_address.selling.first_name + ' ' + user.shipping_address.selling.last_name }}
                     </p>
-                    <p id="street">{{ user.shippingAddress.selling.street }}</p>
-                    <p id="line2" *ngIf="user.shippingAddress.selling.line2 != ''">
-                        {{ user.shippingAddress.selling.line2 }}</p>
+                    <p id="street">{{ user.shipping_address.selling.street }}</p>
+                    <p id="line2" *ngIf="user.shipping_address.selling.line2 != ''">
+                        {{ user.shipping_address.selling.line2 }}</p>
                     <p id="city-province-zip">
-                        {{ user.shippingAddress.selling.city + ' ' + user.shippingAddress.selling.province + ' ' + user.shippingAddress.selling.postalCode }}
+                        {{ user.shipping_address.selling.city + ' ' + user.shipping_address.selling.province + ' ' + user.shipping_address.selling.postal_code }}
                     </p>
-                    <p id="country">{{ user.shippingAddress.selling.country }}</p>
+                    <p id="country">{{ user.shipping_address.selling.country }}</p>
                 </div>
                 <div *ngIf="!addressExist()">
                     <p>No Address on File</p>
                 </div>
-                <button class="btn" *ngIf="addressExist() && !transactionData.status.sellerConfirmation && !transactionData.status.cancelled"
+                <button class="btn" *ngIf="addressExist() && !transactionData.status.seller_confirmation && !transactionData.status.cancelled"
                     (click)="goToSettings()">Change
                     Address</button>
-                <button class="btn" *ngIf="!addressExist() && !transactionData.status.sellerConfirmation && !transactionData.status.cancelled"
+                <button class="btn" *ngIf="!addressExist() && !transactionData.status.seller_confirmation && !transactionData.status.cancelled"
                     (click)="goToSettings()">Add Address</button>
             </div>
         </div>
@@ -57,7 +57,7 @@
         </div>
 
         <div class="confirmation-btns"
-            *ngIf="!transactionData.status.cancelled && !transactionData.status.sellerConfirmation">
+            *ngIf="!transactionData.status.cancelled && !transactionData.status.seller_confirmation">
             <!--<button class="btn" (click)="cancelOrder()" *ngIf="!cancelLoading && !cancelError">Cancel Order</button>
             <button class="btn" *ngIf="cancelLoading">
                 <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
@@ -80,7 +80,7 @@
             Order Cancelled
         </p>
 
-        <p *ngIf="transactionData.status.sellerConfirmation" id="confirmed">
+        <p *ngIf="transactionData.status.seller_confirmation" id="confirmed">
             Order Confirmed
         </p>
 

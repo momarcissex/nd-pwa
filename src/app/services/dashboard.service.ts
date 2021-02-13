@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { isNullOrUndefined } from 'util';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +15,18 @@ export class DashboardService {
   }
 
   purchases(uid: string, startAfter?: number) {
-    if (isNullOrUndefined(startAfter)) {
-      return this.afs.collection(`transactions`, ref => ref.where(`buyerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').limit(15)).valueChanges();
+    if (startAfter == null || startAfter == undefined) {
+      return this.afs.collection(`transactions`, ref => ref.where(`buyer_id`, `==`, `${uid}`).orderBy('purchase_date', 'desc').limit(15)).valueChanges();
     } else {
-      return this.afs.collection(`transactions`, ref => ref.where(`buyerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').startAfter(startAfter)).valueChanges();
+      return this.afs.collection(`transactions`, ref => ref.where(`buyer_id`, `==`, `${uid}`).orderBy('purchase_date', 'desc').startAfter(startAfter)).valueChanges();
     }
   }
 
   sales(uid: string, startAfter?: number) {
-    if (isNullOrUndefined(startAfter)) {
-      return this.afs.collection(`transactions`, ref => ref.where(`sellerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').limit(15)).valueChanges();
+    if (startAfter == null || startAfter == undefined) {
+      return this.afs.collection(`transactions`, ref => ref.where(`seller_id`, `==`, `${uid}`).orderBy('purchase_date', 'desc').limit(15)).valueChanges();
     } else {
-      return this.afs.collection(`transactions`, ref => ref.where(`sellerID`, `==`, `${uid}`).orderBy('purchaseDate', 'desc').startAfter(startAfter)).valueChanges();
+      return this.afs.collection(`transactions`, ref => ref.where(`seller_id`, `==`, `${uid}`).orderBy('purchase_date', 'desc').startAfter(startAfter)).valueChanges();
     }
   }
 }

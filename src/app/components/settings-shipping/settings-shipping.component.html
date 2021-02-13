@@ -21,8 +21,8 @@
     </div>
 
     <input type="text" id="ship-firstName" placeholder="First Name" (keyup)="firstNameChanges()"
-      value="{{ firstName }}">
-    <input type="text" id="ship-lastName" placeholder="Last Name" (keyup)="lastNameChanges()" value="{{ lastName }}">
+      value="{{ first_name }}">
+    <input type="text" id="ship-lastName" placeholder="Last Name" (keyup)="lastNameChanges()" value="{{ last_name }}">
     <input type="text" id="ship-street" placeholder="Street Address" (keyup)="streetAddChanges()" value="{{ street }}">
     <input type="text" id="ship-street2" placeholder="Address Line 2" (keyup)="addLineChanges()" value="{{ line }}">
     <input type="text" id="ship-city" placeholder="City" (keyup)="cityChanges()" value="{{ city }}">
@@ -41,7 +41,7 @@
       <option value="NU">Nunavut</option>
       <option value="YT">Yukon</option>
     </select>
-    <input type="text" id="ship-zip" placeholder="Postal Code" (keyup)="zipChanges()" value="{{ postalCode }}"
+    <input type="text" id="ship-zip" placeholder="Postal Code" (keyup)="zipChanges()" value="{{ postal_code }}"
       mask="AAA AAA">
     <select name="country" id="ship-country">
       <option value="CA" selected>Canada</option>

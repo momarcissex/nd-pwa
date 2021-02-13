@@ -28,10 +28,10 @@ export class ProfileComponent implements OnInit {
     offers: 0,
     uid: '',
     email: '',
-    isActive: false,
+    is_active: false,
     creation_date: 0,
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     username: ''
   };
 
@@ -191,7 +191,7 @@ export class ProfileComponent implements OnInit {
   }
 
   removeBid(bid: Bid) {
-    document.getElementById(`remove-bid-${bid.offerID}`).innerHTML = 'Removing...'
+    document.getElementById(`remove-bid-${bid.offer_id}`).innerHTML = 'Removing...'
 
     this.bidService.deleteBid(bid)
       .then(res => {
@@ -202,17 +202,17 @@ export class ProfileComponent implements OnInit {
             this.offers.splice(index, 1)
           }
         } else {
-          this.removeErrorBtn(bid.offerID)
+          this.removeErrorBtn(bid.offer_id)
         }
       })
       .catch(err => {
         console.error(err)
-        this.removeErrorBtn(bid.offerID)
+        this.removeErrorBtn(bid.offer_id)
       })
   }
 
   removeAsk(ask: Ask) {
-    document.getElementById(`remove-ask-${ask.listingID}`).innerHTML = 'Removing...'
+    document.getElementById(`remove-ask-${ask.listing_id}`).innerHTML = 'Removing...'
 
     this.askService.deleteAsk(ask)
       .then(res => {
@@ -223,22 +223,22 @@ export class ProfileComponent implements OnInit {
             this.listings.splice(index, 1)
           }
         } else {
-          this.removeErrorBtn(ask.listingID)
+          this.removeErrorBtn(ask.listing_id)
         }
       })
       .catch(err => {
         console.error(err)
-        this.removeErrorBtn(ask.listingID)
+        this.removeErrorBtn(ask.listing_id)
       })
   }
 
   extendAsk(ask: Ask) {
-    document.getElementById(`extend-ask-${ask.listingID}`).innerHTML = 'Extending...'
+    document.getElementById(`extend-ask-${ask.listing_id}`).innerHTML = 'Extending...'
 
     this.askService.extendAsk(ask)
       .then(response => {
         if (typeof response === 'boolean') {
-          this.extendErroBtn(`extend-ask-${ask.listingID}`)
+          this.extendErroBtn(`extend-ask-${ask.listing_id}`)
         } else {
           const index = this.listings.indexOf(ask)
 
@@ -247,17 +247,17 @@ export class ProfileComponent implements OnInit {
       })
       .catch(err => {
         console.error(err)
-        this.extendErroBtn(`extend-ask-${ask.listingID}`)
+        this.extendErroBtn(`extend-ask-${ask.listing_id}`)
       })
   }
 
   extendBid(bid: Bid) {
-    document.getElementById(`extend-bid-${bid.offerID}`).innerHTML = 'Extending...'
+    document.getElementById(`extend-bid-${bid.offer_id}`).innerHTML = 'Extending...'
 
     this.bidService.extendBid(bid)
       .then(response => {
         if (typeof response === 'boolean') {
-          this.extendErroBtn(`extend-bid-${bid.offerID}`)
+          this.extendErroBtn(`extend-bid-${bid.offer_id}`)
         } else {
           const index = this.offers.indexOf(bid)
 
@@ -266,7 +266,7 @@ export class ProfileComponent implements OnInit {
       })
       .catch(err => {
         console.error(err)
-        this.extendErroBtn(`extend-bid-${bid.offerID}`)
+        this.extendErroBtn(`extend-bid-${bid.offer_id}`)
       })
   }
 

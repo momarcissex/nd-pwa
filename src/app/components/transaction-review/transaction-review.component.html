@@ -7,9 +7,9 @@
 
     <div class="review-items">
       <div class="review-item">
-        <img src="{{ transaction.assetURL }}" alt="{{ transaction.model }}">
-        <h5>{{ transaction.model + ', ' + transaction.size }}</h5>
-        <h5>{{ transaction.price | currency: 'CAD' }}</h5>
+        <img src="{{ transaction.item.asset_url }}" alt="{{ transaction.item.model }}">
+        <h5>{{ transaction.item.model + ', ' + transaction.item.size }}</h5>
+        <h5>{{ transaction.item.price | currency: 'CAD' }}</h5>
       </div>
     </div>
 
@@ -17,7 +17,7 @@
       <div class="review-summary">
         <div class="subtotal">
           <h5>Subtotal</h5>
-          <h5>{{ transaction.price | currency: 'CAD' }}</h5>
+          <h5>{{ transaction.item.price | currency: 'CAD' }}</h5>
         </div>
 
         <div class="auth">
@@ -27,8 +27,8 @@
 
         <div class="shipping">
           <h5>Shipping</h5>
-          <h5 *ngIf="transaction.shippingCost">{{ transaction.shippingCost | currency: 'CAD' }}</h5>
-          <h5 *ngIf="!transaction.shippingCost">{{ 0 | currency: 'CAD' }}</h5>
+          <h5 *ngIf="transaction.shipping_cost">{{ transaction.shipping_cost | currency: 'CAD' }}</h5>
+          <h5 *ngIf="!transaction.shipping_cost">{{ 0 | currency: 'CAD' }}</h5>
         </div>
 
         <div class="tax" *ngIf="transaction.discount">
@@ -43,7 +43,7 @@
       </div>
 
       <div class="review-action"
-        *ngIf="!transaction.status.sellerConfirmation && transaction.sellerID == user.uid && !transaction.status.cancelled">
+        *ngIf="!transaction.status.seller_confirmation && transaction.seller_id == user.uid && !transaction.status.cancelled">
         <h3>Seller Confirmation</h3>
 
         <button class="btn" (click)="confirmCancel()" *ngIf="!confLoading && !confError">Confirm Order</button>
@@ -76,7 +76,7 @@
       </div>-->
 
       <div class="review-action"
-        *ngIf="transaction.shipTracking.trackingID && transaction.buyerID == user.uid">
+        *ngIf="transaction.ship_tracking.tracking_id && transaction.buyer_id == user.uid">
         
         <button class="btn" (click)="trackOrder()">Track</button>
 

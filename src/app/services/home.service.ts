@@ -21,7 +21,7 @@ export class HomeService {
     const today = `${yyyy}-${mm}-${dd}`;
     // console.log(today);
 
-    const newReleaseRef = this.afs.collection(`products`, ref => ref.where(`yearMade`, `<=`, `${today}`).orderBy(`yearMade`, `desc`).limit(50));
+    const newReleaseRef = this.afs.collection(`products`, ref => ref.where(`release_date`, `<=`, `${today}`).orderBy(`release_date`, `desc`).limit(50));
     return newReleaseRef.get();
   }
 
@@ -48,7 +48,7 @@ export class HomeService {
   }
 
   public getCollection(collection_id: string) {
-    return this.afs.collection('products', ref => ref.where('collections', 'array-contains', collection_id).orderBy('yearMade', 'desc')).valueChanges() as Observable<Product[]>;
+    return this.afs.collection('products', ref => ref.where('collections', 'array-contains', collection_id).orderBy('release_date', 'desc')).valueChanges() as Observable<Product[]>;
   }
 
 }

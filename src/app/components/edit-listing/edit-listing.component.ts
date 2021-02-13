@@ -79,13 +79,13 @@ export class EditListingComponent implements OnInit {
         this.shoeSizes();
         this.calculateSellerFees();
 
-        this.bidService.getHighestBid(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+        this.bidService.getHighestBid(this.offerInfo.product_id, this.offerInfo.condition, this.offerInfo.size).then(data => {
           if (!data.empty) {
             this.highestOffer = data.docs[0].data() as Bid
           }
         });
 
-        this.askService.getLowestAsk(this.offerInfo.productID, this.offerInfo.condition, this.offerInfo.size).then(data => {
+        this.askService.getLowestAsk(this.offerInfo.product_id, this.offerInfo.condition, this.offerInfo.size).then(data => {
           if (!data.empty) {
             this.lowest_ask = data.docs[0].data().price
           }
@@ -230,7 +230,7 @@ export class EditListingComponent implements OnInit {
   sellNow() {
     this.router.navigate(['/checkout'], {
       queryParams: {
-        product: this.highestOffer.offerID,
+        product: this.highestOffer.offer_id,
         sell: true,
         redirectTo: this.router.url
       }

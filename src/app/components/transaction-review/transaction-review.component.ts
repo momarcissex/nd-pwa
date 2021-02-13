@@ -73,7 +73,7 @@ export class TransactionReviewComponent implements OnInit {
       } else {
         this.transaction = data;
 
-        if (this.transaction.type !== 'bought' && this.transaction.type !== 'sold') {
+        if (this.transaction.transaction_type !== 'purchase' && this.transaction.transaction_type !== 'bid_accepted') {
           this.error = true;
         }
 
@@ -90,8 +90,24 @@ export class TransactionReviewComponent implements OnInit {
       this.user = userData;
       //console.log(this.user)
 
-      if (this.user.uid === this.transaction.buyerID && !(this.route.snapshot.queryParams.source === undefined) && date - this.transaction.purchaseDate <= 60000) {
-        gtag('require', 'ecommerce', 'ecommerce.js')
+      // Send transaction data to Google Analytics for E-Commerce feature
+      if (this.user.uid === this.transaction.buyer_id && !(this.route.snapshot.queryParams.source === undefined) && date - this.transaction.purchase_date <= 60000) {
+        gtag('event', 'purchase', {
+          'transaction_id': `${this.transaction.id}`,
+          'value': this.transaction.total,
+          'currency': 'CAD',
+          'shipping': this.transaction.shipping_cost,
+          'items': [
+            {
+              'id': `${this.transaction.item.product_id}`,
+              'name': `${this.transaction.item.model}`,
+              'category': 'sneakers',
+              'brand': `${this.transaction.item.brand}`,
+              'price': this.transaction.item.price
+            }
+          ]
+        })
+        /*gtag('require', 'ecommerce', 'ecommerce.js')
 
         gtag('ecommerce:addTransaction', {
           'id':`${this.transaction.id}`,
@@ -102,15 +118,15 @@ export class TransactionReviewComponent implements OnInit {
 
         gtag('ecommerce:addItem', {
           'id':`${this.transaction.id}`,
-          'name':`${this.transaction.model}`,
-          'sku':`${this.transaction.productID}`,
+          'name':`${this.transaction.item.model}`,
+          'sku':`${this.transaction.item.product_id}`,
           'category':`sneaker`,
-          'price':`${this.transaction.price}`,
+          'price':`${this.transaction.item.price}`,
           'quantity':`1`,
           'currency':'CAD'
         })
 
-        gtag('ecommerce:send')
+        gtag('ecommerce:send')*/
       }
     });
   }
@@ -135,7 +151,7 @@ export class TransactionReviewComponent implements OnInit {
     let cancellation;
     this.cancelLoading = true;
 
-    if (this.user.uid === this.transaction.buyerID) {
+    if (this.user.uid === this.transaction.buyer_id) {
       cancellation = this.TranService.cancelOrder(this.transactionID, this.transaction, false);
     } else {
       cancellation = this.TranService.cancelOrder(this.transactionID, this.transaction, true);
@@ -154,7 +170,7 @@ export class TransactionReviewComponent implements OnInit {
   }
 
   trackOrder() {
-    window.open(`https://www.canadapost.ca/trackweb/en#/search?searchFor=${this.transaction.shipTracking.trackingID}`)
+    window.open(`https://www.canadapost.ca/trackweb/en#/search?searchFor=${this.transaction.ship_tracking.tracking_id}`)
   }
 
 }

@@ -38,7 +38,7 @@ export class SoldComponent implements OnInit {
       this.TranService.checkTransaction(this.transactionID).subscribe(data => {
         this.transaction = data;
 
-        if (this.transaction.type !== 'sold') {
+        if (this.transaction.transaction_type !== 'bid_accepted') {
           this.error = true;
         }
         // console.log(this.transaction);
@@ -47,13 +47,13 @@ export class SoldComponent implements OnInit {
   }
 
   fee() {
-    let subtotal = this.transaction.price;
+    let subtotal = this.transaction.item.price;
 
     return subtotal * 0.085;
   }
 
   processing() {
-    let subtotal = this.transaction.price;
+    let subtotal = this.transaction.item.price;
 
     return subtotal * 0.03;
   }

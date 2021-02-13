@@ -12,6 +12,8 @@ import { User } from '../models/user';
 import { Ask } from '../models/ask';
 import { NxtdropCC } from '../models/nxtdrop_cc';
 
+declare const gtag: any;
+declare const fbq: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -28,19 +30,19 @@ export class TransactionService {
    * Create a transaction when a buyer makes a purchase
    * UID: seller's user ID
    * product: seller's ask or transction created when seller accepted bid
-   * paymentID: the id from paypal representing the payment
-   * shippingCost: amount paid for shipping
+   * payment_id: the id from paypal representing the payment
+   * shipping_cost: amount paid for shipping
    * total: total amount paid by the buyer
    * discount: amount discounted from total
    * 
    */
-  async transactionApproved(UID: string, product: Ask, shippingInfo: User['shippingAddress']['buying'], paymentID: string, shippingCost: number, total: number, discount?: NxtdropCC) {
+  async transactionApproved(UID: string, product: Ask, shippingInfo: User['shipping_address']['buying'], payment_id: string, shipping_cost: number, total: number, discount?: NxtdropCC) {
     const batch = firebase.firestore().batch()
-    const id = product.productID
+    const id = product.product_id
     const boughtAt = Date.now()
-    const transactionID = `${UID}-${product.sellerID}-${boughtAt}`
+    const transactionID = `${UID}-${product.seller_id}-${boughtAt}`
 
-    const sellerRef = this.afs.firestore.collection(`users`).doc(`${product.sellerID}`) //seller doc ref
+    const sellerRef = this.afs.firestore.collection(`users`).doc(`${product.seller_id}`) //seller doc ref
     const buyerRef = this.afs.firestore.collection(`users`).doc(`${UID}`) //buyer doc ref
     const prodRef = this.afs.firestore.collection(`products`).doc(`${id}`) //prod doc ref
     const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`) //transaction doc ref
@@ -49,44 +51,37 @@ export class TransactionService {
     //transaction data
     const transactionData: Transaction = {
       id: transactionID,
-      assetURL: product.assetURL,
-      condition: product.condition,
-      listingID: product.listingID,
-      productID: id,
-      model: product.model,
-      price: product.price,
+      item: product,
       total,
-      sellerID: product.sellerID,
-      buyerID: UID,
-      size: product.size,
-      listedAt: product.created_at,
-      purchaseDate: boughtAt,
-      shipTracking: {
+      buyer_id: UID,
+      seller_id: product.seller_id,
+      purchase_date: boughtAt,
+      ship_tracking: {
         address: {
-          recipient: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+          recipient: `${shippingInfo.first_name} ${shippingInfo.last_name}`,
           line1: shippingInfo.street,
           line2: shippingInfo.line2,
           city: shippingInfo.city,
           province: shippingInfo.province,
-          postalCode: shippingInfo.postalCode,
+          postal_code: shippingInfo.postal_code,
           country: shippingInfo.country
         },
         label: '',
         carrier: '',
-        trackingID: ''
+        tracking_id: ''
       },
       status: {
         verified: false,
         shipped: false,
         delivered: false,
         cancelled: false,
-        shippedForVerification: false,
-        deliveredForAuthentication: false,
-        sellerConfirmation: false
+        shipped_for_verification: false,
+        delivered_for_authentication: false,
+        seller_confirmation: false
       },
-      paymentID,
-      shippingCost,
-      type: 'bought'
+      payment_id,
+      shipping_cost,
+      transaction_type: 'purchase'
     }
 
     //add discount to transaction data
@@ -125,7 +120,7 @@ export class TransactionService {
     })
 
     //get buyer's highest bid if applicable
-    await buyerRef.collection('offers').where('productID', '==', `${product.productID}`).where('size', '==', `${product.size}`).orderBy('price', 'desc').limit(1).get().then(snap => {
+    await buyerRef.collection('offers').where('product_id', '==', `${product.product_id}`).where('size', '==', `${product.size}`).orderBy('price', 'desc').limit(1).get().then(snap => {
       snap.forEach(data => {
         userBid = data.data() as Bid
       })
@@ -143,9 +138,9 @@ export class TransactionService {
     }
 
     // delete listings
-    batch.delete(sellerRef.collection(`listings`).doc(`${product.listingID}`))
-    batch.delete(prodRef.collection(`listings`).doc(`${product.listingID}`))
-    batch.delete(askRef.doc(`${product.listingID}`))
+    batch.delete(sellerRef.collection(`listings`).doc(`${product.listing_id}`))
+    batch.delete(prodRef.collection(`listings`).doc(`${product.listing_id}`))
+    batch.delete(askRef.doc(`${product.listing_id}`))
 
     // update ordered and sold fields
     batch.update(buyerRef, {
@@ -181,9 +176,9 @@ export class TransactionService {
         })
       }
 
-      batch.delete(sellerRef.collection('offers').doc(`${userBid.offerID}`))
-      batch.delete(prodRef.collection('offers').doc(`${userBid.offerID}`))
-      batch.delete(this.afs.firestore.collection(`bids`).doc(`${userBid.offerID}`))
+      batch.delete(sellerRef.collection('offers').doc(`${userBid.offer_id}`))
+      batch.delete(prodRef.collection('offers').doc(`${userBid.offer_id}`))
+      batch.delete(this.afs.firestore.collection(`bids`).doc(`${userBid.offer_id}`))
       batch.update(buyerRef, {
         offers: firebase.firestore.FieldValue.increment(-1)
       })
@@ -200,24 +195,42 @@ export class TransactionService {
         //console.log('Transaction Approved');
 
         //send alert to slack
-        this.slack.sendAlert('sales', `${UID} bought ${product.model}, size ${product.size} at ${product.price} from ${product.sellerID}`).catch(err => {
+        this.slack.sendAlert('sales', `${UID} bought ${product.model}, size ${product.size} at ${product.price} from ${product.seller_id}`).catch(err => {
           //console.error(err)
         }) //send notification to slack
 
         this.http.post(`${environment.cloud.url}orderConfirmation`, transactionData).subscribe() //send email notification
 
         this.http.patch(`${environment.cloud.url}updateContact`, {
-          uid: transactionData.buyerID,
+          uid: transactionData.buyer_id,
           mode: 'purchase'
         }).subscribe()
 
-        if (product.listingID === size_prices[0].listingID && size_prices[1] != undefined) {
+        //send event to google analytics
+        gtag('event', 'purchase', {
+          'event_category': 'ecommerce',
+          'event_label': product.model,
+          'event_value': product.price
+        });
+
+        //send event to facebook pixel
+        fbq('track', 'Purchase', {
+          content_ids: [`${product.product_id}`],
+          content_name: product.model,
+          content_type: 'sneaker',
+          contents: [{ 'id': `${product.product_id}`, 'quantity': '1' }],
+          currency: 'CAD',
+          num_items: 1,
+          value: product.price + shipping_cost
+        })
+
+        if (product.listing_id === size_prices[0].listing_id && size_prices[1] != undefined) {
           this.http.put(`${environment.cloud.url}lowestAskNotification`, {
-            product_id: size_prices[1].productID,
-            seller_id: size_prices[1].sellerID,
+            product_id: size_prices[1].product_id,
+            seller_id: size_prices[1].seller_id,
             condition: size_prices[1].condition,
             size: size_prices[1].size,
-            listing_id: size_prices[1].listingID,
+            listing_id: size_prices[1].listing_id,
             price: size_prices[1].price
           }).subscribe()
         }
@@ -237,57 +250,50 @@ export class TransactionService {
    */
   async sellTransactionApproved(UID: string, product: Bid): Promise<string | boolean> {
     const batch = firebase.firestore().batch()
-    const purchaseDate = Date.now()
-    const transactionID = `${product.buyerID}-${UID}-${purchaseDate}`
-    const shippingCost = 15
+    const purchase_date = Date.now()
+    const transactionID = `${product.buyer_id}-${UID}-${purchase_date}`
+    const shipping_cost = 15
 
-    const buyerRef = this.afs.firestore.collection(`users`).doc(`${product.buyerID}`) //buyer doc ref
+    const buyerRef = this.afs.firestore.collection(`users`).doc(`${product.buyer_id}`) //buyer doc ref
     const sellerRef = this.afs.firestore.collection(`users`).doc(`${UID}`) //seller doc ref
-    const prodRef = this.afs.firestore.collection(`products`).doc(`${product.productID}`) //prod doc ref
+    const prodRef = this.afs.firestore.collection(`products`).doc(`${product.buyer_id}`) //prod doc ref
     const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`) //transaction doc ref
     const bidRef = this.afs.firestore.collection('bids') //bid collection ref
 
     //transaction data
     const transactionData: Transaction = {
       id: transactionID,
-      assetURL: product.assetURL,
-      condition: product.condition,
-      offerID: product.offerID,
-      productID: product.productID,
-      model: product.model,
-      price: product.price,
-      total: product.price + shippingCost,
-      shippingCost,
-      sellerID: UID,
-      buyerID: product.buyerID,
-      size: product.size,
-      listedAt: product.created_at,
-      purchaseDate,
-      shipTracking: {
+      item: product,
+      total: product.price + shipping_cost,
+      shipping_cost,
+      seller_id: UID,
+      buyer_id: product.buyer_id,
+      purchase_date,
+      ship_tracking: {
         address: {
           recipient: ``,
           line1: '',
           line2: '',
           city: '',
           province: '',
-          postalCode: '',
+          postal_code: '',
           country: ''
         },
         label: '',
         carrier: '',
-        trackingID: ''
+        tracking_id: ''
       },
       status: {
         verified: false,
         shipped: false,
         delivered: false,
         cancelled: false,
-        shippedForVerification: false,
-        deliveredForAuthentication: false,
-        sellerConfirmation: true
+        shipped_for_verification: false,
+        delivered_for_authentication: false,
+        seller_confirmation: true
       },
-      paymentID: '',
-      type: 'sold'
+      payment_id: '',
+      transaction_type: 'bid_accepted'
     }
 
     let prices: Bid[] = [] //highest bids
@@ -309,7 +315,7 @@ export class TransactionService {
     })
 
     //get seller's lowest ask if applicable
-    await sellerRef.collection('listings').where('productID', '==', `${product.productID}`).where('size', '==', `${product.size}`).orderBy('price', 'asc').limit(1).get().then(snap => {
+    await sellerRef.collection('listings').where('product_id', '==', `${product.product_id}`).where('size', '==', `${product.size}`).orderBy('price', 'asc').limit(1).get().then(snap => {
       snap.forEach(data => {
         userAsk = data.data() as Ask
       })
@@ -327,9 +333,9 @@ export class TransactionService {
     }
 
     // delete listings
-    batch.delete(buyerRef.collection(`offers`).doc(`${product.offerID}`))
-    batch.delete(prodRef.collection(`offers`).doc(`${product.offerID}`))
-    batch.delete(bidRef.doc(`${product.offerID}`))
+    batch.delete(buyerRef.collection(`offers`).doc(`${product.offer_id}`))
+    batch.delete(prodRef.collection(`offers`).doc(`${product.offer_id}`))
+    batch.delete(bidRef.doc(`${product.offer_id}`))
 
     // set ordered and sol fields
     batch.set(buyerRef, {
@@ -365,9 +371,9 @@ export class TransactionService {
       }
 
 
-      batch.delete(sellerRef.collection('listings').doc(`${userAsk.listingID}`))
-      batch.delete(prodRef.collection('listings').doc(`${userAsk.listingID}`))
-      batch.delete(this.afs.firestore.collection(`asks`).doc(`${userAsk.listingID}`))
+      batch.delete(sellerRef.collection('listings').doc(`${userAsk.listing_id}`))
+      batch.delete(prodRef.collection('listings').doc(`${userAsk.listing_id}`))
+      batch.delete(this.afs.firestore.collection(`asks`).doc(`${userAsk.listing_id}`))
       batch.update(sellerRef, {
         listed: firebase.firestore.FieldValue.increment(-1)
       })
@@ -384,17 +390,24 @@ export class TransactionService {
         //console.log('Transaction Approved');
 
         //send alert to slack
-        this.slack.sendAlert('sales', `${UID} sold ${product.model}, size ${product.size} at ${product.price} to ${product.buyerID}`).catch(err => {
+        this.slack.sendAlert('sales', `${UID} sold ${product.model}, size ${product.size} at ${product.price} to ${product.buyer_id}`).catch(err => {
           //console.error(err)
         })
 
-        if (product.offerID === size_prices[0].offerID && size_prices[1] != undefined) {
+        //send event to google analytics
+        gtag('event', 'item_sold', {
+          'event_category': 'ecommerce',
+          'event_label': product.model,
+          'event_value': product.price
+        });
+
+        if (product.offer_id === size_prices[0].offer_id && size_prices[1] != undefined) {
           this.http.put(`${environment.cloud.url}highestBidNotification`, {
-            product_id: size_prices[1].productID,
-            buyer_id: size_prices[1].buyerID,
+            product_id: size_prices[1].product_id,
+            buyer_id: size_prices[1].buyer_id,
             condition: size_prices[1].condition,
             size: size_prices[1].size,
-            offer_id: size_prices[1].offerID,
+            offer_id: size_prices[1].offer_id,
             price: size_prices[1].price
           }).subscribe()
         }
@@ -411,29 +424,29 @@ export class TransactionService {
 
   /**
    * Update a transaction when a buyer checkout after his bid was accepted
-   * paymentID: the id from paypal representing the payment
-   * shippingCost: amount paid for shipping
+   * payment_id: the id from paypal representing the payment
+   * shipping_cost: amount paid for shipping
    * transaction_id: id of transaction
    * discount: amount discounted from total
    * discountCardID: ID of discount card used to make purchase
    */
-  async updateTransaction(userID: string, paymentID: string, shippingInfo: User['shippingAddress']['buying'], shippingCost: number, transaction_id: string, discount?: NxtdropCC): Promise<string | boolean> {
+  async updateTransaction(userID: string, payment_id: string, shippingInfo: User['shipping_address']['buying'], shipping_cost: number, transaction_id: string, discount?: NxtdropCC): Promise<string | boolean> {
     const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transaction_id}`); //transaction doc ref
     const batch = firebase.firestore().batch();
 
     //update transaction doc
     batch.update(tranRef, {
       purchaseDate: Date.now(),
-      paymentID,
-      shippingCost,
+      payment_id,
+      shipping_cost,
       shipTracking: {
         address: {
-          recipient: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+          recipient: `${shippingInfo.first_name} ${shippingInfo.last_name}`,
           line1: shippingInfo.street,
           line2: shippingInfo.line2,
           city: shippingInfo.city,
           province: shippingInfo.province,
-          postalCode: shippingInfo.postalCode,
+          postalCode: shippingInfo.postal_code,
           country: shippingInfo.country
         },
         label: '',
@@ -519,7 +532,7 @@ export class TransactionService {
       },
       cancellationNote
     }, { merge: true }).then(() => {
-      transactionData.cancellationNote = cancellationNote;
+      transactionData.cancellation_note = cancellationNote;
       transactionData.status.cancelled = true;
       this.http.post(`${environment.cloud.url}orderCancellation`, transactionData).subscribe();
       return true;

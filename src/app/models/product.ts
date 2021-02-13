@@ -1,13 +1,13 @@
 export class Product {
-    productID: string;
+    product_id: string;
     brand: string;
     line: string;
     model: string;
-    assetURL: string;
+    asset_url: string;
     colorway: string;
-    yearMade: string;
+    release_date: string;
     lowest_price?: number;
-    retailPrice?: number;
+    retail_price?: number;
     sizes: Array<string>;
     SKU?: string;
     size_category: string;

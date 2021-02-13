@@ -37,7 +37,7 @@ export class CheckoutComponent implements OnInit {
   // cartItems = [];
 
   product: Ask | Bid | Transaction;
-  shippingPrice = 15;
+  shipping_price = 15;
   subtotal = 0;
   total = 0;
   discount: NxtdropCC;
@@ -71,6 +71,12 @@ export class CheckoutComponent implements OnInit {
   showConfirmPurchase: boolean = false
   showLoginBtns: boolean = false
 
+  product_id: string;
+  model: string;        //name of the item user is checking out
+  size: string;         //size of item user is checking out
+  asset_url: string;    //location of item's asset
+  price: number;        //price of item
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -93,12 +99,6 @@ export class CheckoutComponent implements OnInit {
     this.meta.addTags('Checkout');
 
     this.isSelling = this.route.snapshot.queryParams.sell;
-
-    //Free Shipping between Sept. 29th 6PM & Oct. 7th 12AM
-    const d = Date.now()
-    if (d >= 1601416800000 && d < 1602129600000) {
-      this.shippingPrice = 0
-    }
 
     if (!(this.isSelling === undefined) && !(this.route.snapshot.queryParams.product === undefined)) {
       this.isUserConnected()
@@ -129,7 +129,7 @@ export class CheckoutComponent implements OnInit {
             }
           },
           items: [{
-            name: `${this.product.model}, size ${this.product.size}`,
+            name: `${this.model}, size ${this.size}`,
             quantity: '1',
             category: 'PHYSICAL_GOODS',
             unit_amount: {
@@ -139,14 +139,14 @@ export class CheckoutComponent implements OnInit {
           }],
           shipping: {
             name: {
-              full_name: `${this.user.shippingAddress.buying.firstName} ${this.user.shippingAddress.buying.lastName}`,
+              full_name: `${this.user.shipping_address.buying.first_name} ${this.user.shipping_address.buying.last_name}`,
             },
             address: {
-              address_line_1: this.user.shippingAddress.buying.street,
-              address_line_2: this.user.shippingAddress.buying.line2,
-              admin_area_1: this.user.shippingAddress.buying.province,
-              admin_area_2: this.user.shippingAddress.buying.city,
-              postal_code: this.user.shippingAddress.buying.postalCode,
+              address_line_1: this.user.shipping_address.buying.street,
+              address_line_2: this.user.shipping_address.buying.line2,
+              admin_area_1: this.user.shipping_address.buying.province,
+              admin_area_2: this.user.shipping_address.buying.city,
+              postal_code: this.user.shipping_address.buying.postal_code,
               country_code: 'CA'
             }
           }
@@ -169,16 +169,16 @@ export class CheckoutComponent implements OnInit {
         actions.order.get().then(details => {
           //console.log('onApprove - you can get full order details inside onApprove: ', details);
 
-          this.user.shippingAddress.buying.street = details.purchase_units[0].shipping.address.address_line_1
-          details.purchase_units[0].shipping.address.address_line_2 === undefined ? this.user.shippingAddress.buying.line2 = '' : this.user.shippingAddress.buying.line2 = details.purchase_units[0].shipping.address.address_line_2
-          this.user.shippingAddress.buying.city = details.purchase_units[0].shipping.address.admin_area_2
-          this.user.shippingAddress.buying.province = details.purchase_units[0].shipping.address.admin_area_1
-          this.user.shippingAddress.buying.postalCode = details.purchase_units[0].shipping.address.postal_code
-          this.user.shippingAddress.buying.country = details.purchase_units[0].shipping.address.country_code
-          this.user.shippingAddress.buying.firstName = details.payer.name.given_name
-          this.user.shippingAddress.buying.lastName = details.payer.name.surname
+          this.user.shipping_address.buying.street = details.purchase_units[0].shipping.address.address_line_1
+          details.purchase_units[0].shipping.address.address_line_2 === undefined ? this.user.shipping_address.buying.line2 = '' : this.user.shipping_address.buying.line2 = details.purchase_units[0].shipping.address.address_line_2
+          this.user.shipping_address.buying.city = details.purchase_units[0].shipping.address.admin_area_2
+          this.user.shipping_address.buying.province = details.purchase_units[0].shipping.address.admin_area_1
+          this.user.shipping_address.buying.postal_code = details.purchase_units[0].shipping.address.postal_code
+          this.user.shipping_address.buying.country = details.purchase_units[0].shipping.address.country_code
+          this.user.shipping_address.buying.first_name = details.payer.name.given_name
+          this.user.shipping_address.buying.last_name = details.payer.name.surname
 
-          this.userService.updateShippingInfo(this.user.uid, this.user.shippingAddress.buying.firstName, this.user.shippingAddress.buying.lastName, this.user.shippingAddress.buying.street, this.user.shippingAddress.buying.line2, this.user.shippingAddress.buying.city, this.user.shippingAddress.buying.province, this.user.shippingAddress.buying.postalCode, this.user.shippingAddress.buying.country, true)
+          this.userService.updateShippingInfo(this.user.uid, this.user.shipping_address.buying.first_name, this.user.shipping_address.buying.last_name, this.user.shipping_address.buying.street, this.user.shipping_address.buying.line2, this.user.shipping_address.buying.city, this.user.shipping_address.buying.province, this.user.shipping_address.buying.postal_code, this.user.shipping_address.buying.country, true)
         });
       },
       onClientAuthorization: (data) => {
@@ -187,36 +187,18 @@ export class CheckoutComponent implements OnInit {
 
         if (this.tID === undefined) {
           if (this.promoApplied) {
-            transaction = this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shippingAddress.buying, data.id, this.shippingPrice, this.total, this.discount);
+            transaction = this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shipping_address.buying, data.id, this.shipping_price, this.total, this.discount);
           } else {
-            transaction = this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shippingAddress.buying, data.id, this.shippingPrice, this.total);
+            transaction = this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shipping_address.buying, data.id, this.shipping_price, this.total);
           }
         } else {
           if (this.promoApplied) {
-            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shippingAddress.buying, this.shippingPrice, this.tID, this.discount);
+            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shipping_address.buying, this.shipping_price, this.tID, this.discount);
           } else {
-            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shippingAddress.buying, this.shippingPrice, this.tID);
+            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shipping_address.buying, this.shipping_price, this.tID);
           }
         }
         transaction.then(res => {
-          if (isPlatformBrowser(this._platformId)) {
-            gtag('event', 'item_bought', {
-              'event_category': 'ecommerce',
-              'event_label': this.product.model,
-              'event_value': this.product.price
-            });
-
-            fbq('track', 'Purchase', {
-              content_ids: [`${this.product.productID}`],
-              content_name: this.product.model,
-              content_type: 'sneaker',
-              contents: [{ 'id': `${this.product.productID}`, 'quantity': '1' }],
-              currency: 'CAD',
-              num_items: 1,
-              value: this.product.price + this.shippingPrice
-            })
-          }
-
           if (typeof res === 'boolean') {
             this.ngZone.run(() => {
               this.router.navigate(['transaction']);
@@ -230,7 +212,7 @@ export class CheckoutComponent implements OnInit {
           }
         })
           .catch(err => {
-            console.error(err);
+            //console.error(err);
             this.ngZone.run(() => {
               this.router.navigate(['transaction']);
             });
@@ -251,12 +233,12 @@ export class CheckoutComponent implements OnInit {
 
         (document.getElementById('paypal-checkout') as HTMLInputElement).style.backgroundColor = "white"
 
-        console.log((this.total).toString())
+        //console.log((this.total).toString())
 
 
         gtag('event', 'PP_click', {
           'event_category': 'ecommerce',
-          'event_label': this.product.model
+          'event_label': this.model
         });
       },
     };
@@ -307,8 +289,13 @@ export class CheckoutComponent implements OnInit {
         this.router.navigate(['page-not-found']);
       } else {
         this.product = res;
+        this.product_id = res.product_id
+        this.model = res.model
+        this.size = res.size
+        this.asset_url = res.asset_url
+        this.price = res.price
         this.subtotal = this.product.price;
-        this.total = this.subtotal + this.shippingPrice;
+        this.total = this.subtotal + this.shipping_price;
 
         if (isPlatformBrowser(this._platformId)) {
           gtag('event', 'begin_checkout', {
@@ -317,7 +304,7 @@ export class CheckoutComponent implements OnInit {
           });
 
           if (!(user === undefined)) {
-            this.updateLastCartItem(this.product.productID, this.product.size, user)
+            this.updateLastCartItem(this.product_id, this.product.size, user)
 
             if (user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
               this.router.navigate(['/phone-verification'], {
@@ -337,8 +324,8 @@ export class CheckoutComponent implements OnInit {
             this.showShipping()
             this.showCheckoutBtns()
 
-            if (res.sellerID != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.sellerID != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
-              console.log('work')
+            if (res.seller_id != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.seller_id != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
+              //console.log('work')
               this.discounted = true
               this.applyPromo()
             }
@@ -347,11 +334,11 @@ export class CheckoutComponent implements OnInit {
 
         fbq('track', 'InitiateCheckout', {
           content_category: 'sneaker',
-          content_ids: [`${this.product.productID}`],
-          contents: [{ 'id': `${this.product.productID}`, 'quantity': '1' }],
+          content_ids: [`${this.product_id}`],
+          contents: [{ 'id': `${this.product_id}`, 'quantity': '1' }],
           currency: 'CAD',
           num_item: 1,
-          value: this.product.price + this.shippingPrice
+          value: this.product.price + this.shipping_price
         })
       }
     })
@@ -363,19 +350,24 @@ export class CheckoutComponent implements OnInit {
         this.router.navigate(['page-not-found']);
       } else {
         this.product = res;
+        this.product_id = res.product_id
+        this.model = res.model
+        this.size = res.size
+        this.asset_url = res.asset_url
+        this.price = res.price
         this.subtotal = this.product.price;
-        this.total = this.subtotal + this.shippingPrice;
+        this.total = this.subtotal + this.shipping_price;
       }
 
       if (isPlatformBrowser(this._platformId)) {
         gtag('event', 'begin_checkout', {
           'event_category': 'ecommerce',
-          'event_label': this.product.model
+          'event_label': res.model
         });
 
         if (!(user === undefined) && user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
           this.router.navigate(['/phone-verification'], {
-            queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
+            queryParams: { redirectTo: `product/${res.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
           });
         }
       }
@@ -396,14 +388,18 @@ export class CheckoutComponent implements OnInit {
 
   checkUserAndTransaction(transactionID: string, userID?: string) {
     this.tranService.checkTransaction(transactionID).subscribe(res => {
-      if (!(res == undefined) && !res.status.cancelled && res.paymentID === '') {
+      if (!(res == undefined) && !res.status.cancelled && res.payment_id === '') {
         this.product = res
-        this.subtotal = this.product.price
-        this.total = this.subtotal + this.shippingPrice
+        this.product_id = res.item.product_id
+        this.model = res.item.model
+        this.size = res.item.size
+        this.asset_url = res.item.asset_url
+        this.price = res.item.price
+        this.subtotal = res.item.price
+        this.total = this.subtotal + this.shipping_price
         this.initConfig()
 
         if (!(userID === undefined)) {
-          console.log('run if')
           this.userService.getUserInfo(userID).subscribe(data => {
             this.user = data
             this.connected = true
@@ -414,7 +410,6 @@ export class CheckoutComponent implements OnInit {
             }
           })
         } else {
-          console.log('run else')
           this.showShipping()
           this.showCheckoutBtns()
         }
@@ -426,14 +421,6 @@ export class CheckoutComponent implements OnInit {
 
   sellNow() {
     this.tranService.sellTransactionApproved(this.user.uid, this.product as Bid).then(res => {
-      if (isPlatformBrowser(this._platformId)) {
-        gtag('event', 'item_sold', {
-          'event_category': 'ecommerce',
-          'event_label': this.product.model,
-          'event_value': this.product.price
-        });
-      }
-
       if (typeof res === 'boolean') {
         this.router.navigate(['sold']);
       } else {
@@ -443,22 +430,14 @@ export class CheckoutComponent implements OnInit {
       }
     })
       .catch(err => {
-        console.error(err);
+        //console.error(err);
         this.router.navigate(['sold']);
       });
   }
 
   buyNow() {
-    this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shippingAddress.buying, this.discount.cardID, this.shippingPrice, this.total, this.discount)
+    this.tranService.transactionApproved(this.user.uid, this.product as Ask, this.user.shipping_address.buying, this.discount.cardID, this.shipping_price, this.total, this.discount)
       .then(res => {
-        if (isPlatformBrowser(this._platformId)) {
-          gtag('event', 'purchase', {
-            'event_category': 'ecommerce',
-            'event_label': this.product.model,
-            'event_value': this.product.price
-          });
-        }
-
         if (typeof res === 'undefined') {
           this.ngZone.run(() => {
             this.router.navigate(['transaction']);
@@ -471,7 +450,7 @@ export class CheckoutComponent implements OnInit {
           });
         }
       }).catch(err => {
-        console.error(err);
+        //console.error(err);
         this.ngZone.run(() => {
           this.router.navigate(['transaction']);
         });
@@ -491,7 +470,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   goBack() {
-    const id = this.product.productID;
+    const id = this.product_id;
 
     if (this.route.snapshot.queryParams.redirectTo === undefined) {
       this.router.navigate([`product/${id}`]);
@@ -564,15 +543,15 @@ export class CheckoutComponent implements OnInit {
       if (this.isSelling === undefined) {
         this.showBuyingShipping = true
       } else if (!this.isSelling) {
-        if (this.user.shippingAddress === undefined) {
+        if (this.user.shipping_address === undefined) {
           this.showBuyingShipping = false
-        } else if (!(this.user.shippingAddress.buying === undefined)) {
+        } else if (!(this.user.shipping_address.buying === undefined)) {
           this.showBuyingShipping = true
         }
       } else if (this.isSelling) {
-        if (this.user.shippingAddress === undefined) {
+        if (this.user.shipping_address === undefined) {
           this.showSellingShipping = false
-        } else if (!(this.user.shippingAddress.selling === undefined)) {
+        } else if (!(this.user.shipping_address.selling === undefined)) {
           this.showSellingShipping = true
         }
       }
@@ -589,17 +568,17 @@ export class CheckoutComponent implements OnInit {
     } else {
       if (!(this.tID === undefined)) {
         const t = this.product as Transaction
-        if (t.buyerID === this.user.uid && this.user.shippingAddress === undefined || this.user.shippingAddress.buying === undefined) this.showContinueShipping = true
+        if (t.buyer_id === this.user.uid && this.user.shipping_address === undefined || this.user.shipping_address.buying === undefined) this.showContinueShipping = true
         else this.showPaypal = true
       } else if (this.isSelling) {
         const t = this.product as Bid
-        if (t.buyerID === this.user.uid) this.showEditBid = true
-        else if (this.user.shippingAddress === undefined || this.user.shippingAddress.selling === undefined) this.showContinueShipping = true
+        if (t.buyer_id === this.user.uid) this.showEditBid = true
+        else if (this.user.shipping_address === undefined || this.user.shipping_address.selling === undefined) this.showContinueShipping = true
         else this.showConfirmSale = true
       } else if (!this.isSelling) {
         const t = this.product as Ask
-        if (t.sellerID === this.user.uid) this.showEditAsk = true
-        else if (this.user.shippingAddress === undefined || this.user.shippingAddress.buying === undefined) this.showContinueShipping = true
+        if (t.seller_id === this.user.uid) this.showEditAsk = true
+        else if (this.user.shipping_address === undefined || this.user.shipping_address.buying === undefined) this.showContinueShipping = true
         else if (this.total === 0) this.showConfirmPurchase = true
         else this.showPaypal = true
       }

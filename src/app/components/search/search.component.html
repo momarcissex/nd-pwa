@@ -18,12 +18,12 @@
   </div>
 
   <div class="search-items" *ngIf="!loading && results.length > 0">
-    <a class="search-item" *ngFor="let result of results" routerLink="/product/{{ result.productID }}">
+    <a class="search-item" *ngFor="let result of results" routerLink="/product/{{ result.product_id }}">
       <section class="item-specs">
         <h5 *ngIf="result.lowest_price" style="color: #222021;">{{ getLowestPrice(result.sizes_lowest_ask, result.lowest_price) | currency: 'CAD' }}</h5>
         <h5 *ngIf="!result.lowest_price" style="color: #8D8B8C;">SOLD OUT</h5>
       </section>
-      <img src="{{ result.assetURL }}" alt="{{ result.model }}">
+      <img src="{{ result.asset_url }}" alt="{{ result.model }}">
       <h5>{{ result.model }}</h5>
     </a>
   </div>

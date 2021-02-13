@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentData, QuerySnapshot } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { auth } from 'firebase/app';
-import { isUndefined } from 'util';
 import { AuthService } from './auth.service';
-import { Bid } from '../models/bid';
 import { Ask } from '../models/ask';
 
 @Injectable({
@@ -21,22 +19,22 @@ export class UserService {
     private auth: AuthService
   ) { }
 
-  getUserInfo(userId: string): Observable<User> {
-    return this.afs.collection('users').doc(`${userId}`).valueChanges() as Observable<User>
+  getUserInfo(uid: string): Observable<User> {
+    return this.afs.collection('users').doc(`${uid}`).valueChanges() as Observable<User>
   }
 
-  updateUserProfile(userId: string, firstName: string, lastName: string, username: string, dob: string, email: string) {
+  updateUserProfile(uid: string, first_name: string, last_name: string, username: string, dob: string, email: string) {
     const batch = this.afs.firestore.batch();
 
-    const userRef = this.afs.firestore.collection(`users`).doc(`${userId}`);
-    const userVerificationRef = this.afs.firestore.collection('userVerification').doc(`${userId}`);
+    const userRef = this.afs.firestore.collection(`users`).doc(`${uid}`);
+    const userVerificationRef = this.afs.firestore.collection('userVerification').doc(`${uid}`);
 
     const date = new Date(dob).getTime() / 1000;
     // console.log(date);
 
     batch.update(userRef, {
-      firstName: firstName,
-      lastName: lastName,
+      first_name: first_name,
+      last_name: last_name,
       username: username,
       dob: date
     });
@@ -48,8 +46,8 @@ export class UserService {
     return batch.commit()
       .then(() => {
         this.http.patch(`${environment.cloud.url}updateContact`, {
-          firstName,
-          lastName,
+          first_name,
+          last_name,
           username,
           dob: date,
           email,
@@ -85,8 +83,8 @@ export class UserService {
               mode: 'email_change',
               old_email,
               new_email,
-              first_name: user_data.firstName,
-              last_name: user_data.lastName,
+              first_name: user_data.first_name,
+              last_name: user_data.first_name,
               creation_date: user_data.creation_date,
               last_login: user_data.last_login
             }).subscribe()
@@ -106,17 +104,17 @@ export class UserService {
     })
   }
 
-  updateShippingInfo(userId: string, firstName: string, lastName: string, street: string, line: string, city: string, province: string, postalCode: string, country: string, isBuying: boolean): Promise<boolean> {
-    const userRef = this.afs.collection(`users`).doc(`${userId}`);
-    postalCode = postalCode.toUpperCase();
-    const data = {
-      firstName,
-      lastName,
+  updateShippingInfo(uid: string, first_name: string, last_name: string, street: string, line: string, city: string, province: string, postal_code: string, country: string, isBuying: boolean): Promise<boolean> {
+    const userRef = this.afs.collection(`users`).doc(`${uid}`);
+    postal_code = postal_code.toUpperCase();
+    const data: User['shipping_address']['buying'] = {
+      first_name,
+      last_name,
       street,
       line2: line,
       city,
       province,
-      postalCode,
+      postal_code,
       country
     }
 
@@ -149,8 +147,8 @@ export class UserService {
     }
   }
 
-  updateLastCartItem(userID: string, product_id: string, size: string) {
-    this.afs.collection(`users`).doc(userID).set({
+  updateLastCartItem(uid: string, product_id: string, size: string) {
+    this.afs.collection(`users`).doc(uid).set({
       last_item_in_cart: {
         product_id,
         size,
@@ -177,20 +175,20 @@ export class UserService {
     //console.log(UID)
 
     if (filter === 'All') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter.created_at).limit(60)).get()
     } else if (filter === 'Active') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('expiration_date', 'asc').startAfter(startAfter.expiration_date).limit(60)).get()
     } else if (filter === 'Expired') {
       console.log('expired')
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('expiration_date', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('expiration_date', 'asc').startAfter(startAfter.expiration_date).limit(60)).get()
     } else if (filter === 'Oldest') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'asc').startAfter(startAfter.last_updated).limit(60)).get()
     } else if (filter === 'Recent') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`listings`, ref => ref.orderBy('last_updated', 'desc').startAfter(startAfter.last_updated).limit(60)).get()
     }
   }
@@ -202,19 +200,19 @@ export class UserService {
     });
 
     if (filter === 'All') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Active') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '<', Date.now()).orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Expired') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('created_at', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.where('expiration_date', '>=', Date.now()).orderBy('created_at', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Oldest') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'desc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'desc').startAfter(startAfter).limit(60)).get()
     } else if (filter === 'Recent') {
-      if (isUndefined(startAfter)) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
+      if (startAfter == undefined) return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').limit(60)).get()
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').startAfter(startAfter).limit(60)).get()
     }
   }

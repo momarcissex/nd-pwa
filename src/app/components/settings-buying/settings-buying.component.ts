@@ -18,7 +18,7 @@ export class SettingsBuyingComponent implements OnInit {
   faCcVisa = faCcVisa
   faCircleNotch = faCircleNotch
 
-  shippingInfo: User['shippingAddress']['buying'];
+  shippingInfo: User['shipping_address']['buying'];
 
   billingInfo = {
     street: '',
@@ -70,7 +70,7 @@ export class SettingsBuyingComponent implements OnInit {
 
       } else {
         this.userService.getUserInfo(res.uid).subscribe(data => {
-          this.shippingInfo = data.shippingAddress.buying;
+          this.shippingInfo = data.shipping_address.buying;
         });
       }
     })

@@ -13,19 +13,4 @@ export class NavbarService {
     private auth: AuthService,
     private afs: AngularFirestore
   ) { }
-
-  async getCartItems() {
-    let UID;
-    await this.auth.isConnected().then(data => {
-      if (!isNull(data)) {
-        UID = data.uid;
-      }
-    });
-
-    if (!isUndefined(UID)) {
-      return await this.afs.collection(`users`).doc(`${UID}`).valueChanges();
-    } else {
-      return of(null);
-    }
-  }
 }

@@ -99,7 +99,7 @@ export class DashboardComponent implements OnInit {
   printOrderStatus(status: Transaction["status"], type: string, paymentID: string) {
     //console.log(`${type}, ${id}, ${paymentID}`)
     if (type == 'bought') {
-      if (status.sellerConfirmation === undefined || !status.sellerConfirmation && !status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+      if (status.seller_confirmation === undefined || !status.seller_confirmation && !status.shipped_for_verification && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
         return 'waiting for seller to ship'
       }
     } else {
@@ -109,30 +109,30 @@ export class DashboardComponent implements OnInit {
     }
 
     if (status.cancelled) {
-      if (status.shippedForVerification && status.deliveredForAuthentication && status.verified && !status.shipped && !status.delivered) return 'authentication failed'
+      if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && !status.shipped && !status.delivered) return 'authentication failed'
       else return 'cancelled'
-    } else if (!status.shippedForVerification && status.sellerConfirmation && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    } else if (!status.shipped_for_verification && status.seller_confirmation && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
       return 'waiting for seller to ship'
-    } else if (status.shippedForVerification && !status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    } else if (status.shipped_for_verification && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
       return 'en route to NXTDROP'
-    } else if (status.shippedForVerification && status.deliveredForAuthentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    } else if (status.shipped_for_verification && status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
       return 'delivered to NXTDROP'
-    } else if (status.shippedForVerification && status.deliveredForAuthentication && status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && !status.shipped && !status.delivered && !status.cancelled) {
       return 'authentication passed'
-    } else if (status.shippedForVerification && status.deliveredForAuthentication && status.verified && status.shipped && !status.delivered && !status.cancelled) {
+    } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && status.shipped && !status.delivered && !status.cancelled) {
       return 'shipped to buyer'
-    } else if (status.shippedForVerification && status.deliveredForAuthentication && status.verified && status.shipped && status.delivered && !status.cancelled) {
+    } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && status.shipped && status.delivered && !status.cancelled) {
       return 'delivered to buyer'
     }
   }
 
   more() {
     if (this.showSales) {
-      this.dashboardService.sales(this.UID, this.sales[this.sales.length - 1].purchaseDate).subscribe((data: any) => {
+      this.dashboardService.sales(this.UID, this.sales[this.sales.length - 1].purchase_date).subscribe((data: any) => {
         this.sales.concat(data.docs);
       })
     } else {
-      this.dashboardService.purchases(this.UID, this.sales[this.sales.length - 1].purchaseDate).subscribe((data: any) => {
+      this.dashboardService.purchases(this.UID, this.sales[this.sales.length - 1].purchase_date).subscribe((data: any) => {
         this.sales.concat(data.docs);
       })
     }

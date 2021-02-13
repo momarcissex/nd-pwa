@@ -188,7 +188,7 @@ export class MakeAnOfferComponent implements OnInit {
       let ask: any;
       const size = ele
 
-      this.askService.getLowestAsk(this.selectedPair.productID, 'new', size).then(askdata => {
+      this.askService.getLowestAsk(this.selectedPair.product_id, 'new', size).then(askdata => {
         askdata.empty ? ask = undefined : ask = askdata.docs[0].data() as Ask
 
         const data = {
@@ -206,10 +206,10 @@ export class MakeAnOfferComponent implements OnInit {
   }
 
   getProductStats() {
-    this.askService.getLowestAsk(this.selectedPair.productID, 'new').then(response => {
+    this.askService.getLowestAsk(this.selectedPair.product_id, 'new').then(response => {
       response.empty ? this.LowestAsk = undefined : this.LowestAsk = response.docs[0].data() as Ask;
 
-      this.bidService.getHighestBid(this.selectedPair.productID, 'new').then(res => {
+      this.bidService.getHighestBid(this.selectedPair.product_id, 'new').then(res => {
         res.empty ? this.HighestBid = undefined : this.HighestBid = res.docs[0].data() as Bid
 
         if (!this.selectedSize) {
@@ -338,7 +338,7 @@ export class MakeAnOfferComponent implements OnInit {
     this.selectedSize = size;
     this.userBid = undefined
 
-    this.bidService.getHighestBid(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+    this.bidService.getHighestBid(this.selectedPair.product_id, 'new', this.selectedSize).then(res => {
       if (res.empty) {
         this.currentBid = NaN;
       } else {
@@ -346,7 +346,7 @@ export class MakeAnOfferComponent implements OnInit {
       }
     });
 
-    this.askService.getLowestAsk(this.selectedPair.productID, 'new', this.selectedSize).then(res => {
+    this.askService.getLowestAsk(this.selectedPair.product_id, 'new', this.selectedSize).then(res => {
       if (res.empty) {
         this.currentAsk = NaN;
       } else {
@@ -355,7 +355,7 @@ export class MakeAnOfferComponent implements OnInit {
     });
 
     if (!(this.user === undefined)) {
-      this.bidService.checkUserBid(this.selectedPair.productID, this.selectedSize, this.user.uid, 'new').subscribe(response => {
+      this.bidService.checkUserBid(this.selectedPair.product_id, this.selectedSize, this.user.uid, 'new').subscribe(response => {
         if (response.length > 0) {
           this.userBid = response[0]
         }
@@ -381,35 +381,35 @@ export class MakeAnOfferComponent implements OnInit {
 
   finish() {
     return this.ngZone.run(() => {
-      return this.router.navigate([`/product/${this.selectedPair.productID}`]);
+      return this.router.navigate([`/product/${this.selectedPair.product_id}`]);
     });
   }
 
   share(social: string) {
     if (isPlatformBrowser(this._platformId)) {
       if (social === 'fb') {
-        window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-facebook&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
+        window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.selectedPair.product_id}?utm_source=share-facebook&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
         gtag('event', 'share_ask_fb', {
           'event_category': 'engagement',
           'event_label': this.selectedPair.model
         });
         return false;
       } else if (social === 'twitter') {
-        window.open(`https://twitter.com/intent/tweet?text=I just placed a bid on the ${this.selectedPair.model} ${this.selectedSize} on @nxtdrop https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-twitter`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
+        window.open(`https://twitter.com/intent/tweet?text=I just placed a bid on the ${this.selectedPair.model} ${this.selectedSize} on @nxtdrop https://nxtdrop.com/product/${this.selectedPair.product_id}?utm_source=share-twitter`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
         gtag('event', 'share_ask_twitter', {
           'event_category': 'engagement',
           'event_label': this.selectedPair.model
         });
         return false;
       } else if (social === 'mail') {
-        window.location.href = `mailto:?subject=I placed a bid on the ${this.selectedPair.model} ${this.selectedSize} on NXTDROP&body=Hey, I just placed a bid on the ${this.selectedPair.model} ${this.selectedSize} for ${this.pairPrice} and thought you'd be interested. Check it out here https://nxtdrop.com/product/${this.selectedPair.productID}?utm_source=share-mail`;
+        window.location.href = `mailto:?subject=I placed a bid on the ${this.selectedPair.model} ${this.selectedSize} on NXTDROP&body=Hey, I just placed a bid on the ${this.selectedPair.model} ${this.selectedSize} for ${this.pairPrice} and thought you'd be interested. Check it out here https://nxtdrop.com/product/${this.selectedPair.product_id}?utm_source=share-mail`;
         gtag('event', 'share_ask_mail', {
           'event_category': 'engagement',
           'event_label': this.selectedPair.model
         });
         return false;
       } else if (social === 'copy_link') {
-        this.copyStringToClipboard(`https://nxtdrop.com/product/${this.selectedPair.productID}`);
+        this.copyStringToClipboard(`https://nxtdrop.com/product/${this.selectedPair.product_id}`);
         gtag('event', 'share_ask_link', {
           'event_category': 'engagement',
           'event_label': this.selectedPair.model
