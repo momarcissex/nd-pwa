@@ -1067,7 +1067,7 @@ exports.activateAccount = functions.https.onRequest((req, res) => {
         const uid = req.body.code;
 
         return admin.firestore().collection(`users`).doc(`${uid}`).update({
-            isActive: true
+            is_active: true
         }).then(() => {
             return res.status(200).send(true);
         }).catch(err => {

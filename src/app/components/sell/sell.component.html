@@ -24,7 +24,7 @@
     </div>
 
     <div class="sell-btns">
-      <button class="btn" *ngIf="selectedPair" routerLink="/product/{{ selectedPair.productID }}">Back</button>
+      <button class="btn" *ngIf="selectedPair" routerLink="/product/{{ selectedPair.product_id}}">Back</button>
       <button class="btn" *ngIf="!selectedPair" routerLink="..">Back</button>
       <button class="btn" (click)="nextPage()">Next</button>
     </div>

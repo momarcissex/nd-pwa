@@ -36,7 +36,6 @@ import { SoldComponent } from './components/sold/sold.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { TermsComponent } from './components/terms/terms.component';
-import { DropComponent } from './components/special-drop/drop/drop.component';
 import { BlogHomeComponent } from './components/blog/blog-home/blog-home.component';
 import { BlogPostComponent } from './components/blog/blog-post/blog-post.component';
 import { SnkrsComponent } from './components/snkrs/snkrs.component';
@@ -49,7 +48,6 @@ import { FaqCategoryComponent } from './components/faq/faq-category/faq-category
 import { SaleConfirmationComponent } from './components/sale-confirmation/sale-confirmation.component';
 import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
-import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
 import { ContestComponent } from './components/contest/contest.component';
 import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
@@ -95,7 +93,6 @@ const routes: Routes = [
   { path: 'sold', component: SoldComponent },
   { path: 'privacy', component: PrivacyComponent },
   { path: 'terms', component: TermsComponent },
-  { path: 'drop/:id', component: DropComponent },
   { path: 'news', component: BlogHomeComponent },
   { path: 'news/:title', component: BlogPostComponent },
   { path: 'snkrs', component: SnkrsComponent },
@@ -108,7 +105,6 @@ const routes: Routes = [
   { path: 'confirmation/:id/:seller', component: SaleConfirmationComponent },
   { path: 'settings/email', component: SettingsEmailComponent },
   { path: 'recover-email', component: RecoverEmailComponent },
-  { path: 'referral', component: ReferralProgramComponent },
   { path: 'giveaway', component: ContestComponent },
   { path: 'extend/:mode/:id', component: ExtendAskBidComponent },
   { path: '**', component: PageNotFoundComponent }

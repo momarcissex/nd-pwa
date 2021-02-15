@@ -24,7 +24,7 @@ export class SaleConfirmationService {
   confirmOrder(transactionId: string, address: User['shipping_address']['selling']) {
     return this.afs.collection(`transactions`).doc(`${transactionId}`).set({
       status: {
-        sellerConfirmation: true
+        seller_confirmation: true
       }
     }, { merge: true }).then(() => {
       this.slackService.sendAlert('seller_confirmation', `transactionID: ${transactionId}\nName: ${address.first_name} ${address.last_name}\nAddress: ${address.street} ${address.line2} ${address.city} ${address.province} ${address.postal_code} ${address.country}`)

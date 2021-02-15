@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { MetaService } from 'src/app/services/meta.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { faCheckCircle, faCircleNotch, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-activate-account',
@@ -11,6 +12,10 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./activate-account.component.scss']
 })
 export class ActivateAccountComponent implements OnInit {
+
+  faCheckCircle = faCheckCircle
+  faExclamationCircle = faExclamationCircle
+  faCircleNotch = faCircleNotch
   
   code: string;
   error = false;

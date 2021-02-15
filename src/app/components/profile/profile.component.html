@@ -80,7 +80,7 @@
           <h6>{{ listing.size }}</h6>
           <h5>{{ listing.price | currency: 'CAD' }}</h5>
         </section>
-        <img src="{{ listing.assetURL }}" alt="{{ listing.productID }}">
+        <img src="{{ listing.asset_url }}" alt="{{ listing.product_id }}">
         <h5 id="model">{{ listing.model }}</h5>
 
         <div class="action-btns">
@@ -149,7 +149,7 @@
           <h6>{{ offer.size }}</h6>
           <h5>{{ offer.price | currency: 'CAD' }}</h5>
         </section>
-        <img src="{{ offer.assetURL }}" alt="{{ offer.productID }}">
+        <img src="{{ offer.asset_url }}" alt="{{ offer.product_id }}">
         <h5 id="model">{{ offer.model }}</h5>
 
         <div class="action-btns">

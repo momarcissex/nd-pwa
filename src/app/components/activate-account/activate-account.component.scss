@@ -20,6 +20,11 @@
         font-size: $font-large;
     }
 
+    #loading {
+        font-size: 3rem;
+        color: $black;
+    }
+
     .error-icon {
         color: $inputError;
     }

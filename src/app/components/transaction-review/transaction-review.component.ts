@@ -147,7 +147,7 @@ export class TransactionReviewComponent implements OnInit {
     }
   }
 
-  cancelOrder() {
+  /*cancelOrder() {
     let cancellation;
     this.cancelLoading = true;
 
@@ -167,7 +167,7 @@ export class TransactionReviewComponent implements OnInit {
         this.cancelError = false;
       }, 1500)
     })
-  }
+  }*/
 
   trackOrder() {
     window.open(`https://www.canadapost.ca/trackweb/en#/search?searchFor=${this.transaction.ship_tracking.tracking_id}`)

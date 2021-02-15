@@ -51,10 +51,8 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { ModalComponent } from './components/modal/modal.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { TermsComponent } from './components/terms/terms.component';
-import { SpecialDropHomeComponent } from './components/special-drop/home/home.component';
 import { BlogHomeComponent } from './components/blog/blog-home/blog-home.component';
 import { BlogPostComponent } from './components/blog/blog-post/blog-post.component';
-import { DropComponent } from './components/special-drop/drop/drop.component';
 import { SnkrsComponent } from './components/snkrs/snkrs.component';
 import { ListingsComponent } from './components/listings/listings.component';
 import { OffersComponent } from './components/offers/offers.component';
@@ -96,7 +94,6 @@ import { SafeHtmlPipe } from './pipes/safeHtml.pipes';
 import { NewsletterComponent } from './components/newsletter/newsletter.component';
 import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
 import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
-import { ReferralProgramComponent } from './components/referral-program/referral-program.component';
 import { ContestComponent } from './components/contest/contest.component';
 import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
@@ -150,8 +147,6 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     ModalComponent,
     PrivacyComponent,
     TermsComponent,
-    SpecialDropHomeComponent,
-    DropComponent,
     BlogHomeComponent,
     BlogPostComponent,
     SnkrsComponent,
@@ -169,7 +164,6 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     NewsletterComponent,
     SettingsEmailComponent,
     RecoverEmailComponent,
-    ReferralProgramComponent,
     ContestComponent,
     ExtendAskBidComponent,
     OnlyNumberDirective

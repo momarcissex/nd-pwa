@@ -16,7 +16,7 @@ export class Transaction {
         address: {
             city: string,
             country: string,
-            line1: string,
+            street: string,
             line2: string,
             postal_code: string,
             province: string,

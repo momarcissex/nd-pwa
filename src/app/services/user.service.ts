@@ -120,7 +120,7 @@ export class UserService {
 
     if (isBuying) {
       return userRef.set({
-        shippingAddress: {
+        shipping_address: {
           buying: data
         }
       }, { merge: true })
@@ -133,7 +133,7 @@ export class UserService {
         });
     } else {
       return userRef.set({
-        shippingAddress: {
+        shipping_address: {
           selling: data
         }
       }, { merge: true })

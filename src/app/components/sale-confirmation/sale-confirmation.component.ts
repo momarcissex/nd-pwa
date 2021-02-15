@@ -69,7 +69,7 @@ export class SaleConfirmationComponent implements OnInit {
   }
 
   goToSettings() {
-    this.router.navigate(['/settings/shipping'], {
+    this.router.navigate(['/settings/shipping/selling'], {
       queryParams: { redirectURI: this.router.url }
     })
   }

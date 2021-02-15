@@ -39,7 +39,7 @@
         Details
       </td>
 
-      <td *ngIf="printOrderStatus(purchase.status, purchase.transaction_type purchase.payment_id) === 'shipped to buyer'" [routerLink]="['/transaction']"
+      <td *ngIf="printOrderStatus(purchase.status, purchase.transaction_type, purchase.payment_id) === 'shipped to buyer'" [routerLink]="['/transaction']"
         [queryParams]="{ transactionID: purchase.id, redirectTo: 'dashboard/purchases' }">Track</td>
     </tr>
   </table>

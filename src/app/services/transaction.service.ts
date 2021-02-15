@@ -59,7 +59,7 @@ export class TransactionService {
       ship_tracking: {
         address: {
           recipient: `${shippingInfo.first_name} ${shippingInfo.last_name}`,
-          line1: shippingInfo.street,
+          street: shippingInfo.street,
           line2: shippingInfo.line2,
           city: shippingInfo.city,
           province: shippingInfo.province,
@@ -272,7 +272,7 @@ export class TransactionService {
       ship_tracking: {
         address: {
           recipient: ``,
-          line1: '',
+          street: '',
           line2: '',
           city: '',
           province: '',
@@ -439,19 +439,19 @@ export class TransactionService {
       purchaseDate: Date.now(),
       payment_id,
       shipping_cost,
-      shipTracking: {
+      ship_tracking: {
         address: {
           recipient: `${shippingInfo.first_name} ${shippingInfo.last_name}`,
-          line1: shippingInfo.street,
+          street: shippingInfo.street,
           line2: shippingInfo.line2,
           city: shippingInfo.city,
           province: shippingInfo.province,
-          postalCode: shippingInfo.postal_code,
+          postal_code: shippingInfo.postal_code,
           country: shippingInfo.country
         },
         label: '',
         carrier: '',
-        trackingID: ''
+        tracking_id: ''
 
       }
     });
@@ -500,44 +500,10 @@ export class TransactionService {
   public removeFreeShipping() {
     this.auth.isConnected().then(res => {
       this.afs.collection(`users`).doc(`${res.uid}`).set({
-        freeShipping: firebase.firestore.FieldValue.delete()
+        free_shipping: firebase.firestore.FieldValue.delete()
       }, { merge: true }).catch(err => {
         console.error(err);
       })
     });
-  }
-
-  public async confirmOrder(transactionID: string) {
-    return this.afs.collection(`transactions`).doc(`${transactionID}`).update({
-      'status.sellerConfirmation': true
-    }).then(() => {
-      return true;
-    }).catch(() => {
-      return false;
-    })
-  }
-
-  public async cancelOrder(transactionID: string, transactionData: Transaction, isSeller: boolean) {
-    let cancellationNote: string;
-
-    if (isSeller) {
-      cancellationNote = 'Seller cancelled the order';
-    } else {
-      cancellationNote = 'Buyer cancelled the order';
-    }
-
-    return this.afs.collection(`transactions`).doc(`${transactionID}`).set({
-      status: {
-        cancelled: true
-      },
-      cancellationNote
-    }, { merge: true }).then(() => {
-      transactionData.cancellation_note = cancellationNote;
-      transactionData.status.cancelled = true;
-      this.http.post(`${environment.cloud.url}orderCancellation`, transactionData).subscribe();
-      return true;
-    }).catch(() => {
-      return false;
-    })
   }
 }

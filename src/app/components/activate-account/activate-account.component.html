@@ -2,12 +2,15 @@
 
 <div class="main-container">
   <section class="content-container">
-    <fa-icon *ngIf="good" [icon]="['fas', 'check-circle']"></fa-icon>
+
+    <fa-icon id="loading" *ngIf="!good && !error" [icon]="faCircleNotch" [spin]="true"></fa-icon>
+
+    <fa-icon *ngIf="good" [icon]="faCheckCircle"></fa-icon>
     <h3 *ngIf="good">Account Activated</h3>
 
     <h6 *ngIf="good">Thank you for choosing NXTDROP.</h6>
 
-    <fa-icon *ngIf="error" class="error-icon" [icon]="['fas', 'exclamation-circle']"></fa-icon>
+    <fa-icon *ngIf="error" class="error-icon" [icon]="faExclamationCircle"></fa-icon>
 
     <h3 *ngIf="error">Error</h3>
 
