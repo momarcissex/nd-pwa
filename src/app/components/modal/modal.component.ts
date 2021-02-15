@@ -95,11 +95,6 @@ export class ModalComponent implements OnInit {
               'event_category': 'exp001',
               'event_label': `${this.router.url}`
             })
-          } else if (this.globals.exp001_version == 'exp001d') {
-            gtag('event', 'exp001d_close_btn', {
-              'event_category': 'exp001',
-              'event_label': `${this.router.url}`
-            })
           }
         }
       }
@@ -214,17 +209,10 @@ export class ModalComponent implements OnInit {
             this.subscribed = true;
 
             /** Track email capture */
-            if (this.globals.exp001_version == 'exp001c') {
-              gtag('event', 'exp001c_email_capture', {
-                'event_category': 'exp001',
-                'event_label': `${this.router.url}`
-              })
-            } else if (this.globals.exp001_version == 'exp001d') {
-              gtag('event', 'exp001d_email_capture', {
-                'event_category': 'exp001',
-                'event_label': `${this.router.url}`
-              })
-            }
+            gtag('event', 'exp001c_email_capture', {
+              'event_category': 'exp001',
+              'event_label': `${this.router.url}`
+            })
 
             setTimeout(() => {
               this.close()
@@ -398,11 +386,6 @@ export class ModalComponent implements OnInit {
         })
       } else if (this.globals.exp001_version == 'exp001c') {
         gtag('event', 'exp001c_view', {
-          'event_category': 'exp001',
-          'event_label': `${this.router.url}`
-        })
-      } else if (this.globals.exp001_version == 'exp001d') {
-        gtag('event', 'exp001d_view', {
           'event_category': 'exp001',
           'event_label': `${this.router.url}`
         })

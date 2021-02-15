@@ -1,38 +1,9 @@
 <section class="modal" id="modal">
 
-    <!-- EXP #001 Pop-Ups -->
+    <!-- EXP #001 Pop-Ups Rerun -->
 
-    <!-- Pop-Up #1: Duties and Taxes -->
+    <!-- Pop-Up #1: Buy and Sell Sneakers in Canada -->
     <div class="exp001-card" *ngIf="exp001_version == 'exp001a'">
-        <div class="card-body">
-
-            <div class="image">
-
-            </div>
-
-            <div class="content">
-                <div class="card-top">
-
-                    <div class="close-icon">
-                        <fa-icon [icon]="faTimes" (click)="close('exp001')"></fa-icon>
-                    </div>
-
-                </div>
-
-                <h2>Never Pay Duties & Import Taxes Again</h2>
-
-                <h6>Visit our Marketplace to Buy and Sell Sneakers</h6>
-
-                <div>
-                    <button class="btn" (click)="redirect('home', 'exp001')">Visit Marketplace</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Pop-Up #2: Buy and Sell Sneakers in Canada -->
-    <div class="exp001-card" *ngIf="exp001_version == 'exp001b'">
         <div class="card-body">
 
             <div class="image">
@@ -60,8 +31,8 @@
         </div>
     </div>
 
-    <!-- Pop-Up #3: New Releases -->
-    <div class="exp001-card" *ngIf="exp001_version == 'exp001c'">
+    <!-- Pop-Up #2: New Releases -->
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001b'">
         <div class="card-body">
 
             <div class="image">
@@ -79,29 +50,18 @@
 
                 <h2>Never Miss New Releases on NXTDROP</h2>
 
-                <h6>Subscribe to our Newsletter</h6>
+                <h6>Visit our Marketplace to Buy and Sell Sneakers</h6>
 
                 <div>
-                    <input type="text" name="email" id="subscription-email" placeholder="Email Address">
-                </div>
-
-                <div>
-                    <button class="btn" *ngIf="!subscribeLoading && !subscribeError && !subscribed"
-                        (click)="subscribe()">Subscribe</button>
-
-                    <button class="btn" *ngIf="subscribeLoading">Subscribing...</button>
-
-                    <button class="btn error" *ngIf="subscribeError">Error</button>
-
-                    <button class="btn" *ngIf="subscribed">Subscribed</button>
+                    <button class="btn" (click)="redirect('home', 'exp001')">Visit Marketplace</button>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- Pop-Up #4: Promotional Offers -->
-    <div class="exp001-card" *ngIf="exp001_version == 'exp001d'">
+    <!-- Pop-Up #3: Promotional Offers -->
+    <div class="exp001-card" *ngIf="exp001_version == 'exp001c'">
         <div class="card-body">
 
             <div class="image">

@@ -61,8 +61,6 @@ export class Globals {
             this.exp001_version = 'exp001b'
         } else if (draw == 2) {
             this.exp001_version = 'exp001c'
-        } else {
-            this.exp001_version = 'exp001d'
         }
     }
 
@@ -70,7 +68,7 @@ export class Globals {
      *  Pick a configuration for exp003
      */
     pickExp003Config() {
-        const draw = Math.floor(Math.random() * Math.floor(6))
+        const draw = Math.floor(Math.random() * Math.floor(4))
 
         if (draw == 0) {
             this.exp003_version = 'config1'
@@ -80,10 +78,6 @@ export class Globals {
             this.exp003_version = 'config3'
         } else if (draw == 3) {
             this.exp003_version = 'config4'
-        } else if (draw == 4) {
-            this.exp003_version = 'config5'
-        } else if (draw == 5) {
-            this.exp003_version = 'config6'
         }
     }
 
