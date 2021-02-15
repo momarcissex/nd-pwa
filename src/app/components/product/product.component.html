@@ -162,7 +162,7 @@
     <div class="bid" *ngFor="let bid of user_bids">
       <h4>{{ bid.size }}</h4>
       <p>{{ bid.price | currency: 'CAD' : 'symbol' : '1.0-0' }}</p>
-      <a class="btn" [routerLink]="['/edit-offer', bid.offer_id" [queryParams]="{ source: 'product/' + bid.product_id }" (click)="trackUpdateClick(false)">Update</a>
+      <a class="btn" [routerLink]="['/edit-offer', bid.offer_id]" [queryParams]="{ source: 'product/' + bid.product_id }" (click)="trackUpdateClick(false)">Update</a>
     </div>
   </section>
 
