@@ -66,10 +66,23 @@ export class SearchComponent implements OnInit {
       element.focus();
       this.activatedRoute.queryParams.subscribe(data => {
         this.queryParam = data.q;
+
+        const category = data.category as string
+        const size = data.size as string
+
+        if (category != undefined) {
+          this.categorySelected = category;
+        }
+
+        if (size != undefined) {
+          this.sizeSelected = size;
+        }
+
         (element as HTMLInputElement).value = this.queryParam;
+
+        this.index = this.algoliaClient.initIndex(environment.algolia.index);
+        this.search(true);
       });
-      this.index = this.algoliaClient.initIndex(environment.algolia.index);
-      this.search(true);
     }
   }
 

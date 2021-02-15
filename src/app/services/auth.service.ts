@@ -52,10 +52,7 @@ export class AuthService {
   async signOut(redirect: boolean) {
     await this.afAuth.signOut()
       .then(() => {
-        this.globals.uid = undefined
-        this.globals.user_data = undefined
-        this.globals.user_subscription.unsubscribe()
-
+        this.globals.userSignedOut()
         window.Intercom('shutdown')
         window.Intercom("boot", {
           app_id: "w1p7ooc8"
@@ -233,6 +230,8 @@ export class AuthService {
             "user_hash": data.hash
           });
         });
+
+        this.globals.userLoggedIn()
 
         return true;
       })
@@ -415,15 +414,18 @@ export class AuthService {
 
   updateLastActivity(userID: string, IP: string) {
     const date = Date.now()
-    this.afs.collection('users').doc(`${userID}`).set({
-      last_login: date,
-      last_known_ip_address: IP
-    }, { merge: true });
 
-    this.http.patch(`${environment.cloud.url}updateContact`, {
-      uid: userID,
-      last_login: date,
-      mode: 'login'
-    })
+    if (IP != undefined) {
+      this.afs.collection('users').doc(`${userID}`).set({
+        last_login: date,
+        last_known_ip_address: IP
+      }, { merge: true });
+
+      this.http.patch(`${environment.cloud.url}updateContact`, {
+        uid: userID,
+        last_login: date,
+        mode: 'login'
+      })
+    }
   }
 }

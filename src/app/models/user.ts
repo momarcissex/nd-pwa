@@ -1,18 +1,18 @@
 export interface User {
     creation_date: number;
     email: string;
-    firstName: string;
-    isActive: boolean;
-    lastName: string;
+    firstName?: string;
+    first_name: string;
+    isActive?: boolean;
+    is_active: boolean;
+    lastName?: string;
+    last_name: string;
     listed: number;
     offers: number;
     ordered: number;
     sold: number;
-    is_active: boolean;
     uid: string;
     username: string;
-    first_name: string;
-    last_name: string;
 
     // Optional
     dob?: string
@@ -46,4 +46,5 @@ export interface User {
         timestamp: number;
         viewed: number;
     }
+    recently_viewed?: Array<string>;
 }

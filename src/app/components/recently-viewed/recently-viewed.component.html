@@ -2,8 +2,8 @@
     <h2>Recently Viewed</h2>
 
     <section class="products-container">
-        <a class="product-container" *ngFor="let product of recently_viewed" [routerLink]="['/product', product.productID]" (click)="clickTracking(product.productID)">
-            <img src="{{ product.assetURL }}" alt="{{ product.model }}">
+        <a class="product-container" *ngFor="let product of recently_viewed" [routerLink]="['/product', product.product_id]" (click)="clickTracking(product.product_id)">
+            <img src="{{ product.asset_url }}" alt="{{ product.model }}">
             <h4>{{ product.model }}</h4>
         </a>
     </section>

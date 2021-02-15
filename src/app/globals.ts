@@ -26,27 +26,7 @@ export class Globals {
     load() {
         this.pickExp001PopUp()
         this.pickExp003Config()
-
-        return this.auth.authState.pipe(first()).toPromise().then(res => {
-            if (res != undefined) {
-                this.uid = res.uid
-
-                this.updateUserInfo()
-
-                return this.afs.collection('users').doc(this.uid).get().pipe(
-                    map(user => this.user_data = user.data() as User),
-                    first()
-                ).toPromise()
-                    .then(() => {
-                        return this.ipService.getIPAddress().pipe(
-                            map((data: any) => this.user_ip = data.ip),
-                            first()
-                        ).toPromise()
-                    })
-            }
-        }).catch(err => {
-            this.slack.sendAlert('bugreport', err)
-        })
+        return this.userLoggedIn()
     }
 
     /**
@@ -88,5 +68,34 @@ export class Globals {
         this.user_subscription = this.afs.collection('users').doc(this.uid).valueChanges().subscribe(res => {
             this.user_data = res as User
         })
+    }
+
+    userLoggedIn() {
+        return this.auth.authState.pipe(first()).toPromise().then(res => {
+            if (res != undefined) {
+                this.uid = res.uid
+
+                this.updateUserInfo()
+
+                return this.afs.collection('users').doc(this.uid).get().pipe(
+                    map(user => this.user_data = user.data() as User),
+                    first()
+                ).toPromise()
+                    .then(() => {
+                        return this.ipService.getIPAddress().pipe(
+                            map((data: any) => this.user_ip = data.ip),
+                            first()
+                        ).toPromise()
+                    })
+            }
+        }).catch(err => {
+            this.slack.sendAlert('bugreport', err)
+        })
+    }
+
+    userSignedOut() {
+        this.uid = undefined
+        this.user_data = undefined
+        this.user_subscription.unsubscribe()
     }
 }
