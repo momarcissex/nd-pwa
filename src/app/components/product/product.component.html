@@ -152,7 +152,7 @@
     <div class="listing" *ngFor="let ask of user_asks">
       <h4>{{ ask.size }}</h4>
       <p>{{ ask.price | currency: 'CAD' : 'symbol' : '1.0-0' }}</p>
-      <a class="btn" [routerLink]="['/edit-listing', ask.listingID]" [queryParams]="{ source: 'product/' + ask.productID}" (click)="trackUpdateClick(true)">Update</a>
+      <a class="btn" [routerLink]="['/edit-listing', ask.listing_id]" [queryParams]="{ source: 'product/' + ask.product_id" (click)="trackUpdateClick(true)">Update</a>
     </div>
   </section>
 
@@ -162,7 +162,7 @@
     <div class="bid" *ngFor="let bid of user_bids">
       <h4>{{ bid.size }}</h4>
       <p>{{ bid.price | currency: 'CAD' : 'symbol' : '1.0-0' }}</p>
-      <a class="btn" [routerLink]="['/edit-offer', bid.offerID]" [queryParams]="{ source: 'product/' + bid.productID}" (click)="trackUpdateClick(false)">Update</a>
+      <a class="btn" [routerLink]="['/edit-offer', bid.offer_id" [queryParams]="{ source: 'product/' + bid.product_id" (click)="trackUpdateClick(false)">Update</a>
     </div>
   </section>
 
