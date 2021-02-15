@@ -109,20 +109,20 @@ export class DashboardComponent implements OnInit {
     }
 
     if (status.cancelled) {
-      if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && !status.shipped && !status.delivered) return 'authentication failed'
-      else return 'cancelled'
+      if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && !status.shipped && !status.delivered) return 'Authentication Failed'
+      else return 'Cancelled'
     } else if (!status.shipped_for_verification && status.seller_confirmation && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
-      return 'waiting for seller to ship'
+      return 'Waiting for Seller to Ship'
     } else if (status.shipped_for_verification && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
-      return 'en route to NXTDROP'
+      return 'Shipped to NXTDROP'
     } else if (status.shipped_for_verification && status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
-      return 'delivered to NXTDROP'
+      return 'Awaiting Authentication'
     } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && !status.shipped && !status.delivered && !status.cancelled) {
-      return 'authentication passed'
+      return 'Authentication Aassed'
     } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && status.shipped && !status.delivered && !status.cancelled) {
-      return 'shipped to buyer'
+      return 'Shipped to You'
     } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && status.shipped && status.delivered && !status.cancelled) {
-      return 'delivered to buyer'
+      return 'Delivered'
     }
   }
 

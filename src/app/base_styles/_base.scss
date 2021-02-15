@@ -22,6 +22,10 @@ $productContainerHeight: calc(100vh - #{$navHeight});
   }
 }
 
+input[type=text], input[type=button] {
+  -webkit-appearance: none;
+  }
+
 .free-shipping {
   text-align: center;
   background: $black;
