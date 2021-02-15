@@ -15,6 +15,7 @@ import { BidService } from 'src/app/services/bid.service';
 import { User } from 'firebase';
 import { faBox, faCircleNotch, faEnvelope, faLink, faMoneyBillWave, faTag } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare const gtag: any;
 
@@ -100,7 +101,8 @@ export class SellComponent implements OnInit {
     private title: Title,
     private slack: SlackService,
     @Inject(PLATFORM_ID) private _platformId: Object,
-    private meta: MetaService
+    private meta: MetaService,
+    public globals: Globals
   ) { }
 
   ngOnInit() {
@@ -121,12 +123,13 @@ export class SellComponent implements OnInit {
     });
 
     // check if the user is connected and redirect if not
-    this.auth.isConnected().then(res => {
-      if (!(res === null)) {
-        this.user = res;
+    if (this.globals.uid != undefined) {
+      this.auth.isConnected().then(res => {
+        
+        this.user = res
 
         // redirect is phone number verification not verified
-        if (res.phoneNumber === undefined && res.email != "momarcisse0@gmail.com") {
+        if (res.phoneNumber == undefined && res.email != "momarcisse0@gmail.com") {
           if (this.activatedRoute.snapshot.queryParams.sneaker) {
             this.router.navigate(['../phone-verification'], {
               queryParams: { redirectTo: `product/${this.selectedPair.product_id}` }
@@ -137,8 +140,8 @@ export class SellComponent implements OnInit {
             });
           }
         }
-      }
-    });
+      })
+    }
   }
 
   submitListing() {
@@ -166,6 +169,22 @@ export class SellComponent implements OnInit {
             'event_label': this.selectedPair.model,
             'event_value': this.pairPrice
           });
+
+          if (this.globals.exp001_version != undefined) {
+            gtag('event', `${this.globals.exp001_version}_ask_placed`, {
+              'event_category': 'exp001',
+              'event_label': `${this.selectedPair.model}`,
+              'event_value': `${this.pairPrice}`
+            })
+          }
+
+          if (this.globals.exp003_version != undefined) {
+            gtag('event', `${this.globals.exp003_version}_ask_placed`, {
+              'event_category': 'exp003',
+              'event_label': `${this.selectedPair.model}`,
+              'event_value': `${this.pairPrice}`
+            })
+          }
         }
 
         if (res) {

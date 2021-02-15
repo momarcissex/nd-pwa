@@ -19,14 +19,14 @@ export class MetaService {
   addTags(pageTitle: string, product?: Product) {
     if (product === undefined) {
       this.meta.addTags([
-        { name: `title`, content: `${pageTitle} | NXTDROP: No Fakes, No Duties` },
+        { name: `title`, content: `${pageTitle} | NXTDROP: Buy and Sell Sneakers in Canada` },
         { name: `description`, content: 'Buy and sell sneakers online in Canada. NXTDROP is 100% Canadian-based so you never have to worry about duty and all the items are 100% verified authentic or you get a 100% refund. Buy and sell the latest Nike, adidas, Jordan and the hottest sneakers in the market.' },
-        { name: `keywords`, content: 'nxtdrop, next drop, stockx canada, goat canada, consignment canada, sneakers canada, deadstock, jordans, yeezys, adidas' },
-        { property: `og:title`, content: `${pageTitle} | NXTDROP: No Fakes, No Duties` },
+        { name: `keywords`, content: 'nxtdrop, next drop, buy, sell, sneakers, adidas yeezy, retro jordans, canada' },
+        { property: `og:title`, content: `${pageTitle} | NXTDROP: Buy and Sell Sneakers in Canada` },
         { property: `og:url`, content: 'https://nxtdrop.com/' },
         { property: `og:image`, content: 'https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/CarouselDuplicata3.png?alt=media&token=4b96304e-b8c9-4761-8154-bdf27591c4c5' },
         { property: `og:description`, content: 'Buy and sell sneakers online in Canada. NXTDROP is 100% Canadian-based so you never have to worry about duty and all the items are 100% verified authentic or you get a 100% refund. Buy and sell the latest Nike, adidas, Jordan and the hottest sneakers in the market.' },
-        { property: `twitter:title`, content: `${pageTitle} | NXTDROP: No Fakes, No Duties` },
+        { property: `twitter:title`, content: `${pageTitle} | NXTDROP: Buy and Sell Sneakers in Canada` },
         { property: `twitter:card`, content: 'summary_large_image' },
         { property: `twitter:image`, content: 'https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/CarouselDuplicata3.png?alt=media&token=4b96304e-b8c9-4761-8154-bdf27591c4c5' },
         { property: `twitter:description`, content: 'Buy and sell sneakers online in Canada. NXTDROP is 100% Canadian-based so you never have to worry about duty and all the items are 100% verified authentic or you get a 100% refund. Buy and sell the latest Nike, adidas, Jordan and the hottest sneakers in the market.' }
@@ -35,7 +35,7 @@ export class MetaService {
       this.meta.addTags([
         { name: 'title', content: `${product.model} | NXTDROP` },
         { name: 'description', content: `Buy and sell authentic ${product.model} and other ${product.brand} sneakers in Canada. No duty fees and all the items are 100% verified authentic or you get 100% refund.` },
-        { name: 'keywords', content: `${product.model}, ${product.brand}, colorway ${product.colorway}, sneakers canada` },
+        { name: 'keywords', content: `nxtdrop, next drop, buy, sell, sneakers, adidas yeezy, retro jordans, canada, ${product.model}, ${product.brand}, colorway ${product.colorway}, sneakers` },
         { property: 'og:title', content: `${product.model}` },
         { property: 'og:url', content: `https://nxtdropcom/product/${product.product_id}` },
         { property: 'og:image', content: `${product.asset_url}` },
@@ -55,7 +55,7 @@ export class MetaService {
         { property: 'product:locale', content: `en_CA` },
       ], true);
 
-      if (!isNullOrUndefined(product.lowest_price)) {
+      if (!(product.lowest_price == null || product.lowest_price == undefined)) {
         this.meta.addTags([
           { property: 'og:price:amount', content: `${product.lowest_price}.00` },
           { property: 'product:price:amount', content: `${product.lowest_price}.00` },

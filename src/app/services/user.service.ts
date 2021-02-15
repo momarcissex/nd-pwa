@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { auth } from 'firebase/app';
 import { AuthService } from './auth.service';
 import { Ask } from '../models/ask';
+import { Globals } from '../globals';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class UserService {
   constructor(
     private afs: AngularFirestore,
     private http: HttpClient,
-    private auth: AuthService
+    private auth: AuthService,
+    private globals: Globals
   ) { }
 
   getUserInfo(uid: string): Observable<User> {
@@ -216,4 +218,44 @@ export class UserService {
       else return this.afs.collection(`users`).doc(`${UID}`).collection(`offers`, ref => ref.orderBy('last_updated', 'asc').startAfter(startAfter).limit(60)).get()
     }
   }
+
+  public addToRecentlyViewed(product_id: string, user_id: string) {
+    let recently_viewed = this.globals.user_data.recently_viewed
+
+    if (recently_viewed != undefined) {
+      recently_viewed.reverse()
+      if (recently_viewed.includes(product_id)) {
+        const index = recently_viewed.indexOf(product_id)
+        recently_viewed.splice(index, 1)
+        recently_viewed.push(product_id)
+      } else if (recently_viewed.length == 8) {
+        recently_viewed.reverse()
+        recently_viewed.pop()
+        recently_viewed.reverse()
+        recently_viewed.push(product_id)
+      } else {
+        recently_viewed.push(product_id)
+      }
+
+      recently_viewed.reverse()
+      return this.afs.collection('users').doc(user_id).set({
+        recently_viewed
+      }, { merge: true })
+    } else {
+      console.log('undefined')
+      return this.afs.collection('users').doc(user_id).set({
+        recently_viewed: [product_id]
+      }, { merge: true })
+    }
+  }
+
+  exp002(uid: string) {
+    return this.afs.collection('users').doc(uid).set({
+      exp002: {
+        timestamp: Date.now(),
+        viewed: true
+      }
+    }, { merge: true })
+  }
+
 }

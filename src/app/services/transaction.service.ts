@@ -11,6 +11,8 @@ import { Bid } from '../models/bid';
 import { User } from '../models/user';
 import { Ask } from '../models/ask';
 import { NxtdropCC } from '../models/nxtdrop_cc';
+import { Globals } from '../globals';
+import { ActivityService } from './activity.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -23,7 +25,9 @@ export class TransactionService {
     private afs: AngularFirestore,
     private auth: AuthService,
     private http: HttpClient,
-    private slack: SlackService
+    private slack: SlackService,
+    private activityService: ActivityService,
+    private globals: Globals
   ) { }
 
   /**
@@ -184,15 +188,26 @@ export class TransactionService {
       })
     }
 
-    //update product trending score
-    batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(7)
-    })
+    // track if item purchased is a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(product.product_id)) {
+      gtag('event', 'purchase_recently_viewed', {
+        'event_category': 'exp004',
+        'event_label': product.product_id
+      })
+    }
+
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'sale', {
+        'event_category': "landing_page",
+        'event_label': this.globals.landing_page
+      })
+    }
 
     //commit the transaction
     return batch.commit()
       .then(() => {
-        //console.log('Transaction Approved');
+        this.activityService.logActivity(product.product_id, 'purchase')
 
         //send alert to slack
         this.slack.sendAlert('sales', `${UID} bought ${product.model}, size ${product.size} at ${product.price} from ${product.seller_id}`).catch(err => {
@@ -213,21 +228,6 @@ export class TransactionService {
           'event_value': product.price
         });
 
-        gtag('event', 'purchase', {
-          'transaction_id': transactionID,
-          'value': total,
-          'currency': 'CAD',
-          'shipping': shipping_cost,
-          'items': [{
-            'id': product.product_id,
-            'name': product.model,
-            'brand': product.brand,
-            'category': 'sneaker',
-            'quantity': 1,
-            'price': product.price
-          }]
-        });
-
         //send event to facebook pixel
         fbq('track', 'Purchase', {
           content_ids: [`${product.product_id}`],
@@ -238,6 +238,22 @@ export class TransactionService {
           num_items: 1,
           value: product.price + shipping_cost
         })
+
+        if (this.globals.exp003_version != undefined) {
+          gtag('event', `${this.globals.exp003_version}_purchase`, {
+            'event_category': `exp003`,
+            'event_label': `${product.model}`,
+            'event_value': `${product.price}`
+          })
+        }
+
+        if (this.globals.exp001_version != undefined) {
+          gtag('event', `${this.globals.exp001_version}_purchase`, {
+            'event_category': 'exp001',
+            'event_label': `${product.model}`,
+            'event_value': `${product.price}`
+          })
+        }
 
         if (product.listing_id === size_prices[0].listing_id && size_prices[1] != undefined) {
           this.http.put(`${environment.cloud.url}lowestAskNotification`, {
@@ -260,8 +276,9 @@ export class TransactionService {
 
   /**
    * Create a transaction when a seller accepts a bid
-   * UID: seller's user ID
-   * product: buyer's Bid
+   * @param UID the seller's user ID
+   * @param product the buyer's Bid
+   * @returns a promise contaning a boolean when the transaction failed and the transaction's ID if sucessful
    */
   async sellTransactionApproved(UID: string, product: Bid): Promise<string | boolean> {
     const batch = firebase.firestore().batch()
@@ -394,15 +411,26 @@ export class TransactionService {
       })
     }
 
-    //update product trending score
-    batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(7)
-    })
+    // track if bid accepted on a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(product.product_id)) {
+      gtag('event', 'bid_accepted_recently_viewed', {
+        'event_category': 'exp004',
+        'event_label': product.product_id
+      })
+    }
+
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'bid_accepted', {
+        'event_category': "landing_page",
+        'event_label': this.globals.landing_page
+      })
+    }
 
     //commit the transaction
     return batch.commit()
       .then(() => {
-        //console.log('Transaction Approved');
+        this.activityService.logActivity(product.product_id, 'purchase')
 
         //send alert to slack
         this.slack.sendAlert('sales', `${UID} sold ${product.model}, size ${product.size} at ${product.price} to ${product.buyer_id}`).catch(err => {
@@ -415,6 +443,34 @@ export class TransactionService {
           'event_label': product.model,
           'event_value': product.price
         });
+
+        if (this.globals.exp001_version != undefined) {
+          if (this.globals.exp001_version == 'exp001a') {
+            gtag('event', 'exp001a_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${product.model}`,
+              'event_value': `${product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001b') {
+            gtag('event', 'exp001b_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${product.model}`,
+              'event_value': `${product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001c') {
+            gtag('event', 'exp001c_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${product.model}`,
+              'event_value': `${product.price}`
+            })
+          } else if (this.globals.exp001_version == 'exp001d') {
+            gtag('event', 'exp001d_bid_accepted', {
+              'event_category': 'exp001',
+              'event_label': `${product.model}`,
+              'event_value': `${product.price}`
+            })
+          }
+        }
 
         if (product.offer_id === size_prices[0].offer_id && size_prices[1] != undefined) {
           this.http.put(`${environment.cloud.url}highestBidNotification`, {
@@ -439,14 +495,16 @@ export class TransactionService {
 
   /**
    * Update a transaction when a buyer checkout after his bid was accepted
-   * payment_id: the id from paypal representing the payment
-   * shipping_cost: amount paid for shipping
-   * transaction_id: id of transaction
-   * discount: amount discounted from total
-   * discountCardID: ID of discount card used to make purchase
+   * @param userID the buyer's user ID
+   * @param paymentID the id from paypal representing the payment
+   * @param shippingInfo the buyer's shipping address
+   * @param shippingCost amount paid for shipping
+   * @param transaction_id the transaction's ID
+   * @param discount the discount card used during this transaction (Optional)
+   * @returns a promise contaning a boolean when the transaction failed and the transaction's ID if sucessful
    */
-  async updateTransaction(userID: string, payment_id: string, shippingInfo: User['shipping_address']['buying'], shipping_cost: number, transaction_id: string, discount?: NxtdropCC): Promise<string | boolean> {
-    const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transaction_id}`); //transaction doc ref
+  async updateTransaction(userID: string, transaction: Transaction, payment_id: string, shippingInfo: User['shipping_address']['buying'], shipping_cost: number, discount?: NxtdropCC): Promise<string | boolean> {
+    const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transaction.id}`); //transaction doc ref
     const batch = firebase.firestore().batch();
 
     //update transaction doc
@@ -495,7 +553,42 @@ export class TransactionService {
     return batch.commit()
       .then(() => {
         //console.log('Transaction Approved');
-        return transaction_id; //return transaction_id
+
+        //send event to google analytics
+        gtag('event', 'item_bought', {
+          'event_category': 'ecommerce',
+          'event_label': transaction.item.model,
+          'event_value': transaction.item.price
+        });
+
+        //send event to facebook pixel
+        fbq('track', 'Purchase', {
+          content_ids: [`${transaction.item.product_id}`],
+          content_name: transaction.item.model,
+          content_type: 'sneaker',
+          contents: [{ 'id': `${transaction.item.product_id}`, 'quantity': '1' }],
+          currency: 'CAD',
+          num_items: 1,
+          value: transaction.item.price + shipping_cost
+        })
+
+        if (this.globals.exp003_version != undefined) {
+          gtag('event', `${this.globals.exp003_version}_purchase`, {
+            'event_category': `exp003`,
+            'event_label': `${transaction.item.model}`,
+            'event_value': `${transaction.item.price}`
+          })
+        }
+
+        if (this.globals.exp001_version != undefined) {
+          gtag('event', `${this.globals.exp001_version}_purchase`, {
+            'event_category': 'exp001',
+            'event_label': `${transaction.item.model}`,
+            'event_value': `${transaction.item.price}`
+          })
+        }
+
+        return transaction.id; //return transaction_id
       })
       .catch(err => {
         //console.error(err);

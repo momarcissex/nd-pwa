@@ -18,6 +18,7 @@ import { BidService } from 'src/app/services/bid.service';
 import { NxtdropCC } from 'src/app/models/nxtdrop_cc';
 import { NxtdropCcService } from 'src/app/services/nxtdrop-cc.service';
 import { faCheckCircle, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { Globals } from 'src/app/globals';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -90,7 +91,8 @@ export class CheckoutComponent implements OnInit {
     private tranService: TransactionService,
     private askService: AskService,
     private bidService: BidService,
-    private nxtdropCCService: NxtdropCcService
+    private nxtdropCCService: NxtdropCcService,
+    private globals: Globals
   ) { }
 
   ngOnInit() {
@@ -193,9 +195,9 @@ export class CheckoutComponent implements OnInit {
           }
         } else {
           if (this.promoApplied) {
-            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shipping_address.buying, this.shipping_price, this.tID, this.discount);
+            transaction = this.tranService.updateTransaction(this.user.uid, this.product as Transaction, data.id, this.user.shipping_address.buying, this.shipping_price, this.discount);
           } else {
-            transaction = this.tranService.updateTransaction(this.user.uid, data.id, this.user.shipping_address.buying, this.shipping_price, this.tID);
+            transaction = this.tranService.updateTransaction(this.user.uid, this.product as Transaction, data.id, this.user.shipping_address.buying, this.shipping_price);
           }
         }
         transaction.then(res => {
@@ -301,7 +303,7 @@ export class CheckoutComponent implements OnInit {
           gtag('event', 'begin_checkout', {
             'event_category': 'ecommerce',
             'event_label': this.product.model
-          });
+          })
 
           if (!(user === undefined)) {
             this.updateLastCartItem(this.product_id, this.product.size, user)

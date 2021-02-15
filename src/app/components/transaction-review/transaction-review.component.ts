@@ -107,26 +107,6 @@ export class TransactionReviewComponent implements OnInit {
             }
           ]
         })
-        /*gtag('require', 'ecommerce', 'ecommerce.js')
-
-        gtag('ecommerce:addTransaction', {
-          'id':`${this.transaction.id}`,
-          'revenue':`${this.transaction.total}`,
-          'shipping':`${this.transaction.shippingCost}`,
-          'currency':'CAD'
-        })
-
-        gtag('ecommerce:addItem', {
-          'id':`${this.transaction.id}`,
-          'name':`${this.transaction.item.model}`,
-          'sku':`${this.transaction.item.product_id}`,
-          'category':`sneaker`,
-          'price':`${this.transaction.item.price}`,
-          'quantity':`1`,
-          'currency':'CAD'
-        })
-
-        gtag('ecommerce:send')*/
       }
     });
   }
@@ -170,7 +150,7 @@ export class TransactionReviewComponent implements OnInit {
   }*/
 
   trackOrder() {
-    window.open(`https://www.canadapost.ca/trackweb/en#/search?searchFor=${this.transaction.ship_tracking.tracking_id}`)
+    window.open(`https://www.canadapost.ca/track-reperage/en#/details/${this.transaction.ship_tracking.tracking_id}`)
   }
 
 }

@@ -51,4 +51,15 @@ export class HomeService {
     return this.afs.collection('products', ref => ref.where('collections', 'array-contains', collection_id).orderBy('release_date', 'desc')).valueChanges() as Observable<Product[]>;
   }
 
+  public getUpcomingReleases() {
+    let t = new Date();
+    const dd = String(t.getDate()).padStart(2, '0');
+    const mm = String(t.getMonth() + 1).padStart(2, '0');
+    const yyyy = t.getFullYear();
+    const today = `${yyyy}-${mm}-${dd}`;
+
+    const upcoming_releases = this.afs.collection(`products`, ref => ref.where(`yearMade`, `>`, `${today}`).orderBy(`yearMade`, `asc`).limit(10));
+    return upcoming_releases.get();
+  }
+
 }

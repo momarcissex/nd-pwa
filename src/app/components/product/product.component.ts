@@ -1,7 +1,6 @@
-import { Component, OnInit, NgZone, PLATFORM_ID, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, PLATFORM_ID, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 import { ProductService } from 'src/app/services/product.service';
-import { AuthService } from 'src/app/services/auth.service';
 import { Title } from '@angular/platform-browser';
 import { Product } from 'src/app/models/product';
 import { MetaService } from 'src/app/services/meta.service';
@@ -10,6 +9,13 @@ import { AskService } from 'src/app/services/ask.service';
 import { BidService } from 'src/app/services/bid.service';
 import { faFacebookF, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faLink } from '@fortawesome/free-solid-svg-icons';
+import { ModalService } from 'src/app/services/modal.service';
+import { UserService } from 'src/app/services/user.service';
+import { SlackService } from 'src/app/services/slack.service';
+import { Globals } from 'src/app/globals';
+import { Ask } from 'src/app/models/ask';
+import { Bid } from 'src/app/models/bid';
+import { ActivityService } from 'src/app/services/activity.service';
 
 declare const gtag: any;
 declare const fbq: any;
@@ -26,7 +32,7 @@ export class ProductComponent implements OnInit {
   faEnvelope = faEnvelope
   faLink = faLink
 
-  productID: string
+  product_id: string
 
   default_sizes: { [key: string]: string[] } = {
     'M': ['US3', 'US3.5', 'US4', 'US4.5', 'US5', 'US5.5', 'US6', 'US6.5', 'US7', 'US7.5', 'US8', 'US8.5', 'US9', 'US9.5', 'US10', 'US10.5', 'US11', 'US11.5', 'US12', 'US12.5', 'US13', 'US13.5', 'US14', 'US14.5', 'US15', 'US15.5', 'US16', 'US16.5', 'US17', 'US18'],
@@ -61,52 +67,51 @@ export class ProductComponent implements OnInit {
 
   UID: string
 
+  user_asks: Ask[] = []
+  user_bids: Bid[] = []
+
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private auth: AuthService,
     private router: Router,
     private title: Title,
     private seo: MetaService,
     private ngZone: NgZone,
     private askService: AskService,
     private bidService: BidService,
+    private modalService: ModalService,
+    private userService: UserService,
+    private slackService: SlackService,
+    public globals: Globals,
+    private activityService: ActivityService,
     @Inject(PLATFORM_ID) private platform_id: Object
   ) { }
 
-  async ngOnInit() {
-    //console.log('oninit start')
-    this.productID = this.route.snapshot.params.id;
+  ngOnInit() {
+    this.product_id = this.route.snapshot.params.id;
 
-    this.auth.isConnected().then((res) => {
-      //console.log('isConnected start')
-      if (!(res === undefined)) {
-        this.UID = res.uid;
-      }
-      //console.log('isConnected end')
-    });
+    if (this.globals.uid != undefined) this.UID = this.globals.uid
 
-    await this.getItemInformation()
+    if (this.globals.uid != undefined && this.globals.user_data.exp002 == undefined) {
+      setTimeout(() => {
+        this.modalService.openModal('exp002')
+        this.userService.exp002(this.UID).catch(err => {
+          this.slackService.sendAlert('bugreport', err)
+        })
+      }, 5000);
+    }
 
-    this.getSizeSuffix();
-    //console.log('oninit end')
+    this.getItemInformation()
+    this.getSizeSuffix()
+    this.getUserAsks()
+    this.getUserBids()
+    this.addToRecentlyViewed()
+
+    this.activityService.logActivity(this.product_id, 'product_view')      // Log activity
   }
 
-  /*addToCart(listing) {
-    this.productService.addToCart(listing).then(res => {
-      if (res) {
-        // console.log('Added to cart');
-      } else {
-        // console.log('Cannot add to cart');
-      }
-    });
-  }*/
-
-  async getItemInformation() {
-    //console.log('getItemInformation start')
-    this.productService.getProductInfo(this.productID).subscribe(data => {
-      console.log('getProductInfo start')
-      console.log(data)
+  getItemInformation() {
+    this.productService.getProductInfo(this.product_id).subscribe(data => {
       if (data === undefined) {
         this.router.navigate([`page-not-found`]);
       } else {
@@ -116,11 +121,11 @@ export class ProductComponent implements OnInit {
           this.seo.addTags('Product', data);
 
           fbq('track', 'ViewContent', {
-            content_ids: [`${this.productID}`],
+            content_ids: [`${this.product_id}`],
             content_category: '187',
             content_name: `${data.model}`,
             content_type: 'product',
-            contents: [{ 'id': `${this.productID}`, 'quantity': '1' }],
+            contents: [{ 'id': `${this.product_id}`, 'quantity': '1' }],
           })
         }
 
@@ -130,7 +135,6 @@ export class ProductComponent implements OnInit {
       if (this.offers.length === 0) {
         this.getOffers();
       }
-      //console.log('getProductInfo end')
     });
   }
 
@@ -138,31 +142,17 @@ export class ProductComponent implements OnInit {
     const patternW = new RegExp(/.+\-W$/);
     const patternGS = new RegExp(/.+\-GS$/);
 
-    if (patternW.test(this.productID.toUpperCase())) {
-      //console.log('Woman Size');
+    if (patternW.test(this.product_id.toUpperCase())) {
       this.sizeSuffix = 'W';
-    } else if (patternGS.test(this.productID.toUpperCase())) {
-      //console.log(`GS size`);
+    } else if (patternGS.test(this.product_id.toUpperCase())) {
       this.sizeSuffix = 'Y';
     }
-  }
-
-  async countView() {
-    //console.log('countView start')
-    if (!(this.UID == null || this.UID == undefined)) {
-      this.productService.countView(this.productID).then(() => {
-        //console.log('view count updated')
-      }).catch(err => {
-        console.error(err);
-      })
-    }
-
-    //console.log('countView end')
   }
 
   buyNow(listing) {
     const data = JSON.stringify(listing);
     clearTimeout(this.modalTimeout);
+
     this.ngZone.run(() => {
       this.router.navigate([`../../checkout`], {
         queryParams: { product: data, sell: false }
@@ -182,36 +172,29 @@ export class ProductComponent implements OnInit {
   share(social: string) {
     if (isPlatformBrowser(this.platform_id)) {
 
-      this.productService.shareCount(this.productInfo.product_id).then(() => {
-        //console.log('trending score update')
-      })
-        .catch(err => {
-          console.error(err)
-        })
-
       if (social === 'fb') {
-        window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.productID}&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
+        window.open(`https://www.facebook.com/sharer/sharer.php?app_id=316718239101883&u=https://nxtdrop.com/product/${this.product_id}&display=popup&ref=plugin`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
         gtag('event', 'share_product_fb', {
           'event_category': 'engagement',
           'event_label': this.productInfo.model
         });
         return false;
       } else if (social === 'twitter') {
-        window.open(`https://twitter.com/intent/tweet?text=Check out the ${this.productInfo.model} available on @nxtdrop https://nxtdrop.com/product/${this.productID}`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
+        window.open(`https://twitter.com/intent/tweet?text=Check out the ${this.productInfo.model} available on @nxtdrop https://nxtdrop.com/product/${this.product_id}`, 'popup', 'width=600,height=600,scrollbars=no,resizable=no');
         gtag('event', 'share_product_twitter', {
           'event_category': 'engagement',
           'event_label': this.productInfo.model
         });
         return false;
       } else if (social === 'mail') {
-        window.location.href = `mailto:?subject=Check out the ${this.productInfo.model} available on NXTDROP&body=Hey, I just came across the ${this.productInfo.model} and thought you'd be interested. Check it out here https://nxtdrop.com/product/${this.productID}`;
+        window.location.href = `mailto:?subject=Check out the ${this.productInfo.model} available on NXTDROP&body=Hey, I just came across the ${this.productInfo.model} and thought you'd be interested. Check it out here https://nxtdrop.com/product/${this.product_id}`;
         gtag('event', 'share_product_mail', {
           'event_category': 'engagement',
           'event_label': this.productInfo.model
         });
         return false;
       } else if (social === 'copy_link') {
-        this.copyStringToClipboard(`https://nxtdrop.com/product/${this.productID}`);
+        this.copyStringToClipboard(`https://nxtdrop.com/product/${this.product_id}`);
         gtag('event', 'share_news_link', {
           'event_category': 'engagement',
           'event_label': this.productInfo.model
@@ -243,7 +226,6 @@ export class ProductComponent implements OnInit {
   }
 
   getOffers() {
-    //console.log('getOffers start')
     let suffix: string;
     let shoeSizes: Array<string> | Array<number>;
     this.offers.length = 0
@@ -266,8 +248,6 @@ export class ProductComponent implements OnInit {
       }
     }
 
-    //console.log(this.sizes[suffix]);
-    //console.log(this.productInfo.sizes)
     if (!(this.productInfo.sizes === undefined)) {
       shoeSizes = this.productInfo.sizes
     } else {
@@ -285,10 +265,10 @@ export class ProductComponent implements OnInit {
         size = ele
       }
 
-      this.bidService.getHighestBid(`${this.productID}`, 'new', size).then(bidData => {
+      this.bidService.getHighestBid(`${this.product_id}`, 'new', size).then(bidData => {
         bidData.empty ? bid = undefined : bid = bidData.docs[0].data()
 
-        this.askService.getLowestAsk(`${this.productID}`, 'new', size).then(askData => {
+        this.askService.getLowestAsk(`${this.product_id}`, 'new', size).then(askData => {
           askData.empty ? ask = undefined : ask = askData.docs[0].data()
 
           const data = {
@@ -318,12 +298,10 @@ export class ProductComponent implements OnInit {
           if (shoeSizes.length === this.offers.length) {
             this.currentOffer.LowestAsk = this.lowestAsk;
             this.currentOffer.HighestBid = this.highestBid;
-            this.countView()
           }
         });
       });
     });
-    //console.log('getOffers end')
   }
 
   selectSize(selected: any) {
@@ -354,6 +332,59 @@ export class ProductComponent implements OnInit {
       alert('Please select a size')
     } else {
       alert('Please select a size below')
+    }
+  }
+
+  addToRecentlyViewed() {
+    this.userService.addToRecentlyViewed(this.product_id, this.UID).catch(err => {
+      console.error(err)
+    })
+  }
+
+  /**
+   * Get the user's asks for this product if any
+   */
+  getUserAsks(): void {
+    this.productService.getUserAsks(this.product_id, this.UID).subscribe(res => {
+      res.docs.forEach(ele => {
+        this.user_asks.push(ele.data() as Ask)
+      })
+    })
+  }
+
+  /**
+   * Get the user's bids for this product if any
+   */
+  getUserBids(): void {
+    this.productService.getUserBids(this.product_id, this.UID).subscribe(res => {
+      res.docs.forEach(ele => {
+        this.user_bids.push(ele.data() as Bid)
+      })
+    })
+  }
+
+  /**
+   * Scroll to a given element
+   * @param id the element's ID
+   */
+  scrollTo(id: string): void {
+    const ele = document.getElementById(id)
+    ele.scrollIntoView()
+
+    return;
+  }
+
+  trackUpdateClick(isAsk: boolean) {
+    if (isAsk) {
+      gtag('event', 'prod_page_ask_update_click', {
+        'event_category': 'engagement',
+        'event_label': this.productInfo.model
+      })
+    } else {
+      gtag('event', 'prod_page_bid_update_click', {
+        'event_category': 'engagement',
+        'event_label': this.productInfo.model
+      })
     }
   }
 

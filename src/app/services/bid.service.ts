@@ -8,7 +8,10 @@ import * as firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Globals } from '../globals';
+import { ActivityService } from './activity.service';
 
+declare const gtag: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -19,8 +22,9 @@ export class BidService {
   constructor(
     private afs: AngularFirestore,
     private auth: AuthService,
-    private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private activityService: ActivityService,
+    private globals: Globals
   ) { }
 
   public getBid(offer_id): Observable<Bid> {
@@ -72,11 +76,22 @@ export class BidService {
     batch.set(offersValRef, {
       offers: firebase.firestore.FieldValue.increment(1)
     }, { merge: true })
-    
-    //update trending score
-    batch.update(this.afs.firestore.collection('products').doc(pair.product_id), {
-      trending_score: firebase.firestore.FieldValue.increment(0.46)
-    })
+
+    // track if bid was placed on a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(pair.product_id)) {
+      gtag('event', 'bid_placed_recently_viewed', {
+        'event_category': 'exp004',
+        'event_label': pair.product_id
+      })
+    }
+
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'bid_placed', {
+        'event_category': "landing_page",
+        'event_label': this.globals.landing_page
+      })
+    }
 
     // update highestBid in products Document
     return this.afs.collection('products').doc(`${pair.product_id}`).get().subscribe(res => {
@@ -90,7 +105,7 @@ export class BidService {
 
       return batch.commit()
         .then(() => {
-          //console.log('New Offer Added');
+          this.activityService.logActivity(pair.product_id, 'bid_placed')
 
           console.log(`size highest_bid: ${size_highest_bid} and price: ${price}`)
 
@@ -260,14 +275,10 @@ export class BidService {
       expiration_date
     })
 
-    //update trending score
-    batch.update(this.afs.firestore.collection('products').doc(bid.product_id), {
-      trending_score: firebase.firestore.FieldValue.increment(0.46)
-    })
-
     return batch.commit()
       .then(() => {
-        //console.log('Offer updated');
+        this.activityService.logActivity(bid.product_id, 'bid_placed')
+
         this.sendHighestBidNotification(price, bid.condition, bid.size, UID, bid.product_id, bid.offer_id, size_prices)
 
         this.bid_data = {

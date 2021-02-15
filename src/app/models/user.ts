@@ -1,12 +1,15 @@
 export interface User {
-    uid: string;
+    creation_date: number;
     email: string;
+    firstName: string;
+    isActive: boolean;
+    lastName: string;
     listed: number;
+    offers: number;
     ordered: number;
     sold: number;
-    offers: number;
     is_active: boolean;
-    creation_date: number;
+    uid: string;
     username: string;
     first_name: string;
     last_name: string;
@@ -38,5 +41,9 @@ export interface User {
             postal_code: string,
             country: string
         }
+    }
+    exp002?: {
+        timestamp: number;
+        viewed: number;
     }
 }

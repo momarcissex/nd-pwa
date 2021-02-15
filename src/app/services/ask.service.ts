@@ -7,7 +7,10 @@ import * as firebase from 'firebase/app';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Globals } from '../globals';
+import { ActivityService } from './activity.service';
 
+declare const gtag: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +21,9 @@ export class AskService {
   constructor(
     private afs: AngularFirestore,
     private auth: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private activityService: ActivityService,
+    private globals: Globals
   ) { }
 
   public getAsk(listing_id: string): Observable<Ask> {
@@ -103,8 +108,23 @@ export class AskService {
       //update sizes_lowest_ask and sizes_available
       batch.update(prodRef, {
         sizes_lowest_ask: data,
-        sizes_available: firebase.firestore.FieldValue.arrayUnion(size),
-        trending_score: firebase.firestore.FieldValue.increment(1)
+        sizes_available: firebase.firestore.FieldValue.arrayUnion(size)
+      })
+    }
+
+    // track if ask submited on a product from recently_viewed component
+    if (this.globals.recently_viewed_clicks.includes(pair.product_id)) {
+      gtag('event', 'ask_placed_recently_viewed', {
+        'event_category': 'exp004',
+        'event_label': pair.product_id
+      })
+    }
+
+    //track page user came from
+    if (this.globals.landing_page != undefined) {
+      gtag('event', 'ask_placed', {
+        'event_category': "landing_page",
+        'event_label': this.globals.landing_page
       })
     }
 
@@ -114,6 +134,8 @@ export class AskService {
         //console.log(`size_lowest: ${pair.sizes_lowest_ask[size]} and price: ${price}`)
 
         if (!(sizeLowestAskNotif == undefined || sizeLowestAskNotif == null)) sizeLowestAskNotif.subscribe()
+
+        this.activityService.logActivity(pair.product_id, 'ask_placed')
 
         this.http.post(`${environment.cloud.url}askNotification`, this.ask_data).subscribe() //send ask email
 
@@ -279,7 +301,7 @@ export class AskService {
 
     // update ask in user doc
     batch.update(userAskRef, {
-      condition: ask.condition,
+      xcondition: ask.condition,
       price: price,
       size: ask.size,
       last_updated,
@@ -295,15 +317,13 @@ export class AskService {
       expiration_date
     })
 
-    batch.update(prodRef, {
-      trending_score: firebase.firestore.FieldValue.increment(1)
-    })
-
     // commit the updates
     return batch.commit()
       .then(() => {
         //console.log('Listing updated');
         this.sendLowestAskNotification(price, ask.condition, ask.size, UID, ask.product_id, ask.listing_id, size_prices, product) //send new lowest ask notification if necessary
+
+        this.activityService.logActivity(ask.product_id, 'ask_placed')
 
         this.ask_data = {
           asset_url: ask.asset_url,
