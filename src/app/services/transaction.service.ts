@@ -207,10 +207,25 @@ export class TransactionService {
         }).subscribe()
 
         //send event to google analytics
-        gtag('event', 'purchase', {
+        gtag('event', 'item_bought', {
           'event_category': 'ecommerce',
           'event_label': product.model,
           'event_value': product.price
+        });
+
+        gtag('event', 'purchase', {
+          'transaction_id': transactionID,
+          'value': total,
+          'currency': 'CAD',
+          'shipping': shipping_cost,
+          'items': [{
+            'id': product.product_id,
+            'name': product.model,
+            'brand': product.brand,
+            'category': 'sneaker',
+            'quantity': 1,
+            'price': product.price
+          }]
         });
 
         //send event to facebook pixel
