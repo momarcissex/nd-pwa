@@ -1206,8 +1206,8 @@ exports.lowestAskNotification = functions.https.onRequest((req, res) => {
                 .then(bids => {
                     console.log('getting bids...')
                     bids.docs.forEach(bid => {
-                        console.log(`getting buyer ${bid.data().buyerID}`)
-                        admin.firestore().collection(`users`).doc(`${bid.data().buyerID}`).get().then(user_data => {
+                        console.log(`getting buyer ${bid.data().buyer_id}`)
+                        admin.firestore().collection(`users`).doc(`${bid.data().buyer_id}`).get().then(user_data => {
                             const data = user_data.data();
 
                             if (!isNullOrUndefined(data) && req.body.seller_id !== data.uid && !buyer_list.includes(data.email)) {
@@ -1252,8 +1252,8 @@ exports.lowestAskNotification = functions.https.onRequest((req, res) => {
                 .then(asks => {
                     console.log('getting asks...')
                     asks.docs.forEach(ask => {
-                        console.log(`getting seller ${ask.data().sellerID}`)
-                        admin.firestore().collection(`users`).doc(`${ask.data().sellerID}`).get().then(user_data => {
+                        console.log(`getting seller ${ask.data().seller_id}`)
+                        admin.firestore().collection(`users`).doc(`${ask.data().seller_id}`).get().then(user_data => {
                             const data = user_data.data()
                             console.log(seller_list)
 
@@ -1439,7 +1439,7 @@ exports.askNotification = functions.https.onRequest((req, res) => {
     return cors(req, res, () => {
         const askData = req.body
 
-        return admin.firestore().collection('users').doc(askData.sellerID).get().then(response => {
+        return admin.firestore().collection('users').doc(askData.seller_id).get().then(response => {
             const userData = response.data()
 
             if (!isNullOrUndefined(userData)) {
@@ -1455,7 +1455,7 @@ exports.askNotification = functions.https.onRequest((req, res) => {
                         payment_processing: askData.price * .03,
                         seller_fee: askData.price * .085,
                         payout: askData.price * .885,
-                        assetURL: askData.assetURL
+                        assetURL: askData.asset_url
                     }
                 }
 
@@ -1473,7 +1473,7 @@ exports.askNotification = functions.https.onRequest((req, res) => {
                 return sgMail.send(msg).then((content: any) => {
                     console.log(`email sent to seller ${userData.username}`)
                 }).catch((err: any) => {
-                    console.error(err)
+                    console.error(`Couldn't send email to seller: ${err}`)
                 })
             }
         })
@@ -1484,7 +1484,7 @@ exports.bidNotification = functions.https.onRequest((req, res) => {
     return cors(req, res, () => {
         const bidData = req.body
 
-        return admin.firestore().collection('users').doc(bidData.buyerID).get().then(response => {
+        return admin.firestore().collection('users').doc(bidData.buyer_id).get().then(response => {
             const userData = response.data()
 
             if (!isNullOrUndefined(userData)) {
@@ -1499,7 +1499,7 @@ exports.bidNotification = functions.https.onRequest((req, res) => {
                         bid_amount: bidData.price,
                         shipping: 15,
                         total: bidData.price + 15,
-                        assetURL: bidData.assetURL
+                        assetURL: bidData.asset_url
                     }
                 }
 

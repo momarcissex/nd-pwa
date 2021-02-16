@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit {
       })
     }
 
-    this.afs.collection(`transactions`, ref => ref.where('status.cancelled', '==', false).orderBy(`purchaseDate`, `desc`).limit(1)).valueChanges().subscribe(res => {
+    this.afs.collection(`transactions`, ref => ref.where('status.cancelled', '==', false).orderBy(`purchase_date`, `desc`).limit(1)).valueChanges().subscribe(res => {
       res.forEach(ele => {
         this.lastSale = ele;
       });

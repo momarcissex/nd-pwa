@@ -40,7 +40,7 @@ export class HomeService {
   }
 
   public getLatestAsk() {
-    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(20)).valueChanges() as Observable<Ask[]>;
+    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(1000)).valueChanges() as Observable<Ask[]>;
   }
 
   public getLatestBid() {
@@ -58,7 +58,7 @@ export class HomeService {
     const yyyy = t.getFullYear();
     const today = `${yyyy}-${mm}-${dd}`;
 
-    const upcoming_releases = this.afs.collection(`products`, ref => ref.where(`yearMade`, `>`, `${today}`).orderBy(`yearMade`, `asc`).limit(10));
+    const upcoming_releases = this.afs.collection(`products`, ref => ref.where(`release_date`, `>`, `${today}`).orderBy(`release_date`, `asc`).limit(10));
     return upcoming_releases.get();
   }
 
