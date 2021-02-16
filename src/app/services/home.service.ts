@@ -21,7 +21,7 @@ export class HomeService {
     const today = `${yyyy}-${mm}-${dd}`;
     // console.log(today);
 
-    const newReleaseRef = this.afs.collection(`products`, ref => ref.where(`release_date`, `<=`, `${today}`).orderBy(`release_date`, `desc`).limit(50));
+    const newReleaseRef = this.afs.collection(`products`, ref => ref.where(`release_date`, `<=`, `${today}`).orderBy(`release_date`, `desc`).limit(20));
     return newReleaseRef.get();
   }
 
@@ -35,12 +35,12 @@ export class HomeService {
   }
 
   public getTrending() {
-    const trendingRef = this.afs.collection(`products`, ref => ref.orderBy(`trendingRank`, `asc`).limit(50));
+    const trendingRef = this.afs.collection(`products`, ref => ref.orderBy(`trending_score`, `desc`).limit(20));
     return trendingRef.get();
   }
 
   public getLatestAsk() {
-    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(1000)).valueChanges() as Observable<Ask[]>;
+    return this.afs.collection(`asks`, ref => ref.orderBy('created_at', 'desc').limit(20)).valueChanges() as Observable<Ask[]>;
   }
 
   public getLatestBid() {
