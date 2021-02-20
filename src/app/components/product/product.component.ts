@@ -116,7 +116,7 @@ export class ProductComponent implements OnInit {
         this.router.navigate([`page-not-found`]);
       } else {
         if (this.productInfo.asset_url === '') {
-          console.log('seo etc')
+          //console.log('seo etc')
           this.title.setTitle(`${data.model} - ${data.brand} | NXTDROP`);
           this.seo.addTags('Product', data);
 
@@ -337,7 +337,7 @@ export class ProductComponent implements OnInit {
 
   addToRecentlyViewed() {
     this.userService.addToRecentlyViewed(this.product_id, this.UID).catch(err => {
-      console.error(err)
+      //console.error(err)
     })
   }
 

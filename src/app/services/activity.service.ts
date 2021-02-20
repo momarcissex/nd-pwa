@@ -41,11 +41,11 @@ export class ActivityService {
           product_id: product_id
         })
           .subscribe(res => {
-            console.log(res)
+            //console.log(res)
           })
       })
       .catch(err => {
-        console.error(err)
+        //console.error(err)
       })
   }
 

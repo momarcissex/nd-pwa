@@ -305,34 +305,21 @@ export class CheckoutComponent implements OnInit {
             'event_label': this.product.model
           })
 
-          if (!(user === undefined)) {
-            this.updateLastCartItem(this.product_id, this.product.size, user)
+          if (this.user != undefined) {
+            this.updateLastCartItem(this.product_id, this.product.size, this.user)
 
-            if (user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
-              this.router.navigate(['/phone-verification'], {
-                queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
-              });
+            if (user != undefined) {
+              if (user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
+                this.router.navigate(['/phone-verification'], {
+                  queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
+                });
+              }
             }
           }
         }
 
-        if (user == undefined) {
-          this.showShipping()
-          this.showCheckoutBtns()
-        } else {
-          this.userService.getUserInfo(user.uid).subscribe(data => {
-            this.user = data
-            this.connected = true
-            this.showShipping()
-            this.showCheckoutBtns()
-
-            if (res.seller_id != 'eOoTdK5Z8IYbbHq7uOc9y8gis5h1' && res.seller_id != 'zNSB9cdIPTZykSJv7xCoTeueFmk2' && Date.now() <= 1609477200000) {
-              //console.log('work')
-              this.discounted = true
-              this.applyPromo()
-            }
-          })
-        }
+        this.showShipping()
+        this.showCheckoutBtns()
 
         fbq('track', 'InitiateCheckout', {
           content_category: 'sneaker',
@@ -367,7 +354,7 @@ export class CheckoutComponent implements OnInit {
           'event_label': res.model
         });
 
-        if (!(user === undefined) && user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
+        if (user != undefined && user.phoneNumber === undefined && this.route.snapshot.queryParams.product != undefined && this.isSelling && user.email != 'admin@nxtdrop.com') {
           this.router.navigate(['/phone-verification'], {
             queryParams: { redirectTo: `product/${res.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
           });
@@ -493,39 +480,45 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  updateLastCartItem(product_id: string, size: string, user: firebase.User) {
+  updateLastCartItem(product_id: string, size: string, user: User) {
     this.userService.updateLastCartItem(user.uid, product_id, size);
   }
 
   private isUserConnected() {
-    this.auth.isConnected().then(res => {
-      if (!(res === undefined)) {
-        if (!(this.tID === undefined)) {
-          this.checkUserAndTransaction(this.tID, res.uid);
-        } else {
-          if (this.isSelling != 'true') {
-            this.isSelling = false;
+    if (this.globals.user_data != undefined) {
+      this.user = this.globals.user_data
+
+      if (!(this.tID === undefined)) {
+        this.checkUserAndTransaction(this.tID, this.user.uid);
+      } else {
+        if (this.isSelling != 'true') {
+          this.isSelling = false;
+
+          this.auth.isConnected().then(res => {
             this.getListing(this.route.snapshot.queryParams.product, res);
             this.initConfig();
-          } else {
-            this.isSelling = true;
-            this.getOffer(this.route.snapshot.queryParams.product, res);
-          }
-        }
-      } else {
-        if (!(this.tID === undefined)) {
-          this.checkUserAndTransaction(this.tID);
+          })
         } else {
-          if (this.isSelling != 'true') {
-            this.getListing(this.route.snapshot.queryParams.product);
-            this.isSelling = false;
-          } else {
-            this.isSelling = true;
-            this.getOffer(this.route.snapshot.queryParams.product);
-          }
+          this.isSelling = true;
+
+          this.auth.isConnected().then(res => {
+            this.getOffer(this.route.snapshot.queryParams.product, res);
+          })
         }
       }
-    });
+    } else {
+      if (!(this.tID === undefined)) {
+        this.checkUserAndTransaction(this.tID);
+      } else {
+        if (this.isSelling != 'true') {
+          this.getListing(this.route.snapshot.queryParams.product);
+          this.isSelling = false;
+        } else {
+          this.isSelling = true;
+          this.getOffer(this.route.snapshot.queryParams.product);
+        }
+      }
+    }
   }
 
   editShipping() {
@@ -565,7 +558,7 @@ export class CheckoutComponent implements OnInit {
   showCheckoutBtns() {
     this.showContinueShipping = this.showPaypal = this.showEditAsk = this.showEditBid = this.showConfirmSale = this.showConfirmPurchase = this.showLoginBtns = false
 
-    if (!this.connected) {
+    if (this.user == undefined) {
       this.showLoginBtns = true
     } else {
       if (!(this.tID === undefined)) {

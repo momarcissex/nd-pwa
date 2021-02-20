@@ -129,7 +129,7 @@ export class SellComponent implements OnInit {
         this.user = res
 
         // redirect is phone number verification not verified
-        if (res.phoneNumber == undefined && res.email != "momarcisse0@gmail.com") {
+        if (res.phoneNumber == undefined && res.email != "momarcisse0@gmail.com" && res.email != 'admin@nxtdrop.com') {
           if (this.activatedRoute.snapshot.queryParams.sneaker) {
             this.router.navigate(['../phone-verification'], {
               queryParams: { redirectTo: `product/${this.selectedPair.product_id}` }

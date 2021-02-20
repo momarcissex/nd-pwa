@@ -42,7 +42,7 @@ exports.orderCancellation = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
@@ -65,7 +65,7 @@ exports.orderCancellation = functions.https.onRequest((req, res) => {
                         subtotal: req.body.price,
                         shipping,
                         total: req.body.total,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.asset_url,
                         link: '',
                         cancellationNote: req.body.cancellationNote
                     }
@@ -83,7 +83,7 @@ exports.orderCancellation = functions.https.onRequest((req, res) => {
             console.error(`error sending buyer email`);
         });
 
-        admin.firestore().collection(`users`).doc(`${req.body.sellerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.seller_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
@@ -101,7 +101,7 @@ exports.orderCancellation = functions.https.onRequest((req, res) => {
                         model: req.body.model,
                         size: req.body.size,
                         condition: req.body.condition,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.asset_url,
                         fee: fee,
                         processing: processing,
                         payout: payout,
@@ -131,7 +131,7 @@ exports.sendShippingLabel = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        return admin.firestore().collection(`users`).doc(`${req.body.sellerID}`).get().then(response => {
+        return admin.firestore().collection(`users`).doc(`${req.body.seller_id}`).get().then(response => {
             const data = response.data();
 
             if (data) {
@@ -151,12 +151,12 @@ exports.sendShippingLabel = functions.https.onRequest((req, res) => {
                         model: req.body.model,
                         size: req.body.size,
                         condition: req.body.condition,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.asset_url,
                         fee: fee,
                         processing: processing,
                         payout: payout,
                         price: req.body.price,
-                        label: req.body.shipTracking.label
+                        label: req.body.ship_tracking.label
                     }
                 }
 
@@ -184,12 +184,11 @@ exports.offerAcceptedReminder = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        return admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        return admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const total = req.body.price + req.body.shippingCost;
-                const transactionID = `${req.body.buyerID}-${req.body.sellerID}-${req.body.purchaseDate}`;
+                const total = req.body.item.price + req.body.shipping_cost;
 
                 console.log(`Order Email Buyer to ${email}.`);
 
@@ -198,14 +197,14 @@ exports.offerAcceptedReminder = functions.https.onRequest((req, res) => {
                     from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-1470cf9fcbd74918b5ce0c78db3005d2',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        subtotal: req.body.price,
-                        shipping: req.body.shippingCost,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        subtotal: req.body.item.price,
+                        shipping: req.body.shipping_cost,
                         total: total,
-                        assetURL: req.body.assetURL,
-                        link: `https://nxtdrop.com/checkout?tID=${transactionID}`
+                        assetURL: req.body.item.asset_url,
+                        link: `https://nxtdrop.com/checkout?tID=${req.body.id}`
                     }
                 }
 
@@ -233,7 +232,7 @@ exports.orderDelivered = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        return admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        return admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
 
             if (data) {
@@ -255,7 +254,7 @@ exports.orderDelivered = functions.https.onRequest((req, res) => {
                         subtotal: req.body.price,
                         shipping: req.body.shippingCost,
                         total: total,
-                        assetURL: req.body.assetURL
+                        assetURL: req.body.asset_url
                     }
                 }
 
@@ -283,16 +282,16 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
             let trackingURL;
 
-            switch (req.body.shipTracking.carrier) {
+            switch (req.body.ship_tracking.carrier) {
                 case 'UPS':
-                    trackingURL = `http://theupsstore.ca/track/${req.body.shipTracking.trackingID}`;
+                    trackingURL = `http://theupsstore.ca/track/${req.body.ship_tracking.tracking_id}`;
                     break;
                 case 'Canada Post':
-                    trackingURL = `https://www.canadapost.ca/track-reperage/en#/details/${req.body.shipTracking.trackingID}`;
+                    trackingURL = `https://www.canadapost.ca/track-reperage/en#/details/${req.body.ship_tracking.tracking_id}`;
                     break;
                 default:
                     break;
@@ -301,7 +300,7 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
             if (data) {
                 //const email = data.email;
                 const email = data.email;
-                const total = req.body.price + req.body.shippingCost;
+                const total = req.body.item.price + req.body.shipping_cost;
 
                 console.log(`VerifiedShipped Email Buyer to ${email}.`);
 
@@ -310,13 +309,13 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
                     from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-80bb3123058f4d39b130b8e54510fd54',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        subtotal: req.body.price,
-                        shipping: req.body.shippingCost,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        subtotal: req.body.item.price,
+                        shipping: req.body.shipping_cost,
                         total: total,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.item.aseet_url,
                         trackingURL: trackingURL
                     }
                 }
@@ -333,13 +332,13 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
             console.error(`error sending buyer email`);
         });
 
-        admin.firestore().collection(`users`).doc(`${req.body.sellerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.seller_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.085;
-                const processing = req.body.price * 0.03;
-                const payout = req.body.price - fee - processing;
+                const fee = req.body.item.price * 0.085;
+                const processing = req.body.item.price * 0.03;
+                const payout = req.body.item.price - fee - processing;
 
                 console.log(`VerifiedShipped Email Seller to ${email}.`);
 
@@ -349,14 +348,14 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
                     bcc: { email: 'nxtdrop.com+e17f9774a6@invite.trustpilot.com' },
                     templateId: 'd-41bb9f19ad2344f8b585ce6c1948a820',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        assetURL: req.body.assetURL,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        assetURL: req.body.item.asset_url,
                         fee: fee,
                         processing: processing,
                         payout: payout,
-                        price: req.body.price
+                        price: req.body.item.price
                     }
                 }
 
@@ -382,13 +381,13 @@ exports.verifiedFailed = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
 
             if (data) {
                 //const email = data.email;
                 const email = data.email;
-                const total = req.body.price + req.body.shippingCost;
+                const total = req.body.item.price + req.body.shipping_cost;
 
                 console.log(`VerifiedFailed Email Buyer to ${email}.`);
 
@@ -397,13 +396,13 @@ exports.verifiedFailed = functions.https.onRequest((req, res) => {
                     from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-ab08e34c230b4e8b8370ff5090810bfa',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        subtotal: req.body.price,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        subtotal: req.body.item.price,
                         shipping: req.body.shippingCost,
                         total: total,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.item.asset_url,
                     }
                 }
 
@@ -419,13 +418,13 @@ exports.verifiedFailed = functions.https.onRequest((req, res) => {
             console.error(`error sending buyer email`);
         });
 
-        admin.firestore().collection(`users`).doc(`${req.body.sellerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.seller_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.085;
-                const processing = req.body.price * 0.03;
-                const payout = req.body.price - fee - processing;
+                const fee = req.body.item.price * 0.085;
+                const processing = req.body.item.price * 0.03;
+                const payout = req.body.item.price - fee - processing;
 
                 console.log(`VerifiedFailed Email Seller to ${email}.`);
 
@@ -434,14 +433,14 @@ exports.verifiedFailed = functions.https.onRequest((req, res) => {
                     from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-83cd9d7140b34bc7ae3bb1c5781c2315',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        assetURL: req.body.assetURL,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        assetURL: req.body.item.asset_url,
                         fee: fee,
                         processing: processing,
                         payout: payout,
-                        price: req.body.price
+                        price: req.body.item.price
                     }
                 }
 
@@ -467,11 +466,11 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const total = req.body.price + req.body.shippingCost;
+                const total = req.body.item.price + req.body.shipping_cost;
                 const est_arrival = `${new Date(Date.now() + (86400000 * 21)).toLocaleString("en-CA", { day: "2-digit", month: "2-digit", year: "numeric" })} - ${new Date(Date.now() + (86400000 * 28)).toLocaleString("en-CA", { day: "2-digit", month: "2-digit", year: "numeric" })}`
 
                 console.log(`Order Email Buyer to ${email}.`);
@@ -481,13 +480,13 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                     from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-e920cad3da0d4e0b8f77501bdabe1d54',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        subtotal: req.body.price,
-                        shipping: req.body.shippingCost,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        subtotal: req.body.item.price,
+                        shipping: req.body.shipping_cost,
                         total,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.item.asset_url,
                         est_arrival,
                         link: ''
                     }
@@ -516,13 +515,13 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
             console.error(`error sending buyer email`);
         });
 
-        return admin.firestore().collection(`users`).doc(`${req.body.sellerID}`).get().then(response => {
+        return admin.firestore().collection(`users`).doc(`${req.body.seller_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.085;
-                const processing = req.body.price * 0.03;
-                const payout = req.body.price - fee - processing;
+                const fee = req.body.item.price * 0.085;
+                const processing = req.body.item.price * 0.03;
+                const payout = req.body.item.price - fee - processing;
                 const transactionID = `${req.body.id}`;
 
                 console.log(`Order Email Seller to ${email}.`);
@@ -532,14 +531,14 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                     from: { email: 'orders@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-3cb6d3dae09a4697b153d93e1fb15ab4',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        assetURL: req.body.assetURL,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        assetURL: req.body.item.asset_url,
                         fee: fee,
                         processing: processing,
                         payout: payout,
-                        sellerID: req.body.sellerID,
+                        sellerID: req.body.seller_id,
                         tid: ''
                     }
                 }
@@ -573,11 +572,11 @@ exports.productShipment = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        return admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        return admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const total = req.body.price + req.body.shippingCost;
+                const total = req.body.item.price + req.body.shipping_cost;
 
                 console.log(`Product Shipment Email to ${email}. body: ${JSON.stringify(req.body)}`);
 
@@ -586,13 +585,13 @@ exports.productShipment = functions.https.onRequest((req, res) => {
                     from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-f3cb1b96abc148ca963c4ffac9b5c2c4',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        subtotal: req.body.price,
-                        shipping: req.body.shippingCost,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        subtotal: req.body.item.price,
+                        shipping: req.body.shipping_cost,
                         total: total,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.item.asset_url,
                     }
                 }
 
@@ -823,7 +822,7 @@ exports.newPassword = functions.https.onRequest((req, res) => {
 
 // Algolia Update
 exports.indexProducts = functions.firestore
-    .document('products/{productID}')
+    .document('products/{product_id}')
     .onCreate((snap, context) => {
         const data = snap.data()
         const objectID = snap.id
@@ -836,7 +835,7 @@ exports.indexProducts = functions.firestore
     })
 
 exports.unindexProduct = functions.firestore
-    .document('products/{productID}')
+    .document('products/{product_id}')
     .onDelete((snap, context) => {
         const objectID = snap.id
 
@@ -845,7 +844,7 @@ exports.unindexProduct = functions.firestore
     });
 
 exports.editProduct = functions.firestore
-    .document('products/{productID}')
+    .document('products/{product_id}')
     .onUpdate((snap, context) => {
         const data = snap.after.data()
         const objectID = snap.after.id
@@ -975,7 +974,7 @@ exports.deliveredForVerification = functions.https.onRequest((req, res) => {
             return res.status(403).send();
         }
 
-        admin.firestore().collection(`users`).doc(`${req.body.buyerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.buyer_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
@@ -994,7 +993,7 @@ exports.deliveredForVerification = functions.https.onRequest((req, res) => {
                         subtotal: req.body.price,
                         shipping: req.body.shippingCost,
                         total: total,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.asset_url,
                         link: ''
                     }
                 }
@@ -1016,7 +1015,7 @@ exports.deliveredForVerification = functions.https.onRequest((req, res) => {
             console.error(`error sending buyer email`);
         });
 
-        admin.firestore().collection(`users`).doc(`${req.body.sellerID}`).get().then(response => {
+        admin.firestore().collection(`users`).doc(`${req.body.seller_id}`).get().then(response => {
             const data = response.data();
             if (data) {
                 const email = data.email;
@@ -1034,7 +1033,7 @@ exports.deliveredForVerification = functions.https.onRequest((req, res) => {
                         model: req.body.model,
                         size: req.body.size,
                         condition: req.body.condition,
-                        assetURL: req.body.assetURL,
+                        assetURL: req.body.asset_url,
                         subtotal: req.body.price,
                         fee: fee,
                         processing: processing,
@@ -1094,8 +1093,8 @@ exports.IntercomData = functions.https.onRequest((req, res) => {
                 return res.status(200).send(false);
             } else {
                 const data = {
-                    firstName: uData.firstName,
-                    lastName: uData.lastName,
+                    firstName: uData.first_name,
+                    lastName: uData.last_name,
                     hash: hash
                 }
 
@@ -1152,7 +1151,7 @@ exports.droppedCartReminder = functions.pubsub.schedule('every 15 minutes from 6
                         templateId: 'd-b7580434edad4bd7a66b8350f5ce4ca6',
                         dynamic_template_data: {
                             model: prod_data.model,
-                            assetURL: prod_data.assetURL,
+                            assetURL: prod_data.asset_url,
                             product_id: user_data.last_item_in_cart.product_id
                         }
                     }
@@ -1224,9 +1223,9 @@ exports.lowestAskNotification = functions.https.onRequest((req, res) => {
                                         bid_amount: bid.data().price,
                                         shipping: 15,
                                         total: bid.data().price + 15,
-                                        assetURL: bid.data().assetURL,
+                                        assetURL: bid.data().asset_url,
                                         lowest_ask: req.body.price,
-                                        update_bid: `https://nxtdrop.com/edit-offer/${bid.data().offerID}`,
+                                        update_bid: `https://nxtdrop.com/edit-offer/${bid.data().offer_id}`,
                                         buy_now: `https://nxtdrop.com/checkout?product=${req.body.listing_id}&sell=false`
                                     }
                                 }
@@ -1272,9 +1271,9 @@ exports.lowestAskNotification = functions.https.onRequest((req, res) => {
                                         payment_processing: ask.data().price * .03,
                                         seller_fee: ask.data().price * .085,
                                         payout: ask.data().price * .885,
-                                        assetURL: ask.data().assetURL,
+                                        assetURL: ask.data().asset_url,
                                         lowest_ask: req.body.price,
-                                        update_ask: `https://nxtdrop.com/edit-listing/${ask.data().listingID}`,
+                                        update_ask: `https://nxtdrop.com/edit-listing/${ask.data().listing_id}`,
                                         sell_now: `https://nxtdrop.com/product/${req.body.product_id}`
                                     }
                                 }
@@ -1319,8 +1318,8 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
                     //console.log('getting asks...')
 
                     asks.docs.forEach(ask => {
-                        //console.log(`getting seller ${ask.data().sellerID}`)
-                        admin.firestore().collection(`users`).doc(`${ask.data().sellerID}`).get().then(user_data => {
+                        //console.log(`getting seller ${ask.data().seller_id}`)
+                        admin.firestore().collection(`users`).doc(`${ask.data().seller_id}`).get().then(user_data => {
                             const data = user_data.data()
                             console.log(seller_list)
 
@@ -1339,9 +1338,9 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
                                         payment_processing: ask.data().price * .03,
                                         seller_fee: ask.data().price * .085,
                                         payout: ask.data().price * .885,
-                                        assetURL: ask.data().assetURL,
+                                        assetURL: ask.data().asset_url,
                                         highest_bid: req.body.price,
-                                        update_ask: `https://nxtdrop.com/edit-listing/${ask.data().listingID}`,
+                                        update_ask: `https://nxtdrop.com/edit-listing/${ask.data().listing_id}`,
                                         sell_now: `https://nxtdrop.com/checkout?product=${req.body.offer_id}&sell=true`
                                     }
                                 }
@@ -1369,8 +1368,8 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
                     //console.log(`getting bids...`)
 
                     bids.docs.forEach(bid => {
-                        //console.log(`getting buyer ${bid.data().buyerID}`)
-                        admin.firestore().collection(`users`).doc(`${bid.data().buyerID}`).get().then(user_data => {
+                        //console.log(`getting buyer ${bid.data().buyer_id}`)
+                        admin.firestore().collection(`users`).doc(`${bid.data().buyer_id}`).get().then(user_data => {
                             const data = user_data.data()
                             console.log(buyer_list)
 
@@ -1388,9 +1387,9 @@ exports.highestBidNotification = functions.https.onRequest((req, res) => {
                                         bid_amount: bid.data().price,
                                         shipping: 15,
                                         total: bid.data().price + 15,
-                                        assetURL: bid.data().assetURL,
+                                        assetURL: bid.data().asset_url,
                                         highest_bid: req.body.price,
-                                        update_bid: `https://nxtdrop.com/edit-offer/${bid.data().offerID}`,
+                                        update_bid: `https://nxtdrop.com/edit-offer/${bid.data().offer_id}`,
                                         buy_now: `https://nxtdrop.com/product/${req.body.product_id}`
                                     }
                                 }
@@ -1553,9 +1552,9 @@ exports.expiredAsk = functions.pubsub.schedule('every 5 minutes').timeZone('Amer
     return admin.firestore().collection('asks').where('expiration_date', '<=', date).limit(100).get()
         .then(response => {
             response.forEach(data => {
-                admin.firestore().collection('products').doc(data.get('productID')).collection('listings').doc(data.id).delete()
+                admin.firestore().collection('products').doc(data.get('product_id')).collection('listings').doc(data.id).delete()
                     .then(() => {
-                        admin.firestore().collection('users').doc(data.get('sellerID')).get()
+                        admin.firestore().collection('users').doc(data.get('seller_id')).get()
                             .then(user_response => {
                                 const user_data = user_response.data()
 
@@ -1565,7 +1564,7 @@ exports.expiredAsk = functions.pubsub.schedule('every 5 minutes').timeZone('Amer
                                         from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                                         templateId: 'd-d0caee4fa00a44299dedfee11e23f07d',
                                         dynamic_template_data: {
-                                            assetURL: data.data().assetURL,
+                                            assetURL: data.data().asset_url,
                                             model: data.data().model,
                                             size: data.data().size,
                                             condition: data.data().condition,
@@ -1573,7 +1572,7 @@ exports.expiredAsk = functions.pubsub.schedule('every 5 minutes').timeZone('Amer
                                             fee: data.data().price * .085,
                                             payment_processing: data.data().price * .03,
                                             payout: data.data().price * .885,
-                                            id: data.data().listingID
+                                            id: data.data().listing_id
                                         }
                                     }
 
@@ -1616,9 +1615,9 @@ exports.expiredBid = functions.pubsub.schedule('every 5 minutes').timeZone('Amer
     return admin.firestore().collection('bids').where('expiration_date', '<=', date).limit(100).get()
         .then(response => {
             response.forEach(data => {
-                admin.firestore().collection('products').doc(data.get('productID')).collection('offers').doc(data.id).delete()
+                admin.firestore().collection('products').doc(data.get('product_id')).collection('offers').doc(data.id).delete()
                     .then(() => {
-                        admin.firestore().collection('users').doc(data.get('buyerID')).get()
+                        admin.firestore().collection('users').doc(data.get('buyer_id')).get()
                             .then(user_response => {
                                 const user_data = user_response.data()
 
@@ -1628,14 +1627,14 @@ exports.expiredBid = functions.pubsub.schedule('every 5 minutes').timeZone('Amer
                                         from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                                         templateId: 'd-b94b8c957f90497b97824f849b415471',
                                         dynamic_template_data: {
-                                            assetURL: data.data().assetURL,
+                                            assetURL: data.data().asset_url,
                                             model: data.data().model,
                                             size: data.data().size,
                                             condition: data.data().condition,
                                             amount: data.data().price,
                                             shipping: 15,
                                             total: data.data().price + 15,
-                                            id: data.data().offerID
+                                            id: data.data().offer_id
                                         }
                                     }
 
@@ -1687,23 +1686,23 @@ exports.extendAskBid = functions.https.onRequest((req, res) => {
                     const new_date = Date.now()
 
                     const data = {
-                        assetURL: response.get('assetURL'),
+                        assetURL: response.get('asset_url'),
                         condition: response.get('condition'),
                         created_at: response.get('created_at'),
                         expiration_date: new_date + (86400000 * 30),
                         last_updated: new_date,
-                        listingID: response.get('listingID'),
+                        listingID: response.get('listing_id'),
                         model: response.get('model'),
                         price: response.get('price'),
-                        productID: response.get('productID'),
-                        sellerID: response.get('sellerID'),
+                        productID: response.get('product_id'),
+                        sellerID: response.get('seller_id'),
                         size: response.get('size')
                     }
 
                     if (response.exists) {
-                        batch.set(admin.firestore().collection('products').doc(response.get('productID')).collection('listings').doc(response.id), data)
+                        batch.set(admin.firestore().collection('products').doc(response.get('product_id')).collection('listings').doc(response.id), data)
                         batch.update(admin.firestore().collection('asks').doc(response.id), data)
-                        batch.update(admin.firestore().collection('users').doc(response.get('sellerID')).collection('listings').doc(response.id), data)
+                        batch.update(admin.firestore().collection('users').doc(response.get('seller_id')).collection('listings').doc(response.id), data)
 
                         return batch.commit()
                             .then(() => {
@@ -1728,23 +1727,23 @@ exports.extendAskBid = functions.https.onRequest((req, res) => {
                     const new_date = Date.now()
 
                     const data = {
-                        assetURL: response.get('assetURL'),
-                        buyerID: response.get('buyerID'),
+                        assetURL: response.get('asset_url'),
+                        buyerID: response.get('buyer_id'),
                         condition: response.get('condition'),
                         created_at: response.get('created_at'),
                         expiration_date: new_date + (86400000 * 30),
                         last_updated: new_date,
                         model: response.get('model'),
-                        offerID: response.get('offerID'),
+                        offerID: response.get('offer_id'),
                         price: response.get('price'),
-                        productID: response.get('productID'),
+                        productID: response.get('product_id'),
                         size: response.get('size')
                     }
 
                     if (response.exists) {
-                        batch.set(admin.firestore().collection('products').doc(response.get('productID')).collection('offers').doc(response.id), data)
+                        batch.set(admin.firestore().collection('products').doc(response.get('product_id')).collection('offers').doc(response.id), data)
                         batch.update(admin.firestore().collection('bids').doc(response.id), data)
-                        batch.update(admin.firestore().collection('users').doc(response.get('buyerID')).collection('offers').doc(response.id), data)
+                        batch.update(admin.firestore().collection('users').doc(response.get('buyer_id')).collection('offers').doc(response.id), data)
 
                         return batch.commit()
                             .then(() => {
@@ -1781,8 +1780,8 @@ exports.updateContact = functions.https.onRequest((req, res) => {
                 body: {
                     "contacts": [{
                         "email": req.body.email,
-                        "first_name": req.body.firstName,
-                        "last_name": req.body.lastName
+                        "first_name": req.body.first_name,
+                        "last_name": req.body.last_name
                     }]
                 }
             }
@@ -1960,7 +1959,7 @@ exports.daily_report = functions.pubsub.schedule('every day 00:00').timeZone('Am
                     bids = bid_response.docs.length
 
                     //get # of sales
-                    return admin.firestore().collection('transactions').where('purchaseDate', '>=', yesterday).where('purchaseDate', '<', today).get().then(sale_res => {
+                    return admin.firestore().collection('transactions').where('purchase_date', '>=', yesterday).where('purchase_date', '<', today).get().then(sale_res => {
                         sales = sale_res.docs.length
 
                         const payload = { "text": `Day ${new Date(yesterday).toISOString().slice(0, 10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }
@@ -2037,7 +2036,7 @@ exports.weekly_report = functions.pubsub.schedule('every monday 00:00').timeZone
                     bids = bid_res.docs.length
 
                     //get # of sales
-                    return admin.firestore().collection('transactions').where('purchaseDate', '>=', last_week).where('purchaseDate', '<', today).get().then(sale_res => {
+                    return admin.firestore().collection('transactions').where('purchase_date', '>=', last_week).where('purchase_date', '<', today).get().then(sale_res => {
                         sales = sale_res.docs.length
 
                         const payload = { "text": `Week ${new Date(last_week).toISOString().slice(0, 10)} to ${new Date(today).toISOString().slice(0, 10)}:\n# of Active Users: ${active_users}\n# of Sign Ups: ${sign_ups}\n# of Asks: ${asks}\n# of Bids: ${bids}\n# of Transactions: ${sales}` }

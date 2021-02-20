@@ -231,9 +231,12 @@ export class AuthService {
           });
         });
 
-        this.globals.userLoggedIn()
-
-        return true;
+        return this.globals.userLoggedIn().then(() => {
+          return true;
+        }).catch(error => {
+          this.signOut(false)
+          return false
+        })
       })
       .catch(error => {
         console.error('Error Login: Email or Password Invalid.');
