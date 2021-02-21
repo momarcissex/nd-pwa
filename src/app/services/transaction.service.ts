@@ -131,14 +131,16 @@ export class TransactionService {
     })
 
     //delete or update lowest_price
-    if (prices.length === 1) {
-      batch.update(prodRef, {
-        lowest_price: firebase.firestore.FieldValue.delete()
-      });
-    } else if (product.price === prices[0].price && prices[0].price != prices[1].price) {
-      batch.update(prodRef, {
-        lowest_price: prices[1].price
-      })
+    if (prices.length > 0) {
+      if (prices.length === 1) {
+        batch.update(prodRef, {
+          lowest_price: firebase.firestore.FieldValue.delete()
+        });
+      } else if (product.price === prices[0].price && prices[0].price != prices[1].price) {
+        batch.update(prodRef, {
+          lowest_price: prices[1].price
+        })
+      }
     }
 
     // delete listings
@@ -354,14 +356,16 @@ export class TransactionService {
     })
 
     //delete or update highest_bid
-    if (prices.length === 1) {
-      batch.update(prodRef, {
-        highest_bid: firebase.firestore.FieldValue.delete()
-      });
-    } else if (product.price === prices[0].price && prices[0].price != prices[1].price) {
-      batch.update(prodRef, {
-        highest_bid: prices[1].price
-      })
+    if (prices.length > 0) {
+      if (prices.length === 1) {
+        batch.update(prodRef, {
+          highest_bid: firebase.firestore.FieldValue.delete()
+        });
+      } else if (product.price === prices[0].price && prices[0].price != prices[1].price) {
+        batch.update(prodRef, {
+          highest_bid: prices[1].price
+        })
+      }
     }
 
     // delete listings

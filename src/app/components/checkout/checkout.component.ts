@@ -419,7 +419,7 @@ export class CheckoutComponent implements OnInit {
       }
     })
       .catch(err => {
-        //console.error(err);
+        console.error(err);
         this.router.navigate(['sold']);
       });
   }
