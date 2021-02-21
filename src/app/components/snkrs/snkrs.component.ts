@@ -16,7 +16,7 @@ class Question {
   templateUrl: './snkrs.component.html',
   styleUrls: ['./snkrs.component.scss']
 })
-export class SnkrsComponent implements OnInit, OnDestroy {
+export class SnkrsComponent implements OnInit {
 
   faMedal = faMedal
   faAsterisk = faAsterisk
@@ -83,7 +83,7 @@ export class SnkrsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.init();
+    /*this.init();
 
     this.title.setTitle('Name The SNKRS | NXTDROP: Buy and Sell Sneakers in Canada');
     this.meta.addTags([
@@ -98,10 +98,10 @@ export class SnkrsComponent implements OnInit, OnDestroy {
       { name: `twitter:card`, content: 'summary_large_image' },
       { name: `twitter:image`, content: 'https://firebasestorage.googleapis.com/v0/b/nxtdrop.appspot.com/o/CarouselDuplicata3.png?alt=media&token=4b96304e-b8c9-4761-8154-bdf27591c4c5' },
       { name: `twitter:description`, content: 'Play Name The SNKRS and win up to CA$200 in store credit. Canada\'s only online sneaker marketplace. The easiest and safest way to buy and sell Jordan, Yeezy, Nike, adidas and all the hottest sneakers in Canada. All sneakers are 100% verified authentic and no duty fees. We take care of everything while you happily wait to receive your kicks or get paid.' }
-    ], true);
+    ], true);*/
   }
 
-  init() {
+  /*init() {
     this.snkrsService.getGameID(this.timestamp).then(response => {
       // console.log(response);
       if (response) {
@@ -486,5 +486,5 @@ export class SnkrsComponent implements OnInit, OnDestroy {
         this.nextTourCountdown = false;
       }
     });
-  }
+  }*/
 }

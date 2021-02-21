@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
@@ -14,7 +13,7 @@ export class SnkrsService {
     private http: HttpClient
   ) { }
 
-  getLeaderboard(gameID: string) {
+  /*getLeaderboard(gameID: string) {
     return this.afs.collection(`snkrs`).doc(`${gameID}`).collection(`users`).ref.orderBy('points', 'desc').limit(25).get();
   }
 
@@ -185,5 +184,5 @@ export class SnkrsService {
 
   getNextTournament(timestamp: number) {
     return this.afs.collection(`snkrs`).ref.where('openingDate', '>', timestamp).orderBy('openingDate', 'asc').limit(1).get();
-  }
+  }*/
 }

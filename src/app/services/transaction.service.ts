@@ -42,13 +42,12 @@ export class TransactionService {
    */
   async transactionApproved(UID: string, product: Ask, shippingInfo: User['shipping_address']['buying'], payment_id: string, shipping_cost: number, total: number, discount?: NxtdropCC) {
     const batch = firebase.firestore().batch()
-    const id = product.product_id
     const boughtAt = Date.now()
     const transactionID = `${UID}-${product.seller_id}-${boughtAt}`
 
     const sellerRef = this.afs.firestore.collection(`users`).doc(`${product.seller_id}`) //seller doc ref
     const buyerRef = this.afs.firestore.collection(`users`).doc(`${UID}`) //buyer doc ref
-    const prodRef = this.afs.firestore.collection(`products`).doc(`${id}`) //prod doc ref
+    const prodRef = this.afs.firestore.collection(`products`).doc(`${product.product_id}`) //prod doc ref
     const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`) //transaction doc ref
     const askRef = this.afs.firestore.collection(`asks`) //ask collection ref
 
@@ -290,7 +289,7 @@ export class TransactionService {
 
     const buyerRef = this.afs.firestore.collection(`users`).doc(`${product.buyer_id}`) //buyer doc ref
     const sellerRef = this.afs.firestore.collection(`users`).doc(`${UID}`) //seller doc ref
-    const prodRef = this.afs.firestore.collection(`products`).doc(`${product.buyer_id}`) //prod doc ref
+    const prodRef = this.afs.firestore.collection(`products`).doc(`${product.product_id}`) //prod doc ref
     const tranRef = this.afs.firestore.collection(`transactions`).doc(`${transactionID}`) //transaction doc ref
     const bidRef = this.afs.firestore.collection('bids') //bid collection ref
 
