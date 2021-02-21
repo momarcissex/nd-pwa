@@ -134,6 +134,8 @@ export class AuthService {
   }*/
 
   async emailSignUp(email: string, password: string, first_name: string, last_name: string, username: string, userIP: string, inviteCode?: string) {
+    if (userIP == undefined) userIP = "null"
+
     if (email || password || first_name || last_name || username) {
       return this.afAuth.createUserWithEmailAndPassword(email, password)
         .then(user => {
@@ -307,6 +309,8 @@ export class AuthService {
   }
 
   public addInformationUser(first_name: string, last_name: string, username: string, password: string, userIP: string) {
+    if (userIP == undefined) userIP = "null"
+
     if (this.afAuth.currentUser != null || this.afAuth.currentUser != undefined) {
       return this.afAuth.currentUser.then(currentUser => {
         const credential = auth.EmailAuthProvider.credential(currentUser.email, password);
