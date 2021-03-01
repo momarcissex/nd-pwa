@@ -69,7 +69,7 @@
     </div>
 
     <div class="promo-code" *ngIf="!isSelling && !discounted">
-      <input type="text" name="promo-code" id="promo-code" placeholder="Enter Promo Code" mask="AAAAAAAAAA">
+      <input type="text" name="promo-code" id="promo-code" placeholder="Discount Code" mask="AAAAAAAAAA">
       <button class="btn promo-btn" (click)="applyPromo()"
         *ngIf="!promoError && !promoApplied && !promoLoading">Apply</button>
       <button class="btn promo-btn" *ngIf="promoLoading">

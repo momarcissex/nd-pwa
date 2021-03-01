@@ -72,6 +72,12 @@ import { TrustboxComponent } from './components/trustbox/trustbox.component';
 import { RecentlyViewedComponent } from './components/recently-viewed/recently-viewed.component';
 import { UpcomingReleasesComponent } from './components/upcoming-releases/upcoming-releases.component';
 import { SneakPeekComponent } from './components/sneak-peek/sneak-peek.component';
+import { SurveyComponent } from './components/survey/survey.component';
+import { NewsletterComponent } from './components/newsletter/newsletter.component';
+import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
+import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
+import { ContestComponent } from './components/contest/contest.component';
+import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
 /** Font Awesome */
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -91,11 +97,6 @@ import { NgxMaskModule } from 'ngx-mask';
 
 import { NgxPayPalModule } from 'ngx-paypal';
 import { SafeHtmlPipe } from './pipes/safeHtml.pipes';
-import { NewsletterComponent } from './components/newsletter/newsletter.component';
-import { SettingsEmailComponent } from './components/settings-email/settings-email.component';
-import { RecoverEmailComponent } from './components/recover-email/recover-email.component';
-import { ContestComponent } from './components/contest/contest.component';
-import { ExtendAskBidComponent } from './components/extend-ask-bid/extend-ask-bid.component';
 
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -169,7 +170,8 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     OnlyNumberDirective,
     RecentlyViewedComponent,
     UpcomingReleasesComponent,
-    SneakPeekComponent
+    SneakPeekComponent,
+    SurveyComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
