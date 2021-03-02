@@ -24,6 +24,7 @@ export class Globals {
     constructor(private afs: AngularFirestore, private auth: AngularFireAuth, private slack: SlackService, private ipService: IpService) { }
 
     load() {
+        this.getUserIP()
         this.pickExp001PopUp()
         this.pickExp003Config()
         return this.userLoggedIn()
@@ -81,15 +82,18 @@ export class Globals {
                     map(user => this.user_data = user.data() as User),
                     first()
                 ).toPromise()
-                    .then(() => {
-                        return this.ipService.getIPAddress().pipe(
-                            map((data: any) => this.user_ip = data.ip),
-                            first()
-                        ).toPromise()
-                    })
             }
         }).catch(err => {
             this.slack.sendAlert('bugreport', err)
+        })
+    }
+
+    getUserIP() {
+        this.ipService.getIPAddress().pipe(
+            map((data: any) => this.user_ip = data.ip),
+            first()
+        ).toPromise().then(() => {
+            console.log('got IP')
         })
     }
 
