@@ -95,8 +95,12 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 // Mask Module
 import { NgxMaskModule } from 'ngx-mask';
 
+// PayPal Module
 import { NgxPayPalModule } from 'ngx-paypal';
+
+// Our Pipes
 import { SafeHtmlPipe } from './pipes/safeHtml.pipes';
+import { noCommaPipe } from './pipes/noComma.pipes';
 
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -152,6 +156,7 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     BlogPostComponent,
     SnkrsComponent,
     SafeHtmlPipe,
+    noCommaPipe,
     ListingsComponent,
     OffersComponent,
     Dec182019Component,
