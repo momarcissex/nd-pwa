@@ -14,7 +14,6 @@ import { Globals } from 'src/app/globals';
 })
 export class DashboardComponent implements OnInit {
 
-  UID: string;
   user: User;
   purchases: Transaction[] = [];
   sales: Transaction[] = [];
@@ -34,30 +33,19 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.title.setTitle('Dashboard | NXTDROP')
-    this.auth.isConnected().then(res => {
-      if (!(res === undefined)) {
-        this.UID = res.uid;
+    if (this.globals.uid == undefined) {
+      this.router.navigate(['login'], {
+        queryParams: { redirectTo: this.router.url }
+      });
+    } else {
+      this.user = this.globals.user_data
 
-        this.getUserData();
-
-        if (!(this.route.snapshot.params.id === undefined) && this.route.snapshot.params.id == 'sales') {
-          this.getSales();
-        } else {
-          this.getPurchases();
-        }
+      if (!(this.route.snapshot.params.id === undefined) && this.route.snapshot.params.id == 'sales') {
+        this.getSales();
       } else {
-        this.router.navigate(['login'], {
-          queryParams: { redirectTo: this.router.url }
-        });
+        this.getPurchases();
       }
-    });
-  }
-
-  getUserData() {
-    this.dashboardService.userData(this.UID).subscribe((data: User) => {
-      this.user = data;
-      //console.log(data);
-    });
+    }
   }
 
   getPurchases() {
@@ -68,12 +56,9 @@ export class DashboardComponent implements OnInit {
     this.showSales = false;
 
     if (this.purchases.length === 0) {
-      this.dashboardService.purchases(this.UID).subscribe((data: any) => {
-        data.forEach(doc => {
-          const d = doc as Transaction;
-          d.id = doc.id;
-          this.purchases.push(d);
-          //console.log(d)
+      this.dashboardService.purchases(this.user.uid).then(data => {
+        data.forEach(d => {
+          this.purchases.push(d.data() as Transaction)
         })
       });
     }
@@ -87,19 +72,15 @@ export class DashboardComponent implements OnInit {
     this.showPurchases = false;
 
     if (this.sales.length === 0) {
-      this.dashboardService.sales(this.UID).subscribe((data: any) => {
-        data.forEach(doc => {
-          const d = doc as Transaction;
-          d.id = doc.id;
-          this.sales.push(d);
-          //console.log(d)
+      this.dashboardService.sales(this.user.uid).then((data: any) => {
+        data.forEach(d => {
+          this.sales.push(d.data() as Transaction)
         })
       });
     }
   }
 
   printOrderStatus(transaction: Transaction) {
-    //console.log(`${type}, ${id}, ${paymentID}`)
     if (transaction.transaction_type == 'purchase') {
       if (transaction.status.seller_confirmation === undefined || !transaction.status.seller_confirmation && !transaction.status.shipped_for_verification && !transaction.status.delivered_for_authentication && !transaction.status.verified && !transaction.status.shipped && !transaction.status.delivered && !transaction.status.cancelled) {
         return 'waiting for seller to ship'
@@ -133,12 +114,12 @@ export class DashboardComponent implements OnInit {
 
   more() {
     if (this.showSales) {
-      this.dashboardService.sales(this.UID, this.sales[this.sales.length - 1].purchase_date).subscribe((data: any) => {
+      this.dashboardService.sales(this.user.uid, this.sales[this.sales.length - 1].purchase_date).then((data: any) => {
         this.sales.concat(data.docs);
       })
     } else {
-      this.dashboardService.purchases(this.UID, this.sales[this.sales.length - 1].purchase_date).subscribe((data: any) => {
-        this.sales.concat(data.docs);
+      this.dashboardService.purchases(this.user.uid, this.sales[this.sales.length - 1].purchase_date).then((data: any) => {
+        this.purchases.concat(data.docs);
       })
     }
   }

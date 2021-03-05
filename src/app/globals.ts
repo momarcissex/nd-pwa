@@ -93,7 +93,7 @@ export class Globals {
             map((data: any) => this.user_ip = data.ip),
             first()
         ).toPromise().then(() => {
-            console.log('got IP')
+            //console.log('got IP')
         })
     }
 
