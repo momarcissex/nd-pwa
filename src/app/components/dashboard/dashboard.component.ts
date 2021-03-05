@@ -5,6 +5,7 @@ import { User } from 'src/app/models/user';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Transaction } from 'src/app/models/transaction';
+import { Globals } from 'src/app/globals';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +28,8 @@ export class DashboardComponent implements OnInit {
     private auth: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private title: Title
+    private title: Title,
+    private globals: Globals
   ) { }
 
   ngOnInit() {
@@ -96,33 +98,36 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  printOrderStatus(status: Transaction["status"], type: string, paymentID: string) {
+  printOrderStatus(transaction: Transaction) {
     //console.log(`${type}, ${id}, ${paymentID}`)
-    if (type == 'purchase') {
-      if (status.seller_confirmation === undefined || !status.seller_confirmation && !status.shipped_for_verification && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    if (transaction.transaction_type == 'purchase') {
+      if (transaction.status.seller_confirmation === undefined || !transaction.status.seller_confirmation && !transaction.status.shipped_for_verification && !transaction.status.delivered_for_authentication && !transaction.status.verified && !transaction.status.shipped && !transaction.status.delivered && !transaction.status.cancelled) {
         return 'waiting for seller to ship'
       }
     } else {
-      if (paymentID === '') {
+      if (transaction.payment_id === '') {
         return 'waiting buyer to checkout'
       }
     }
 
-    if (status.cancelled) {
-      if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && !status.shipped && !status.delivered) return 'Authentication Failed'
+    if (transaction.status.cancelled) {
+      if (transaction.status.shipped_for_verification && transaction.status.delivered_for_authentication && transaction.status.verified && !transaction.status.shipped && !transaction.status.delivered) return 'Authentication Failed'
       else return 'Cancelled'
-    } else if (!status.shipped_for_verification && status.seller_confirmation && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    } else if (!transaction.status.shipped_for_verification && transaction.status.seller_confirmation && !transaction.status.delivered_for_authentication && !transaction.status.verified && !transaction.status.shipped && !transaction.status.delivered && !transaction.status.cancelled) {
       return 'Waiting for Seller to Ship'
-    } else if (status.shipped_for_verification && !status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    } else if (transaction.status.shipped_for_verification && !transaction.status.delivered_for_authentication && !transaction.status.verified && !transaction.status.shipped && !transaction.status.delivered && !transaction.status.cancelled) {
       return 'Shipped to NXTDROP'
-    } else if (status.shipped_for_verification && status.delivered_for_authentication && !status.verified && !status.shipped && !status.delivered && !status.cancelled) {
+    } else if (transaction.status.shipped_for_verification && transaction.status.delivered_for_authentication && !transaction.status.verified && !transaction.status.shipped && !transaction.status.delivered && !transaction.status.cancelled) {
       return 'Awaiting Authentication'
-    } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && !status.shipped && !status.delivered && !status.cancelled) {
-      return 'Authentication Aassed'
-    } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && status.shipped && !status.delivered && !status.cancelled) {
-      return 'Shipped to You'
-    } else if (status.shipped_for_verification && status.delivered_for_authentication && status.verified && status.shipped && status.delivered && !status.cancelled) {
-      return 'Delivered'
+    } else if (transaction.status.shipped_for_verification && transaction.status.delivered_for_authentication && transaction.status.verified && !transaction.status.shipped && !transaction.status.delivered && !transaction.status.cancelled) {
+      if (this.globals.uid == transaction.buyer_id) return 'Authentication Passed'
+      else return 'Payout pending'
+    } else if (transaction.status.shipped_for_verification && transaction.status.delivered_for_authentication && transaction.status.verified && transaction.status.shipped && !transaction.status.delivered && !transaction.status.cancelled) {
+      if (this.globals.uid == transaction.buyer_id) return 'Shipped to You'
+      else return 'Complete'
+    } else if (transaction.status.shipped_for_verification && transaction.status.delivered_for_authentication && transaction.status.verified && transaction.status.shipped && transaction.status.delivered && !transaction.status.cancelled) {
+      if (this.globals.uid == transaction.buyer_id) return 'Delivered'
+      else return 'Complete'
     }
   }
 

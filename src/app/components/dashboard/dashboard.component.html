@@ -32,7 +32,7 @@
     <tr class="purchases-row" *ngFor="let purchase of purchases">
       <td>{{ purchase.item.model + ', ' + purchase.item.size }}</td>
       <td>{{ purchase.purchase_date | date:'medium' }}</td>
-      <td>{{ printOrderStatus(purchase.status, purchase.transaction_type, purchase.payment_id) }}</td>
+      <td>{{ printOrderStatus(purchase) }}</td>
       
       <td *ngIf="printOrderStatus(purchase.status, purchase.transaction_type, purchase.payment_id) != 'shipped to buyer'" [routerLink]="['/transaction']"
         [queryParams]="{ transactionID: purchase.id, redirectTo: 'dashboard/purchases' }">More
@@ -55,7 +55,7 @@
     <tr class="sales-row" *ngFor="let sale of sales">
       <td>{{ sale.item.model + ', ' + sale.item.size }}</td>
       <td>{{ sale.purchase_date | date:'medium' }}</td>
-      <td>{{ printOrderStatus(sale.status, sale.transaction_type, sale.payment_id) }}</td>
+      <td>{{ printOrderStatus(sale) }}</td>
 
       <td *ngIf="!sale.status.seller_confirmation && !sale.status.cancelled" [routerLink]="['/transaction']"
         [queryParams]="{ transactionID: sale.id, redirectTo: 'dashboard/sales' }">Confirm
