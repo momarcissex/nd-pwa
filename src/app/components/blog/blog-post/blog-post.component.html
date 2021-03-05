@@ -49,7 +49,7 @@
 
             <div class="article-info">
                 <h6 class="article-category">{{ article.category }}</h6>
-                <p class="article-title">{{ article.title }}</p>
+                <p class="article-title" [innerHtml]="article.title | safeHtml"></p>
                 <p class="article-date">
                     <fa-icon [icon]="faClock"></fa-icon> {{ article.date }}
                 </p>

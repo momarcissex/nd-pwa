@@ -24,6 +24,8 @@ export class BlogPostComponent implements OnInit {
   post: any = {}
   articles = [];
 
+  he = require('he')
+
   constructor(
     private route: ActivatedRoute,
     private news: NewsService,
@@ -68,20 +70,20 @@ export class BlogPostComponent implements OnInit {
 
       this.news.getTags(json.tags).then(res => {
         setTimeout(() => {
-          this.title.setTitle(`${this.post.title} | NXTDROP: Sneaker and Fashion News`);
+          this.title.setTitle(`${this.he.decode(this.post.title)} | NXTDROP: Sneaker and Fashion News`);
 
           this.meta.addTags([
-            { name: `title`, content: `${this.post.title} | NXTDROP: Buy and Sell Authentic Sneakers - Sneaker and Fashion News` },
-            { name: `description`, content: `${this.post.excerpt}` },
+            { name: `title`, content: `${this.he.decode(this.post.title)} | NXTDROP: Buy and Sell Authentic Sneakers - Sneaker and Fashion News` },
+            { name: `description`, content: `${this.he.decode(this.post.excerpt)}` },
             { name: `keywords`, content: `stockx, goat, sneakers canada, buy and sell, nike, adidas, air jordan, ${this.displayTags(res)}` },
-            { name: `og:title`, content: `${this.post.title} | NXTDROP: Buy and Sell Authentic Sneakers - Sneaker and Fashion News` },
+            { name: `og:title`, content: `${this.he.decode(this.post.title)} | NXTDROP: Buy and Sell Authentic Sneakers - Sneaker and Fashion News` },
             { name: `og:url`, content: `https://nxtdrop.com/news/${this.post.slug}` },
             { name: `og:image`, content: `${this.post.img}` },
-            { name: `og:description`, content: `${this.post.excerpt}` },
-            { name: `twitter:title`, content: `${this.post.title} | NXTDROP: Buy and Sell Authentic Sneakers - Sneaker and Fashion News` },
+            { name: `og:description`, content: `${this.he.decode(this.post.excerpt)}` },
+            { name: `twitter:title`, content: `${this.he.decode(this.post.title)} | NXTDROP: Buy and Sell Authentic Sneakers - Sneaker and Fashion News` },
             { name: `twitter:card`, content: 'summary_large_image' },
             { name: `twitter:image`, content: `${this.post.img}` },
-            { name: `twitter:description`, content: `${this.post.excerpt}` }
+            { name: `twitter:description`, content: `${this.he.decode(this.post.excerpt)}` }
           ]);
         }, 1000);
       }).catch(err => {
