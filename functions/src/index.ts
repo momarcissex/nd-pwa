@@ -137,9 +137,9 @@ exports.sendShippingLabel = functions.https.onRequest((req, res) => {
             if (data) {
                 //const email = data.email;
                 const email = data.email;
-                const fee = req.body.price * 0.085;
-                const processing = req.body.price * 0.03;
-                const payout = req.body.price - fee - processing;
+                const fee = req.body.item.price * 0.085;
+                const processing = req.body.item.price * 0.03;
+                const payout = req.body.item.price - fee - processing;
 
                 console.log(`sendShippingLabel email to ${email}.`);
 
@@ -148,14 +148,14 @@ exports.sendShippingLabel = functions.https.onRequest((req, res) => {
                     from: { email: 'do-not-reply@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-0215a6c29937473ea4b204b3d94fe073',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        assetURL: req.body.asset_url,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        assetURL: req.body.item.asset_url,
                         fee: fee,
                         processing: processing,
                         payout: payout,
-                        price: req.body.price,
+                        price: req.body.item.price,
                         label: req.body.ship_tracking.label
                     }
                 }
