@@ -18,6 +18,7 @@ export class Globals {
     uid: string;
     user_ip: string;
     landing_page: string;
+    discountPopUpViewed: boolean = false
 
     user_subscription: Subscription;
 

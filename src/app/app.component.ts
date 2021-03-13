@@ -84,6 +84,12 @@ export class AppComponent implements AfterViewInit {
         fbq('track', 'PageView');
         window.Intercom("update");
 
+        if (event.url == '/' || event.url == '/home') {
+          if (!this.globals.discountPopUpViewed) {
+            this.modalService.openModal('discount')
+          }
+        }
+
         if (this.globals.landing_page == undefined) {
           this.globals.landing_page = this.router.url
         }

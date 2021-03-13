@@ -248,13 +248,47 @@ export class CheckoutComponent implements OnInit {
 
   applyPromo() {
     const now = Date.now();
-    const code = (document.getElementById('promo-code') as HTMLInputElement).value
+    //const code = (document.getElementById('promo-code') as HTMLInputElement).value
 
-    if (code.length == 10) {
+    this.discount = {
+      amount: 5,
+      cardID: 'DISCOUNT20',
+      expirationDate: now,
+      initiationDate: now,
+      reusable: true,
+      type: 'cash',
+      used_by: []
+    }
+
+    if (this.price >= 100 && this.price < 200) {
+      this.discount.amount = 15
+      this.total = this.total - this.discount.amount
+      this.promoApplied = true;
+    } else if (this.price >= 200 && this.price < 300) {
+      this.discount.amount = 16
+      this.total = this.total - this.discount.amount
+      this.promoApplied = true;
+    } else if (this.price >= 300 && this.price < 400) {
+      this.discount.amount = 17
+      this.total = this.total - this.discount.amount
+      this.promoApplied = true;
+    } else if (this.price >= 400 && this.price < 500) {
+      this.discount.amount = 18
+      this.total = this.total - this.discount.amount
+      this.promoApplied = true;
+    } else if (this.price >= 500 && this.price < 800) {
+      this.discount.amount = this.total * .04
+      this.total = this.total - this.discount.amount
+      this.promoApplied = true;
+    } else if (this.price >= 800) {
+      this.discount.amount = this.total * .05
+      this.total = this.total - this.discount.amount
+      this.promoApplied = true;
+    }
+
+    /*if (code.length == 10) {
       this.promoLoading = true;
       this.nxtdropCCService.getPromoCode(code).subscribe(res => {
-        //console.log(res.initiationDate)
-        //console.log(this.user.creation_date)
         if (!(res === undefined) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
           this.discount = res
           if (res.type === 'cash') {
@@ -282,7 +316,7 @@ export class CheckoutComponent implements OnInit {
           }, 2000);
         }
       })
-    }
+    }*/
   }
 
   getListing(listingID: string, user?: firebase.User) {
@@ -304,20 +338,21 @@ export class CheckoutComponent implements OnInit {
             'event_category': 'ecommerce',
             'event_label': this.product.model
           })
+        }
 
-          if (this.user != undefined) {
-            this.updateLastCartItem(this.product_id, this.product.size, this.user)
+        if (this.user != undefined) {
+          this.updateLastCartItem(this.product_id, this.product.size, this.user)
 
-            if (user != undefined) {
-              if (user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
-                this.router.navigate(['/phone-verification'], {
-                  queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
-                });
-              }
+          if (user != undefined) {
+            if (user.phoneNumber === undefined && !(this.route.snapshot.queryParams.product === undefined) && this.isSelling) {
+              this.router.navigate(['/phone-verification'], {
+                queryParams: { redirectTo: `product/${this.product.model.replace(/\s/g, '-').replace(/["'()]/g, '').replace(/\//g, '-').toLowerCase()}` }
+              });
             }
           }
         }
 
+        this.applyPromo()
         this.showShipping()
         this.showCheckoutBtns()
 

@@ -258,4 +258,36 @@
     </div>
 
     <!-- EXP #002 Pop-Ups END -->
+
+
+    <!-- Discount Modal -->
+
+    <div class="exp001-card" *ngIf="discount">
+        <div class="card-body">
+            <div class="image">
+
+            </div>
+
+            <div class="content">
+                <div class="card-top">
+
+                    <div class="close-icon">
+                        <fa-icon [icon]="faTimes" (click)="close('discount')"></fa-icon>
+                    </div>
+
+                </div>
+
+                <h2>You won a 5% DISCOUNT</h2>
+
+                <h6 style="color: #ef4135;">Your discount will automatically apply at CHECKOUT. The offer is valid until March 15, 2021 at 12AM. Enjoy!</h6>
+
+                <div class="navigation-btn">
+                    <button class="btn next-btn" style="background-color: white; color: black;" (click)="close('discount')">Thanks!</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Discount Modal END -->
 </section>
