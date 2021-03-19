@@ -1,13 +1,28 @@
 <div class="showcase-container">
+  <h2>Pre-Authenticated</h2>
+
+  <div class="showcase-windows">
+    <div *ngFor="let steal of steals" class="showcase-window">
+      <a [routerLink]="['/product', steal.product_id]">
+        <div class="price-size">
+          <h6 id="window-size">{{ steal.size }}</h6>
+          <h6 id="window-price">{{ steal.price | currency:'CAD' }}</h6>
+        </div>
+        <div id="window-image"><img src="{{ steal.asset_url }}" alt="{{ steal.model }}"></div>
+        <h3 id="window-model">{{ steal.model }}</h3>
+      </a>
+    </div>
+  </div>
+
   <h2>New Releases</h2>
 
   <div class="showcase-windows">
     <div *ngFor="let newRelease of newReleases" class="showcase-window">
-        <a [routerLink]="['/product', newRelease.product_id]" (click)="trackProductClick(newRelease.model)">
-            <h6 id="window-price">{{ newRelease.lowest_price | currency:'CAD' }}</h6>
-            <div id="window-image"><img src="{{ newRelease.asset_url }}" alt="{{ newRelease.model }}"></div>
-            <h3 id="window-model">{{ newRelease.model }}</h3>
-        </a>
+      <a [routerLink]="['/product', newRelease.product_id]">
+        <h6 id="window-price">{{ newRelease.lowest_price | currency:'CAD' }}</h6>
+        <div id="window-image"><img src="{{ newRelease.asset_url }}" alt="{{ newRelease.model }}"></div>
+        <h3 id="window-model">{{ newRelease.model }}</h3>
+      </a>
     </div>
   </div>
 </div>

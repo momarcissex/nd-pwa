@@ -30,7 +30,7 @@ export class ListingsComponent implements OnInit {
       })
   }
 
-  track(productID: string) {
+  /*track(productID: string) {
     //console.log('work')
     //console.log(this.globals.exp003_version)
     if (this.globals.exp003_version != undefined) {

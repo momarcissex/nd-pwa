@@ -51,6 +51,10 @@ export class HomeService {
     return this.afs.collection('products', ref => ref.where('collections', 'array-contains', collection_id).orderBy('release_date', 'desc')).valueChanges() as Observable<Product[]>;
   }
 
+  public getPreAuthenticasted() {
+    return this.afs.collection('asks', ref => ref.where('collections', 'array-contains', 'pre-authenticated').orderBy('last_updated', 'desc')).valueChanges() as Observable<Ask[]>
+  }
+
   public getUpcomingReleases() {
     let t = new Date();
     const dd = String(t.getDate()).padStart(2, '0');

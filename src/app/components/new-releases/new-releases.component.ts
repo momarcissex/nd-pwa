@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Globals } from 'src/app/globals';
+import { Ask } from 'src/app/models/ask';
 import { HomeService } from '../../services/home.service';
 
 declare const gtag: any;
@@ -10,7 +11,8 @@ declare const gtag: any;
 })
 export class NewReleasesComponent implements OnInit {
 
-  newReleases = [];
+  newReleases = []
+  steals: Ask[] = []
 
   constructor(
     private homeService: HomeService,
@@ -23,9 +25,15 @@ export class NewReleasesComponent implements OnInit {
         this.newReleases.push(element.data());
       })
     })
+
+    this.homeService.getPreAuthenticasted().subscribe(res => {
+      res.forEach(ele => {
+        this.steals.push(ele)
+      })
+    })
   }
 
-  trackProductClick(model: string) {
+  /*trackProductClick(model: string) {
     console.log('work')
     if (this.globals.exp003_version != undefined) {
       gtag('event', `${this.globals.exp003_version}_product_click`, {
@@ -33,6 +41,6 @@ export class NewReleasesComponent implements OnInit {
         'event_label': model
       })
     }
-  }
+  }*/
 
 }

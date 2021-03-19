@@ -3,7 +3,7 @@
 <div class="main-container" id="main-container">
     <app-carousel></app-carousel>
 
-    <section routerLink="product/{{ lastSale.item.product_id }}" class="last-sale-banner" *ngIf="lastSale">
+    <!--<section routerLink="product/{{ lastSale.item.product_id }}" class="last-sale-banner" *ngIf="lastSale">
         <h1>Last Sale</h1>
 
         <div class="prod-description">
@@ -15,46 +15,18 @@
             <h3>{{ lastSale.item.price | currency:'CAD':'symbol':'3.0-0' }}</h3>
             <p>{{ lastSale.item.size }}</p>
         </div>
-    </section>
+    </section>-->
 
-    <!-- EXP 003 START -->
-    <div *ngIf="globals.exp003_version == 'config1'">
-        <app-listings></app-listings>
+    <app-new-releases></app-new-releases>
 
-        <app-new-releases></app-new-releases>
+    <app-listings></app-listings>
 
-        <app-trending></app-trending>
-    </div>
-
-    <div *ngIf="globals.exp003_version == 'config2'">
-        <app-trending></app-trending>
-
-        <app-listings></app-listings>
-
-        <app-new-releases></app-new-releases>
-    </div>
-
-    <div *ngIf="globals.exp003_version == 'config3'">
-        <app-new-releases></app-new-releases>
-
-        <app-trending></app-trending>
-
-        <app-listings></app-listings>
-    </div>
-
-    <div *ngIf="globals.exp003_version == 'config4'">
-        <app-new-releases></app-new-releases>
-
-        <app-listings></app-listings>
-
-        <app-trending></app-trending>
-    </div>
-    <!-- EXP 003 END-->
+    <app-trending></app-trending>
 
     <app-sneak-peek></app-sneak-peek>
 
     <app-recently-viewed></app-recently-viewed>
-    
+
     <app-upcoming-releases></app-upcoming-releases>
 </div>
 

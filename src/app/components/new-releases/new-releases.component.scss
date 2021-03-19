@@ -1,0 +1,21 @@
+@import "../../base_styles/base";
+
+.price-size {
+  width: 90%;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+
+  h6:first-child {
+    justify-self: start;
+  }
+
+  h6:last-child {
+    justify-self: end;
+
+    span {
+      color: $prodBtnPrimary2;
+      text-decoration: line-through;
+      font-size: .6rem;
+    }
+  }
+}

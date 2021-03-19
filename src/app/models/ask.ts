@@ -13,4 +13,5 @@ export class Ask {
     product_id: string;
     seller_id: string;
     size: string;
+    collections?: [];
 }

@@ -3,7 +3,7 @@
 
     <div class="showcase-windows">
         <div *ngFor="let ask of latestAsks" class="showcase-window">
-            <a [routerLink]="['/checkout']" [queryParams]="{product: ask.listing_id, sell: false }" (click)="track(ask.product_id)">
+            <a [routerLink]="['/checkout']" [queryParams]="{product: ask.listing_id, sell: false }">
                 <div class="price-size">
                     <h6 id="window-size">{{ ask.size }}</h6>
                     <h6 id="window-price">{{ ask.price | currency:'CAD' }}</h6>

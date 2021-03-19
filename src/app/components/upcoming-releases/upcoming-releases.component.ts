@@ -46,11 +46,11 @@ export class UpcomingReleasesComponent implements OnInit {
    * Send click event to Google Analytics
    * @param product_id ID of the product the user clicked on
    */
-  public track(product_id: string): void {
+  /*public track(product_id: string): void {
     gtag('event', 'upcoming_release_click', {
       'event_category': 'engagement',
       'event_label': product_id
     })
-  }
+  }*/
 
 }

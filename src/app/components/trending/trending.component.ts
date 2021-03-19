@@ -25,13 +25,13 @@ export class TrendingComponent implements OnInit {
     });
   }
 
-  trackProductClick(model: string) {
+  /*trackProductClick(model: string) {
     if (this.globals.exp003_version != undefined) {
       gtag('event', `${this.globals.exp003_version}_product_click`, {
         'event_category': `exp003`,
         'event_label': model
       })
     }
-  }
+  }*/
 
 }
