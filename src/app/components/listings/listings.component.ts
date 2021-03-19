@@ -41,7 +41,7 @@ export class ListingsComponent implements OnInit {
     }
   }
 
-  getDiscount(price: number) {
+  /*getDiscount(price: number) {
     if (price >= 100 && price < 200) {
       return price - 15
     } else if (price >= 200 && price < 300) {
@@ -55,6 +55,6 @@ export class ListingsComponent implements OnInit {
     } else if (price >= 800) {
       return price * .95
     }
-  }
+  }*/
 
 }

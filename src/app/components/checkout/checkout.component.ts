@@ -248,9 +248,9 @@ export class CheckoutComponent implements OnInit {
 
   applyPromo() {
     const now = Date.now();
-    //const code = (document.getElementById('promo-code') as HTMLInputElement).value
+    const code = (document.getElementById('promo-code') as HTMLInputElement).value
 
-    this.discount = {
+    /*this.discount = {
       amount: 5,
       cardID: 'DISCOUNT20',
       expirationDate: now,
@@ -284,9 +284,9 @@ export class CheckoutComponent implements OnInit {
       this.discount.amount = this.total * .05
       this.total = this.total - this.discount.amount
       this.promoApplied = true;
-    }
+    }*/
 
-    /*if (code.length == 10) {
+    if (code.length == 10) {
       this.promoLoading = true;
       this.nxtdropCCService.getPromoCode(code).subscribe(res => {
         if (!(res === undefined) && res.amount > 0 && res.expirationDate > now && res.initiationDate > this.user.creation_date && !res.used_by.includes(this.user.uid)) {
@@ -316,7 +316,7 @@ export class CheckoutComponent implements OnInit {
           }, 2000);
         }
       })
-    }*/
+    }
   }
 
   getListing(listingID: string, user?: firebase.User) {
@@ -352,7 +352,6 @@ export class CheckoutComponent implements OnInit {
           }
         }
 
-        this.applyPromo()
         this.showShipping()
         this.showCheckoutBtns()
 
