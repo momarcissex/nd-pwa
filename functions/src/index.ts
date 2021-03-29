@@ -291,7 +291,7 @@ exports.verifiedShipped = functions.https.onRequest((req, res) => {
                     trackingURL = `http://theupsstore.ca/track/${req.body.ship_tracking.tracking_id}`;
                     break;
                 case 'Canada Post':
-                    trackingURL = `https://www.canadapost.ca/track-reperage/en#/details/${req.body.ship_tracking.tracking_id}`;
+                    trackingURL = `https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=${req.body.ship_tracking.tracking_id}`;
                     break;
                 default:
                     break;
@@ -497,7 +497,7 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                     msg.dynamic_template_data.total = total - req.body.discount.amount;
                 }
 
-                if (req.body.type === 'sold') {
+                if (req.body.transaction_type === 'bid_accepted') {
                     const transactionID = `${req.body.id}`;
                     msg.templateId = 'd-1ea40fbf9ad848638489561243162e97';
                     msg.dynamic_template_data.link = `https://nxtdrop.com/checkout?tID=${transactionID}`;
@@ -543,7 +543,7 @@ exports.orderConfirmation = functions.https.onRequest((req, res) => {
                     }
                 }
 
-                if (req.body.type === 'sold') {
+                if (req.body.transaction_type === 'bid_accepted') {
                     msg.templateId = 'd-8650dfd5d93f4b16b594cf02c49e9070';
                 } else {
                     msg.dynamic_template_data.tid = transactionID;
@@ -1019,9 +1019,9 @@ exports.deliveredForVerification = functions.https.onRequest((req, res) => {
             const data = response.data();
             if (data) {
                 const email = data.email;
-                const fee = req.body.price * 0.085;
-                const processing = req.body.price * 0.03;
-                const payout = req.body.price - fee - processing;
+                const fee = req.body.item.price * 0.085;
+                const processing = req.body.item.price * 0.03;
+                const payout = req.body.item.price - fee - processing;
 
                 console.log(`Order Email Seller to ${email}.`);
 
@@ -1030,11 +1030,11 @@ exports.deliveredForVerification = functions.https.onRequest((req, res) => {
                     from: { email: 'orders@nxtdrop.com', name: 'NXTDROP' },
                     templateId: 'd-9f39e7893ca54fbd878aa84de5c61bd4',
                     dynamic_template_data: {
-                        model: req.body.model,
-                        size: req.body.size,
-                        condition: req.body.condition,
-                        assetURL: req.body.asset_url,
-                        subtotal: req.body.price,
+                        model: req.body.item.model,
+                        size: req.body.item.size,
+                        condition: req.body.item.condition,
+                        assetURL: req.body.item.asset_url,
+                        subtotal: req.body.item.price,
                         fee: fee,
                         processing: processing,
                         payout: payout
